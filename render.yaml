@@ -1,0 +1,44 @@
+services:
+  - type: web
+    name: islaapp
+    runtime: python
+    plan: free
+    region: oregon
+    branch: main
+    autoDeploy: true
+    buildCommand: echo "No build step required"
+    startCommand: python3 dev_server.py
+    healthCheckPath: /index.html
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.9
+      - key: HOST
+        value: 0.0.0.0
+      - key: DEFAULT_REGION
+        value: us-east-1
+      - key: DEFAULT_DB_PASSWORD
+        sync: false
+      - key: ADMIN_API_TOKEN
+        sync: false
+      - key: APP_SECRET
+        sync: false
+      - key: RENDER_API_KEY
+        sync: false
+      - key: RENDER_SERVICE_REPO
+        sync: false
+      - key: RENDER_OWNER_ID
+        sync: false
+      - key: DYNADOT_API_KEY
+        sync: false
+      - key: DYNADOT_AUTO_REGISTER
+        value: "false"
+      - key: DYNADOT_REGISTRATION_YEARS
+        value: "1"
+      - key: SUPABASE_ACCESS_TOKEN
+        sync: false
+      - key: SUPABASE_ORG_ID
+        sync: false
+      - key: SUPABASE_DB_PASS
+        sync: false
+      - key: NEON_API_KEY
+        sync: false

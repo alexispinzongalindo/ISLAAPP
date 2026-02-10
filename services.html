@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Services Marketplace | islaAPP</title>
+    <meta
+      name="description"
+      content="Offer hosting, domains, and databases from external providers directly inside islaAPP."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;700;800&family=Space+Grotesk:wght@600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <svg class="sprite" aria-hidden="true" focusable="false">
+      <defs>
+        <linearGradient id="brand-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#f02f6f" />
+          <stop offset="45%" stop-color="#7d34de" />
+          <stop offset="100%" stop-color="#244fd4" />
+        </linearGradient>
+        <filter id="logo-shadow" x="-30%" y="-30%" width="160%" height="160%">
+          <feDropShadow dx="0" dy="6" stdDeviation="4" flood-color="#2d43b8" flood-opacity=".3" />
+        </filter>
+        <symbol id="orbit-icon" viewBox="0 0 96 96">
+          <g filter="url(#logo-shadow)">
+            <path
+              d="M16 49c0-18.2 14.8-33 33-33s33 14.8 33 33-14.8 33-33 33-33-14.8-33-33z"
+              fill="none"
+              stroke="url(#brand-gradient)"
+              stroke-width="12"
+              stroke-linecap="round"
+            />
+            <path d="M8 49h80" fill="none" stroke="url(#brand-gradient)" stroke-width="10" stroke-linecap="round" />
+            <path
+              d="M32 30c6-4.5 17-5.2 24.8.4"
+              fill="none"
+              stroke="#efe7dc"
+              stroke-width="4.6"
+              stroke-linecap="round"
+            />
+          </g>
+        </symbol>
+      </defs>
+    </svg>
+
+    <div class="noise" aria-hidden="true"></div>
+    <header class="topbar">
+      <a class="brand" href="index.html">
+        <svg class="brand-icon" viewBox="0 0 96 96" role="img" aria-label="islaAPP logo icon">
+          <use href="#orbit-icon"></use>
+        </svg>
+        <span class="brand-name"><span>isla</span><strong>APP</strong></span>
+      </a>
+      <nav>
+        <a href="index.html">Home</a>
+        <a href="guide.html">AI Guide</a>
+        <a href="onboarding.html">Onboarding</a>
+        <a href="app-builder.html">App Builder</a>
+        <a href="projects.html">Projects</a>
+        <a class="is-current" href="services.html">Services</a>
+        <a href="ops.html">Ops</a>
+        <a href="setup.html">Setup Wizard</a>
+        <a href="pricing.html">Pricing</a>
+        <a href="support.html">Support</a>
+      </nav>
+      <a class="btn btn-small" href="app-builder.html">Create App</a>
+    </header>
+
+    <main>
+      <section class="page-intro">
+        <h1>External Services Marketplace</h1>
+        <p class="lead">
+          Offer hosting, domain, and database services from external providers without users leaving islaAPP.
+        </p>
+      </section>
+
+      <section class="section-panel">
+        <h2>
+          <svg class="mini-icon" viewBox="0 0 96 96" aria-hidden="true"><use href="#orbit-icon"></use></svg>
+          AI Services Coach
+        </h2>
+        <p class="muted">This assistant tells you what to do next in Services based on provider setup and request status.</p>
+        <div class="actions">
+          <button class="btn btn-primary" type="button" id="servicesAiRefresh">Refresh Guidance</button>
+          <a class="btn btn-ghost" href="setup.html">Open Setup Wizard</a>
+          <a class="btn btn-ghost" href="ops.html">Open Ops</a>
+        </div>
+        <div class="advisor-grid">
+          <article class="status-box" id="servicesAiSummary">
+            <h3>Waiting For Data</h3>
+            <ul>
+              <li>Refreshing provider and request status.</li>
+            </ul>
+          </article>
+          <article class="status-box">
+            <h3>Next Actions</h3>
+            <ol class="steps" id="servicesAiActions">
+              <li>Connect providers in Setup Wizard before submitting requests.</li>
+            </ol>
+          </article>
+        </div>
+      </section>
+
+      <section class="section-panel">
+        <h2>
+          <svg class="mini-icon" viewBox="0 0 96 96" aria-hidden="true"><use href="#orbit-icon"></use></svg>
+          Provider Catalog
+        </h2>
+        <p class="muted">Select plans to build a provisioning request in-app.</p>
+        <p class="muted">Use Setup Wizard to connect provider keys without terminal commands.</p>
+        <div class="actions">
+          <a class="btn btn-ghost" href="setup.html">Open Setup Wizard</a>
+        </div>
+        <div class="provider-health" id="providerHealthList"></div>
+        <div class="provider-grid" id="servicesCatalog"></div>
+      </section>
+
+      <section class="section-panel">
+        <h2>
+          <svg class="mini-icon" viewBox="0 0 96 96" aria-hidden="true"><use href="#orbit-icon"></use></svg>
+          Service Request Builder
+        </h2>
+        <div class="services-layout">
+          <aside class="cart-panel">
+            <h3>Selected Services</h3>
+            <ul class="cart-list" id="servicesCartList">
+              <li>No services selected yet.</li>
+            </ul>
+            <p class="cart-total">Estimated Total: <strong id="servicesCartTotal">$0.00</strong></p>
+          </aside>
+          <div>
+            <form id="serviceRequestForm" novalidate>
+              <div class="form-grid">
+                <label class="form-field">
+                  Full Name
+                  <input id="serviceCustomerName" type="text" required />
+                </label>
+                <label class="form-field">
+                  Email
+                  <input id="serviceEmail" type="email" required />
+                </label>
+                <label class="form-field form-field-full">
+                  Project Name
+                  <input id="serviceProjectName" type="text" required />
+                </label>
+                <label class="form-field">
+                  Domain (optional)
+                  <input id="serviceDomainName" type="text" placeholder="example.com" />
+                </label>
+                <label class="form-field">
+                  Region
+                  <input id="serviceRegion" type="text" placeholder="us-east-1" />
+                </label>
+                <label class="form-field form-field-full">
+                  DB Password (optional)
+                  <input id="serviceDbPassword" type="password" placeholder="Optional override" />
+                </label>
+                <label class="form-field form-field-full">
+                  Notes (optional)
+                  <textarea id="serviceNotes" rows="4"></textarea>
+                </label>
+                <label class="consent">
+                  <input id="serviceAutoProvision" type="checkbox" checked />
+                  Automatically run live provisioning after request submission.
+                </label>
+                <p class="muted">If admin auth is enabled, save your token first in the Ops page.</p>
+              </div>
+              <div class="actions">
+                <button class="btn btn-primary" type="submit">Submit Service Request</button>
+                <a class="btn btn-ghost" href="ops.html">Open Ops</a>
+                <a class="btn btn-ghost" href="support.html">Open Support</a>
+              </div>
+            </form>
+            <section class="status-box hidden" id="serviceRequestStatus" aria-live="polite"></section>
+          </div>
+        </div>
+      </section>
+
+      <section class="section-panel">
+        <h2>
+          <svg class="mini-icon" viewBox="0 0 96 96" aria-hidden="true"><use href="#orbit-icon"></use></svg>
+          Recent Service Requests
+        </h2>
+        <div class="actions">
+          <button class="btn btn-primary" type="button" id="serviceRequestsRefresh">Refresh Requests</button>
+        </div>
+        <p class="muted" id="serviceRequestsStatus">Loading service requests...</p>
+        <div class="request-grid" id="serviceRequestsList"></div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <p><span class="brand-inline">islaAPP</span> keeps external provider purchases and provisioning in one workflow.</p>
+      <small>&copy; <span data-year></span> islaAPP. All rights reserved.</small>
+    </footer>
+
+    <script src="app.js"></script>
+  </body>
+</html>

@@ -1,0 +1,244 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ops Dashboard | islaAPP</title>
+    <meta name="description" content="Manage service requests, statuses, and live provisioning operations in islaAPP." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;700;800&family=Space+Grotesk:wght@600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <svg class="sprite" aria-hidden="true" focusable="false">
+      <defs>
+        <linearGradient id="brand-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#f02f6f" />
+          <stop offset="45%" stop-color="#7d34de" />
+          <stop offset="100%" stop-color="#244fd4" />
+        </linearGradient>
+        <filter id="logo-shadow" x="-30%" y="-30%" width="160%" height="160%">
+          <feDropShadow dx="0" dy="6" stdDeviation="4" flood-color="#2d43b8" flood-opacity=".3" />
+        </filter>
+        <symbol id="orbit-icon" viewBox="0 0 96 96">
+          <g filter="url(#logo-shadow)">
+            <path
+              d="M16 49c0-18.2 14.8-33 33-33s33 14.8 33 33-14.8 33-33 33-33-14.8-33-33z"
+              fill="none"
+              stroke="url(#brand-gradient)"
+              stroke-width="12"
+              stroke-linecap="round"
+            />
+            <path d="M8 49h80" fill="none" stroke="url(#brand-gradient)" stroke-width="10" stroke-linecap="round" />
+            <path
+              d="M32 30c6-4.5 17-5.2 24.8.4"
+              fill="none"
+              stroke="#efe7dc"
+              stroke-width="4.6"
+              stroke-linecap="round"
+            />
+          </g>
+        </symbol>
+      </defs>
+    </svg>
+
+    <div class="noise" aria-hidden="true"></div>
+    <header class="topbar">
+      <a class="brand" href="index.html">
+        <svg class="brand-icon" viewBox="0 0 96 96" role="img" aria-label="islaAPP logo icon">
+          <use href="#orbit-icon"></use>
+        </svg>
+        <span class="brand-name"><span>isla</span><strong>APP</strong></span>
+      </a>
+      <nav>
+        <a href="index.html">Home</a>
+        <a href="guide.html">AI Guide</a>
+        <a href="onboarding.html">Onboarding</a>
+        <a href="app-builder.html">App Builder</a>
+        <a href="projects.html">Projects</a>
+        <a href="services.html">Services</a>
+        <a class="is-current" href="ops.html">Ops</a>
+        <a href="setup.html">Setup Wizard</a>
+        <a href="pricing.html">Pricing</a>
+        <a href="support.html">Support</a>
+      </nav>
+      <a class="btn btn-small" href="services.html">Open Services</a>
+    </header>
+
+    <main>
+      <section class="page-intro">
+        <h1>Operations Dashboard</h1>
+        <p class="lead">
+          Manage service requests, change statuses, run live provisioning, and retry failed provider tasks from one queue.
+        </p>
+      </section>
+
+      <section class="section-panel">
+        <h2>
+          <svg class="mini-icon" viewBox="0 0 96 96" aria-hidden="true"><use href="#orbit-icon"></use></svg>
+          AI Ops Coach
+        </h2>
+        <p class="muted">This assistant tracks auth, provider setup, and queue status so you always know the next action.</p>
+        <div class="actions">
+          <button class="btn btn-primary" type="button" id="opsAiRefresh">Refresh Guidance</button>
+          <a class="btn btn-ghost" href="setup.html">Open Setup Wizard</a>
+          <a class="btn btn-ghost" href="services.html">Open Services</a>
+        </div>
+        <div class="advisor-grid">
+          <article class="status-box" id="opsAiSummary">
+            <h3>Waiting For Data</h3>
+            <ul>
+              <li>Refreshing queue and provider status.</li>
+            </ul>
+          </article>
+          <article class="status-box">
+            <h3>Next Actions</h3>
+            <ol class="steps" id="opsAiActions">
+              <li>Sign in and refresh queue to start guided ops actions.</li>
+            </ol>
+          </article>
+        </div>
+      </section>
+
+      <section class="section-panel">
+        <h2>
+          <svg class="mini-icon" viewBox="0 0 96 96" aria-hidden="true"><use href="#orbit-icon"></use></svg>
+          Admin Access
+        </h2>
+        <p class="muted">Use session login for day-to-day ops. Legacy token fallback is still available.</p>
+        <div class="actions">
+          <a class="btn btn-ghost" href="setup.html">Open Setup Wizard</a>
+        </div>
+
+        <article id="opsAuthBootstrapCard" class="status-box hidden">
+          <h3>Bootstrap Owner</h3>
+          <p class="muted">Create your first owner account.</p>
+          <form id="opsBootstrapForm" class="form-grid">
+            <label class="form-field">
+              Username
+              <input id="opsBootstrapUsername" type="text" placeholder="owner" autocomplete="username" />
+            </label>
+            <label class="form-field">
+              Password
+              <input id="opsBootstrapPassword" type="password" placeholder="At least 8 characters" autocomplete="new-password" />
+            </label>
+            <div class="actions">
+              <button class="btn btn-primary" type="submit">Create Owner + Sign In</button>
+            </div>
+          </form>
+        </article>
+
+        <article id="opsAuthLoginCard" class="status-box hidden">
+          <h3>Sign In</h3>
+          <form id="opsLoginForm" class="form-grid">
+            <label class="form-field">
+              Username
+              <input id="opsLoginUsername" type="text" placeholder="username" autocomplete="username" />
+            </label>
+            <label class="form-field">
+              Password
+              <input id="opsLoginPassword" type="password" placeholder="password" autocomplete="current-password" />
+            </label>
+            <div class="actions">
+              <button class="btn btn-primary" type="submit">Sign In</button>
+            </div>
+          </form>
+        </article>
+
+        <div class="actions">
+          <button class="btn btn-ghost hidden" id="opsLogoutBtn" type="button">Sign Out</button>
+        </div>
+        <p class="muted" id="opsSessionSummary">Not signed in.</p>
+        <p class="muted" id="opsAuthStatus">Checking authentication...</p>
+
+        <article id="opsOwnerTools" class="status-box hidden">
+          <h3>Owner User Management</h3>
+          <p class="muted">Create additional team users for dashboard access.</p>
+          <form id="opsCreateUserForm" class="form-grid">
+            <label class="form-field">
+              Username
+              <input id="opsCreateUsername" type="text" placeholder="new-user" autocomplete="off" />
+            </label>
+            <label class="form-field">
+              Password
+              <input id="opsCreatePassword" type="password" placeholder="At least 8 characters" autocomplete="new-password" />
+            </label>
+            <label class="form-field">
+              Role
+              <select id="opsCreateRole">
+                <option value="viewer">Viewer</option>
+                <option value="admin">Admin</option>
+                <option value="owner">Owner</option>
+              </select>
+            </label>
+            <div class="actions">
+              <button class="btn btn-primary" type="submit">Create User</button>
+            </div>
+          </form>
+          <p class="muted" id="opsCreateUserStatus"></p>
+          <ul class="checklist" id="opsUsersList">
+            <li>No users yet.</li>
+          </ul>
+        </article>
+
+        <div class="form-grid">
+          <label class="form-field form-field-full">
+            Legacy Admin API Token (Optional)
+            <input id="opsAdminToken" type="password" placeholder="Paste ADMIN_API_TOKEN value" />
+          </label>
+        </div>
+        <div class="actions">
+          <button class="btn btn-primary" id="opsTokenSave" type="button">Save Token</button>
+          <button class="btn btn-ghost" id="opsTokenClear" type="button">Clear Token</button>
+        </div>
+        <p class="muted" id="opsTokenStatus">Checking ops authorization...</p>
+      </section>
+
+      <section class="section-panel">
+        <h2>
+          <svg class="mini-icon" viewBox="0 0 96 96" aria-hidden="true"><use href="#orbit-icon"></use></svg>
+          Provision Defaults
+        </h2>
+        <p class="muted">These values are applied when you click Provision Now or Retry Failed.</p>
+        <div class="form-grid">
+          <label class="form-field">
+            Domain Override
+            <input id="opsDomainName" type="text" placeholder="example.com" />
+          </label>
+          <label class="form-field">
+            Region Override
+            <input id="opsRegion" type="text" placeholder="us-east-1" />
+          </label>
+          <label class="form-field form-field-full">
+            DB Password Override
+            <input id="opsDbPassword" type="password" placeholder="Optional override for Supabase" />
+          </label>
+        </div>
+      </section>
+
+      <section class="section-panel">
+        <h2>
+          <svg class="mini-icon" viewBox="0 0 96 96" aria-hidden="true"><use href="#orbit-icon"></use></svg>
+          Service Request Queue
+        </h2>
+        <div class="actions">
+          <button class="btn btn-primary" id="opsRefresh" type="button">Refresh Queue</button>
+          <a class="btn btn-ghost" href="services.html">Go To Services</a>
+        </div>
+        <p class="muted" id="opsStatus">Loading request queue...</p>
+        <div class="ops-grid" id="opsRequestsList"></div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <p><span class="brand-inline">islaAPP</span> Ops keeps request management and provisioning actions centralized.</p>
+      <small>&copy; <span data-year></span> islaAPP. All rights reserved.</small>
+    </footer>
+
+    <script src="app.js"></script>
+  </body>
+</html>
