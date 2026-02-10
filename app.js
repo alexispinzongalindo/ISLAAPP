@@ -673,6 +673,16 @@ function initAppBuilder() {
   const aiSummary = document.querySelector("#builderAiSummary");
   const aiRequirementsList = document.querySelector("#builderRequirementsList");
   const aiNextActions = document.querySelector("#builderNextActions");
+  const fastForm = document.querySelector("#builderFastForm");
+  const fastPromptInput = document.querySelector("#builderFastPrompt");
+  const fastOwnerInput = document.querySelector("#builderFastOwner");
+  const fastSubmitButton = document.querySelector("#builderFastSubmit");
+  const fastClearButton = document.querySelector("#builderFastClear");
+  const fastSummary = document.querySelector("#builderFastSummary");
+  const fastStatus = document.querySelector("#builderFastStatus");
+  const fastPreviewFrame = document.querySelector("#builderFastPreviewFrame");
+  const growthPanel = document.querySelector("#builderGrowthPanel");
+  const growthList = document.querySelector("#builderGrowthList");
 
   if (!form || !output) return;
 
@@ -681,7 +691,283 @@ function initAppBuilder() {
   const templateInputs = Array.from(form.querySelectorAll("input[name='appTemplate']"));
   const featureInputs = Array.from(form.querySelectorAll("input[name='appFeature']"));
   const storageKey = "islaapp_builder_draft";
+  const fastStorageKey = "islaapp_builder_fast_prompt";
   let providerHealthById = {};
+
+  const readFastPromptState = () => parseChecklistState(localStorage.getItem(fastStorageKey));
+
+  const writeFastPromptState = () => {
+    if (!(fastPromptInput instanceof HTMLTextAreaElement) || !(fastOwnerInput instanceof HTMLInputElement)) return;
+    localStorage.setItem(
+      fastStorageKey,
+      JSON.stringify({
+        prompt: String(fastPromptInput.value || "").trim(),
+        owner: String(fastOwnerInput.value || "").trim(),
+      })
+    );
+  };
+
+  const titleWords = (input) =>
+    String(input || "")
+      .trim()
+      .split(/\s+/)
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase());
+
+  const suggestProjectName = (prompt) => {
+    const cleaned = String(prompt || "")
+      .replace(/[^\w\s]/g, " ")
+      .replace(/\s+/g, " ")
+      .trim();
+    if (!cleaned) return "My AI App";
+    const stopWords = new Set(["build", "create", "make", "app", "website", "site", "for", "with", "the", "a", "an", "to", "and"]);
+    const words = cleaned
+      .split(" ")
+      .filter((word) => word.length > 2 && !stopWords.has(word.toLowerCase()))
+      .slice(0, 3);
+    const base = words.length > 0 ? titleWords(words.join(" ")).join(" ") : "My AI App";
+    return base.endsWith("App") ? base : `${base} App`;
+  };
+
+  const inferDraftFromPrompt = (prompt, ownerName) => {
+    const rawPrompt = String(prompt || "").trim();
+    const normalized = rawPrompt.toLowerCase();
+
+    let template = "SaaS Dashboard";
+    if (/(marketplace|ecommerce|store|shop|listing|booking)/.test(normalized)) {
+      template = "Marketplace";
+    } else if (/(community|social|forum|members|group)/.test(normalized)) {
+      template = "Community Platform";
+    } else if (/(client|portal|agency|crm|internal|service desk)/.test(normalized)) {
+      template = "Client Portal";
+    }
+
+    const features = [];
+    const maybeAddFeature = (feature, pattern) => {
+      if (pattern.test(normalized)) features.push(feature);
+    };
+    maybeAddFeature("User authentication", /(login|log in|sign in|auth|account|user profile|register)/);
+    maybeAddFeature("Team collaboration", /(team|workspace|member|collaborat|multi user|organization)/);
+    maybeAddFeature("Payments and billing", /(payment|billing|checkout|subscription|invoice|charge)/);
+    maybeAddFeature("Notifications", /(notification|email|sms|alert|reminder|message)/);
+    maybeAddFeature("Admin dashboard", /(admin|dashboard|manage|management|backoffice|back office)/);
+    maybeAddFeature("Analytics reports", /(analytics|report|kpi|insight|metrics|tracking)/);
+    if (features.length === 0) {
+      features.push("Admin dashboard", "User authentication");
+    }
+
+    let stack = "React + Supabase";
+    if (/(landing page|portfolio|simple site|static|html css js)/.test(normalized)) {
+      stack = "HTML/CSS/JS";
+    } else if (/(next\.?js|nextjs)/.test(normalized)) {
+      stack = "Next.js + PostgreSQL";
+    } else if (/(node api|express|backend api|rest api)/.test(normalized)) {
+      stack = "Node API + React Frontend";
+    }
+
+    let target = "MVP in 1 month";
+    if (/(today|asap|quick|fast|two weeks|2 weeks|prototype|beta)/.test(normalized)) {
+      target = "Beta in 2 weeks";
+    } else if (/(production|launch|public)/.test(normalized)) {
+      target = "Production in 2 months";
+    } else if (/(scale|scaling|enterprise|global)/.test(normalized)) {
+      target = "Scale in 3+ months";
+    }
+
+    return {
+      prompt: rawPrompt,
+      projectName: suggestProjectName(rawPrompt),
+      owner: String(ownerName || "").trim() || "Founder",
+      template,
+      features,
+      stack,
+      target,
+      signals: {
+        team: /(team|workspace|member|organization|staff|company)/.test(normalized),
+        enterprise: /(enterprise|compliance|sso|governance|soc 2|hipaa|sla)/.test(normalized),
+        highUsage: /(high traffic|scale|many users|thousands|global)/.test(normalized),
+      },
+    };
+  };
+
+  const quickPreviewHtml = ({ projectName, template, target, features, owner }) => {
+    const featureItems = features.map((item) => `<li>${escapeHtml(item)}</li>`).join("");
+    return `<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>${escapeHtml(projectName)} Preview</title>
+    <style>
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        font-family: "Manrope", sans-serif;
+        color: #1d2233;
+        background: linear-gradient(145deg, #efe7dc, #ddd4c5);
+      }
+      main {
+        width: min(900px, 94vw);
+        margin: 1.4rem auto;
+        background: #fffaf2;
+        border: 1px solid rgba(35, 80, 213, 0.18);
+        border-radius: 14px;
+        padding: 1rem 1.1rem;
+      }
+      .badge {
+        display: inline-flex;
+        border-radius: 999px;
+        padding: 0.2rem 0.55rem;
+        font-size: 0.75rem;
+        font-weight: 700;
+        background: linear-gradient(130deg, #2350d5, #e72a6f);
+        color: white;
+      }
+      h1 { margin: 0.6rem 0 0.2rem; font-size: 1.5rem; }
+      p { margin: 0.35rem 0; color: #3a4561; }
+      ul {
+        margin: 0.7rem 0 0;
+        padding-left: 1.2rem;
+      }
+      li + li { margin-top: 0.25rem; }
+      .proof {
+        margin-top: 1rem;
+        border-radius: 10px;
+        border: 1px solid rgba(18, 95, 68, 0.35);
+        background: #f2faf6;
+        padding: 0.65rem 0.75rem;
+        color: #125f44;
+        font-weight: 700;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <span class="badge">${escapeHtml(template)}</span>
+      <h1>${escapeHtml(projectName)}</h1>
+      <p><strong>Owner:</strong> ${escapeHtml(owner)}</p>
+      <p><strong>Launch target:</strong> ${escapeHtml(target)}</p>
+      <p><strong>AI generated first working draft:</strong></p>
+      <ul>${featureItems}</ul>
+      <div class="proof">Preview is live. Next, AI will ask only what is needed to launch.</div>
+    </main>
+  </body>
+</html>`;
+  };
+
+  const applyInferredDraftToWizard = (inferred) => {
+    const templateMatch = templateInputs.find((input) => input.value === inferred.template);
+    if (templateMatch) templateMatch.checked = true;
+    featureInputs.forEach((input) => {
+      input.checked = inferred.features.includes(input.value);
+    });
+    setInputValue("#builderProjectName", inferred.projectName);
+    setInputValue("#builderOwner", inferred.owner);
+    setSelectValue("#builderStack", inferred.stack);
+    setSelectValue("#builderTarget", inferred.target);
+    updateTemplateUI();
+    renderAiGuide();
+    setActiveStep(4);
+  };
+
+  const setFastSummary = (inferred) => {
+    if (!fastSummary) return;
+    fastSummary.innerHTML = `
+      <h3>AI First Draft Ready</h3>
+      <ul>
+        <li>Project: ${escapeHtml(inferred.projectName)}</li>
+        <li>Template: ${escapeHtml(inferred.template)}</li>
+        <li>Stack: ${escapeHtml(inferred.stack)}</li>
+        <li>Target: ${escapeHtml(inferred.target)}</li>
+      </ul>
+    `;
+  };
+
+  const renderGrowthRecommendations = (inferred) => {
+    if (!growthPanel || !growthList) return;
+    const requirements = deriveBuilderRequirements({
+      stack: inferred.stack,
+      features: inferred.features,
+      target: inferred.target,
+      providerHealthById,
+    });
+    const missing = requirements.filter((item) => item.required && !item.ready);
+    const recommendations = [];
+
+    recommendations.push(
+      `AI proved the first build. Next, save this app and continue in <a href="${escapeAttribute("services.html")}">Services</a> when ready.`
+    );
+
+    if (missing.length > 0) {
+      recommendations.push(
+        `Required launch setup detected: ${escapeHtml(missing.map((item) => item.title).join(", "))}. Connect in <a href="${escapeAttribute(
+          "setup.html"
+        )}">Setup Wizard</a>.`
+      );
+    }
+
+    if (inferred.signals.enterprise) {
+      recommendations.push(
+        `Enterprise signal detected (compliance/SSO/governance). Offer <a href="${escapeAttribute(
+          "support.html"
+        )}">Enterprise contract</a>.`
+      );
+    } else if (inferred.signals.team || inferred.features.includes("Team collaboration")) {
+      recommendations.push(
+        `Team workflow detected. Recommend <a href="${escapeAttribute(
+          "pricing.html"
+        )}">Teams plan</a> for per-user billing and shared controls.`
+      );
+    } else {
+      recommendations.push(
+        `For solo builders, start on Free and upgrade to <a href="${escapeAttribute(
+          "pricing.html"
+        )}">Pro</a> when faster builds and more AI credits are needed.`
+      );
+    }
+
+    if (inferred.signals.highUsage || inferred.features.length >= 4) {
+      recommendations.push(
+        `High-usage app detected. Offer credit add-ons from <a href="${escapeAttribute("pricing.html")}">Pricing</a> as usage grows.`
+      );
+    }
+
+    growthList.innerHTML = recommendations.map((line) => `<li>${line}</li>`).join("");
+    growthPanel.classList.remove("hidden");
+  };
+
+  const renderFastIdleState = () => {
+    if (fastSummary) {
+      fastSummary.innerHTML = `
+        <h3>AI Waiting For Prompt</h3>
+        <ul>
+          <li>Describe your app idea above and click Build First Version.</li>
+        </ul>
+      `;
+    }
+    if (fastPreviewFrame instanceof HTMLIFrameElement) {
+      fastPreviewFrame.srcdoc = "";
+    }
+    if (fastStatus) {
+      fastStatus.classList.add("hidden");
+      fastStatus.innerHTML = "";
+    }
+    if (growthPanel) growthPanel.classList.add("hidden");
+  };
+
+  const inferPreviewUrlFromScaffold = (scaffold, stack) => {
+    const pathValue = String(scaffold.projectDir || "");
+    if (!pathValue) return "";
+    const parts = pathValue.split(/[/\\]/).filter(Boolean);
+    const slug = parts.length > 0 ? parts[parts.length - 1] : "";
+    if (!slug) return "";
+    if (stack === "HTML/CSS/JS") {
+      return `/projects/${slug}/index.html`;
+    }
+    if (stack === "Node API + React Frontend") {
+      return `/projects/${slug}/web/index.html`;
+    }
+    return "";
+  };
 
   const renderAiGuide = () => {
     if (!aiSummary || !aiRequirementsList || !aiNextActions) return;
@@ -806,14 +1092,107 @@ function initAppBuilder() {
   setSelectValue("#builderStack", savedDraft.stack);
   setSelectValue("#builderTarget", savedDraft.target);
 
+  const savedFast = readFastPromptState();
+  if (fastPromptInput instanceof HTMLTextAreaElement && typeof savedFast.prompt === "string") {
+    fastPromptInput.value = savedFast.prompt;
+  }
+  if (fastOwnerInput instanceof HTMLInputElement && typeof savedFast.owner === "string") {
+    fastOwnerInput.value = savedFast.owner;
+  }
+
   updateTemplateUI();
   setActiveStep(1);
   renderAiGuide();
   loadProviderHealth();
+  renderFastIdleState();
 
   if (saveDraftBtn) {
     saveDraftBtn.addEventListener("click", () => {
       saveDraft(true);
+    });
+  }
+
+  if (fastPromptInput instanceof HTMLTextAreaElement) {
+    fastPromptInput.addEventListener("input", writeFastPromptState);
+  }
+  if (fastOwnerInput instanceof HTMLInputElement) {
+    fastOwnerInput.addEventListener("input", writeFastPromptState);
+  }
+
+  if (fastClearButton instanceof HTMLButtonElement) {
+    fastClearButton.addEventListener("click", () => {
+      if (fastPromptInput instanceof HTMLTextAreaElement) fastPromptInput.value = "";
+      if (fastOwnerInput instanceof HTMLInputElement) fastOwnerInput.value = "";
+      localStorage.removeItem(fastStorageKey);
+      renderFastIdleState();
+    });
+  }
+
+  if (fastForm) {
+    fastForm.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const prompt = valueOf("#builderFastPrompt");
+      const ownerName = valueOf("#builderFastOwner");
+      if (!prompt) {
+        if (fastStatus) {
+          showStatus(fastStatus, "error", "Prompt required", ["Type what you want to build before running AI generation."]);
+        }
+        return;
+      }
+
+      writeFastPromptState();
+      if (fastSubmitButton instanceof HTMLButtonElement) {
+        fastSubmitButton.disabled = true;
+        fastSubmitButton.textContent = "Building...";
+      }
+
+      try {
+        const inferred = inferDraftFromPrompt(prompt, ownerName);
+        applyInferredDraftToWizard(inferred);
+        saveDraft(false);
+        setFastSummary(inferred);
+        renderGrowthRecommendations(inferred);
+
+        if (fastPreviewFrame instanceof HTMLIFrameElement) {
+          fastPreviewFrame.srcdoc = quickPreviewHtml(inferred);
+        }
+
+        const scaffold = await createStarterProject({
+          projectName: inferred.projectName,
+          owner: inferred.owner,
+          template: inferred.template,
+          features: inferred.features,
+          stack: inferred.stack,
+          target: inferred.target,
+        });
+
+        if (scaffold.ok) {
+          const previewUrl = inferPreviewUrlFromScaffold(scaffold, inferred.stack);
+          if (previewUrl && fastPreviewFrame instanceof HTMLIFrameElement) {
+            fastPreviewFrame.src = previewUrl;
+          }
+          if (fastStatus) {
+            showStatus(fastStatus, "success", "First version generated", [
+              `Project: ${inferred.projectName}`,
+              `Template: ${inferred.template}`,
+              `Stack: ${inferred.stack}`,
+              "AI proof is ready. Now review next-step recommendations below.",
+              `Project folder created: ${String(scaffold.projectDir || "")}`,
+            ]);
+          }
+        } else if (fastStatus) {
+          showStatus(fastStatus, "success", "AI draft generated", [
+            "Preview was created from your prompt.",
+            "Project scaffold could not be created right now.",
+            `Reason: ${scaffold.error || "Unknown error"}`,
+          ]);
+        }
+      } finally {
+        if (fastSubmitButton instanceof HTMLButtonElement) {
+          fastSubmitButton.disabled = false;
+          fastSubmitButton.textContent = "Build First Version";
+        }
+      }
     });
   }
 

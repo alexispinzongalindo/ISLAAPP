@@ -853,6 +853,21 @@ textarea:focus {
   display: block;
 }
 
+.fast-build-grid {
+  margin-top: 0.85rem;
+  display: grid;
+  gap: 0.9rem;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.fast-preview-frame {
+  width: 100%;
+  min-height: 300px;
+  border: 1px solid rgba(35, 80, 213, 0.18);
+  border-radius: 0.8rem;
+  background: white;
+}
+
 .template-grid {
   display: grid;
   gap: 0.8rem;
@@ -1008,6 +1023,7 @@ textarea:focus {
   .feature-grid,
   .support-grid,
   .form-grid,
+  .fast-build-grid,
   .template-grid,
   .feature-picks {
     grid-template-columns: 1fr;
