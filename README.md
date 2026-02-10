@@ -27,12 +27,13 @@ This repo now includes `/render.yaml` for Blueprint deploys.
 2. In Render, open Blueprint deploy:
    - `https://dashboard.render.com/blueprint/new`
 3. Select your repo and apply the Blueprint.
-4. Fill all env vars marked `sync: false`.
+4. Deploy (no required secrets for first launch).
 
 Notes:
 
 - The app writes JSON state into `/data` on disk. On Render free web services, filesystem is ephemeral (data can reset on restart/deploy).
 - For persistent production data, migrate these JSON files to a real database.
+- Add provider API keys later inside the app at `/setup.html` (after signing in on `/ops.html`).
 
 ## What Works
 
