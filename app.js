@@ -74,7 +74,8 @@ function initHomeCatalogSections() {
       .map(
         (item) => `
           <article class="template-showcase-card">
-            <div class="template-showcase-thumb ${escapeAttribute(String(item.thumbClass || ""))}">
+            <div class="template-showcase-thumb ${escapeAttribute(String(item.thumbClass || ""))} has-photo">
+              ${renderTemplateImagePicture(item, { className: "template-media-picture", eager: true, sizes: "(max-width: 980px) 100vw, 30vw" })}
               <span class="template-thumb-status">${escapeHtml(String(item.status || "Customizable"))}</span>
             </div>
             <h3>${escapeHtml(String(item.name || ""))}</h3>
@@ -111,7 +112,8 @@ function initUseCasesPage() {
     .map(
       (item) => `
         <article class="template-showcase-card" data-usecase-template data-category="${escapeAttribute(String(item.category || ""))}">
-          <div class="template-showcase-thumb ${escapeAttribute(String(item.thumbClass || ""))}">
+          <div class="template-showcase-thumb ${escapeAttribute(String(item.thumbClass || ""))} has-photo">
+            ${renderTemplateImagePicture(item, { className: "template-media-picture", sizes: "(max-width: 980px) 100vw, 30vw" })}
             <span class="template-thumb-status">${escapeHtml(String(item.status || "Customizable"))}</span>
           </div>
           <div class="template-card-meta-row">
@@ -297,6 +299,52 @@ function initMarketingNav() {
   });
 }
 
+function createUnsplashTemplateImage(photoId, altText) {
+  const base = `https://images.unsplash.com/${photoId}`;
+  const widths = [480, 768, 1080, 1400];
+  const buildSrcSet = (format) =>
+    widths
+      .map((width) => `${base}?auto=format&fit=crop&w=${width}&q=78&fm=${format} ${width}w`)
+      .join(", ");
+
+  return {
+    alt: String(altText || "").trim(),
+    avifSrcSet: buildSrcSet("avif"),
+    webpSrcSet: buildSrcSet("webp"),
+    jpgSrcSet: buildSrcSet("jpg"),
+    fallbackSrc: `${base}?auto=format&fit=crop&w=1080&q=80&fm=jpg`,
+  };
+}
+
+function renderTemplateImagePicture(template, options) {
+  const config = options && typeof options === "object" ? options : {};
+  const className = String(config.className || "template-media-picture");
+  const eager = Boolean(config.eager);
+  const sizes = String(config.sizes || "(max-width: 980px) 100vw, 33vw");
+  const image = template && typeof template === "object" ? template.image : null;
+  const alt = image && image.alt ? String(image.alt) : `${String((template && template.name) || "Template")} preview`;
+
+  if (!image || !image.fallbackSrc) {
+    return `<div class="${escapeAttribute(className)} template-media-fallback ${escapeAttribute(String((template && template.thumbClass) || ""))}" aria-hidden="true"></div>`;
+  }
+
+  return `
+    <picture class="${escapeAttribute(className)}">
+      <source type="image/avif" srcset="${escapeAttribute(String(image.avifSrcSet || ""))}" sizes="${escapeAttribute(sizes)}" />
+      <source type="image/webp" srcset="${escapeAttribute(String(image.webpSrcSet || ""))}" sizes="${escapeAttribute(sizes)}" />
+      <img
+        src="${escapeAttribute(String(image.fallbackSrc || ""))}"
+        srcset="${escapeAttribute(String(image.jpgSrcSet || ""))}"
+        sizes="${escapeAttribute(sizes)}"
+        alt="${escapeAttribute(alt)}"
+        loading="${eager ? "eager" : "lazy"}"
+        decoding="async"
+        fetchpriority="${eager ? "high" : "low"}"
+      />
+    </picture>
+  `;
+}
+
 function getTemplateCatalog() {
   const templates = [
     {
@@ -305,6 +353,7 @@ function getTemplateCatalog() {
       category: "business",
       status: "Featured",
       thumbClass: "template-thumb-saas",
+      image: createUnsplashTemplateImage("1460925895917-afdab827c52f", "SaaS analytics dashboard on laptop"),
       shortDescription: "Admin, analytics, subscriptions.",
       longDescription: "Best for analytics products, admin dashboards, and subscription-ready SaaS launches.",
       stack: "React + Supabase",
@@ -320,6 +369,7 @@ function getTemplateCatalog() {
       category: "business",
       status: "Customizable",
       thumbClass: "template-thumb-portal",
+      image: createUnsplashTemplateImage("1517245386807-bb43f82c33c4", "Team collaboration meeting in office"),
       shortDescription: "Projects, files, progress timeline.",
       longDescription: "Best for agencies and service teams managing client projects and shared files.",
       stack: "React + Supabase",
@@ -335,6 +385,7 @@ function getTemplateCatalog() {
       category: "commerce",
       status: "Featured",
       thumbClass: "template-thumb-market",
+      image: createUnsplashTemplateImage("1556740749-887f6717d7e4", "Online marketplace shopping workflow"),
       shortDescription: "Listings, checkout, seller profiles.",
       longDescription: "Best for multi-vendor catalogs where customers browse listings and checkout online.",
       stack: "Next.js + PostgreSQL",
@@ -350,6 +401,7 @@ function getTemplateCatalog() {
       category: "commerce",
       status: "Popular",
       thumbClass: "template-thumb-store",
+      image: createUnsplashTemplateImage("1472851294608-062f824d29cc", "Ecommerce storefront with products on display"),
       shortDescription: "Products, cart, customer accounts.",
       longDescription: "Best for direct-to-consumer stores with inventory, cart, and order workflows.",
       stack: "Next.js + PostgreSQL",
@@ -365,6 +417,7 @@ function getTemplateCatalog() {
       category: "service",
       status: "Fast launch",
       thumbClass: "template-thumb-booking",
+      image: createUnsplashTemplateImage("1515378791036-0648a3ef77b2", "Booking and scheduling calendar on desktop"),
       shortDescription: "Calendar, availability, reminders.",
       longDescription: "Best for appointment-based businesses that need scheduling and reminders.",
       stack: "React + Supabase",
@@ -380,6 +433,7 @@ function getTemplateCatalog() {
       category: "service",
       status: "Customizable",
       thumbClass: "template-thumb-helpdesk",
+      image: createUnsplashTemplateImage("1522071820081-009f0129c71c", "Customer support and helpdesk team at work"),
       shortDescription: "Ticket queues and SLA workflow.",
       longDescription: "Best for support teams handling tickets, priorities, and service SLAs.",
       stack: "Node API + React Frontend",
@@ -395,6 +449,7 @@ function getTemplateCatalog() {
       category: "community",
       status: "Popular",
       thumbClass: "template-thumb-community",
+      image: createUnsplashTemplateImage("1529156069898-49953e39b3ac", "Community members collaborating together"),
       shortDescription: "Feeds, groups, moderation.",
       longDescription: "Best for groups, memberships, and moderated social discussion spaces.",
       stack: "React + Supabase",
@@ -410,6 +465,7 @@ function getTemplateCatalog() {
       category: "community",
       status: "Featured",
       thumbClass: "template-thumb-membership",
+      image: createUnsplashTemplateImage("1498050108023-c5249f4df085", "Creator workspace with content tools"),
       shortDescription: "Paid content and member access.",
       longDescription: "Best for creators selling premium content and gated member access.",
       stack: "React + Supabase",
@@ -425,6 +481,7 @@ function getTemplateCatalog() {
       category: "business",
       status: "Enterprise ready",
       thumbClass: "template-thumb-crm",
+      image: createUnsplashTemplateImage("1454165804606-c3d57bc86b40", "CRM sales dashboard and business workspace"),
       shortDescription: "Leads, deals, team pipeline.",
       longDescription: "Best for pipeline management, lead tracking, and sales follow-up operations.",
       stack: "Node API + React Frontend",
@@ -440,6 +497,7 @@ function getTemplateCatalog() {
       category: "business",
       status: "Enterprise ready",
       thumbClass: "template-thumb-hr",
+      image: createUnsplashTemplateImage("1450101499163-c8848c66ca85", "Recruiting and interview process workspace"),
       shortDescription: "Candidates, stages, interviews.",
       longDescription: "Best for hiring teams managing candidates, stages, and interview processes.",
       stack: "Node API + React Frontend",
@@ -455,6 +513,7 @@ function getTemplateCatalog() {
       category: "service",
       status: "Customizable",
       thumbClass: "template-thumb-realestate",
+      image: createUnsplashTemplateImage("1560518883-ce09059eeffa", "Modern house exterior for real estate listing"),
       shortDescription: "Properties, tours, lead capture.",
       longDescription: "Best for brokers and agencies showcasing properties and capturing buyer leads.",
       stack: "React + Supabase",
@@ -470,6 +529,7 @@ function getTemplateCatalog() {
       category: "service",
       status: "Fast launch",
       thumbClass: "template-thumb-restaurant",
+      image: createUnsplashTemplateImage("1414235077428-338989a2e8c0", "Restaurant meal ordering and menu preview"),
       shortDescription: "Menu, orders, kitchen queue.",
       longDescription: "Best for restaurants and food operators taking digital orders and tracking kitchen status.",
       stack: "React + Supabase",
@@ -589,7 +649,8 @@ function initTemplatesPage() {
           data-name="${escapeAttribute(String(template.name || ""))}"
           data-description="${escapeAttribute(descriptionSearchText)}"
         >
-          <div class="template-showcase-thumb ${escapeAttribute(String(template.thumbClass || ""))}">
+          <div class="template-showcase-thumb ${escapeAttribute(String(template.thumbClass || ""))} has-photo">
+            ${renderTemplateImagePicture(template, { className: "template-media-picture", sizes: "(max-width: 980px) 100vw, 30vw" })}
             <span class="template-thumb-status">${escapeHtml(String(template.status || "Customizable"))}</span>
           </div>
           <div class="template-card-meta-row">
@@ -709,7 +770,12 @@ function initTemplateViewPage() {
     techTags.innerHTML = selected.techTags.map((item) => `<span class="template-pill tech">${escapeHtml(item)}</span>`).join("");
   }
   if (previewCard instanceof HTMLElement) {
-    previewCard.className = `template-view-preview ${selected.thumbClass}`;
+    previewCard.className = `template-view-preview ${selected.thumbClass} has-photo`;
+    previewCard.innerHTML = renderTemplateImagePicture(selected, {
+      className: "template-media-picture template-media-picture-large",
+      eager: true,
+      sizes: "(max-width: 980px) 100vw, 62vw",
+    });
   }
 
   const liveHref = resolveTemplateLiveUrl(selected.liveUrl || `template-live.html?template=${selected.id}`);
@@ -1530,6 +1596,7 @@ function initAppBuilder() {
   const templateCatalog = getTemplateCatalog();
 
   const templateThumbClassByName = Object.fromEntries(templateCatalog.map((item) => [item.name, item.thumbClass]));
+  const templateByName = Object.fromEntries(templateCatalog.map((item) => [item.name, item]));
   const templateMetaByName = Object.fromEntries(
     templateCatalog.map((item) => [
       item.name,
@@ -1935,12 +2002,35 @@ function initAppBuilder() {
       description: "Template selected. Review details and customize this build with AI.",
       highlights: ["App structure ready", "Customize features with AI", "Continue to stack setup"],
     };
+    const selectedTemplate = templateByName[activeTemplateName] || null;
     const thumbClass = templateThumbClassByName[activeTemplateName] || "template-thumb-saas";
-    templatePreview.className = `template-detail-preview ${thumbClass}`;
+    templatePreview.className = `template-detail-preview ${thumbClass} has-photo`;
+    templatePreview.innerHTML = selectedTemplate
+      ? renderTemplateImagePicture(selectedTemplate, {
+          className: "template-media-picture template-media-picture-large",
+          sizes: "(max-width: 980px) 100vw, 56vw",
+        })
+      : "";
     templateTitle.textContent = activeTemplateName;
     templateDescription.textContent = meta.description;
     templateHighlights.innerHTML = meta.highlights.map((line) => `<li>${escapeHtml(line)}</li>`).join("");
     templateDetail.classList.remove("hidden");
+  };
+
+  const hydrateBuilderTemplateThumbs = () => {
+    const cards = Array.from(form.querySelectorAll(".template-card.template-card-visual"));
+    cards.forEach((card) => {
+      const input = card.querySelector("input[name='appTemplate']");
+      const thumb = card.querySelector(".template-thumb");
+      if (!(input instanceof HTMLInputElement) || !(thumb instanceof HTMLElement)) return;
+      const template = templateByName[String(input.value || "").trim()];
+      if (!template) return;
+      thumb.classList.add("has-photo");
+      thumb.innerHTML = renderTemplateImagePicture(template, {
+        className: "template-media-picture",
+        sizes: "(max-width: 980px) 100vw, 28vw",
+      });
+    });
   };
 
   const closeTemplateDemo = () => {
@@ -2117,6 +2207,7 @@ function initAppBuilder() {
   }
 
   updateTemplateUI();
+  hydrateBuilderTemplateThumbs();
   applyTemplateFilter("all");
   setActiveStep(templateFromUrl ? 2 : 1);
   renderAiGuide();

@@ -387,6 +387,41 @@ h1 span {
   overflow: hidden;
 }
 
+.template-media-picture {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.template-media-picture img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  transform: scale(1.001);
+  transition: transform 0.55s ease;
+}
+
+.template-media-fallback {
+  width: 100%;
+  height: 100%;
+}
+
+.template-showcase-card:hover .template-media-picture img {
+  transform: scale(1.06);
+}
+
+.template-showcase-thumb.has-photo::before,
+.template-showcase-thumb.has-photo::after,
+.template-thumb.has-photo::before,
+.template-thumb.has-photo::after,
+.template-detail-preview.has-photo::before,
+.template-detail-preview.has-photo::after,
+.template-view-preview.has-photo::before,
+.template-view-preview.has-photo::after {
+  display: none;
+}
+
 .template-thumb-status {
   position: absolute;
   top: 0.55rem;
@@ -459,6 +494,10 @@ h1 span {
   border: 1px solid rgba(35, 80, 213, 0.2);
   position: relative;
   overflow: hidden;
+}
+
+.template-media-picture-large img {
+  object-position: center 35%;
 }
 
 .template-view-preview::before {
@@ -1344,6 +1383,10 @@ textarea:focus {
   overflow: hidden;
   background: #f7f9fe;
   position: relative;
+}
+
+.template-thumb.has-photo {
+  background: #0f1528;
 }
 
 .template-thumb::before {
