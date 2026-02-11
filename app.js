@@ -1019,6 +1019,32 @@ function clearPreviewSurface(surfaceNode) {
   surfaceNode.innerHTML = "";
 }
 
+function ensureModalPreviewSurface(modalNode, frameNode, fallbackId) {
+  if (frameNode instanceof HTMLElement && !(frameNode instanceof HTMLIFrameElement)) {
+    return frameNode;
+  }
+  if (!(modalNode instanceof HTMLElement)) return frameNode instanceof HTMLElement ? frameNode : null;
+
+  const card = modalNode.querySelector(".template-demo-card");
+  if (!(card instanceof HTMLElement)) return frameNode instanceof HTMLElement ? frameNode : null;
+
+  let fallback = card.querySelector(`#${fallbackId}`);
+  if (!(fallback instanceof HTMLElement)) {
+    fallback = document.createElement("div");
+    fallback.id = fallbackId;
+    fallback.className = "template-demo-frame";
+    fallback.setAttribute("role", "document");
+    fallback.setAttribute("aria-label", "Template demo preview");
+    card.appendChild(fallback);
+  }
+
+  if (frameNode instanceof HTMLIFrameElement) {
+    frameNode.classList.add("hidden");
+  }
+
+  return fallback;
+}
+
 function initTemplatesPage() {
   const grid = document.querySelector("#templatesCatalogGrid");
   if (!(grid instanceof HTMLElement)) return;
@@ -1178,8 +1204,10 @@ function initTemplateViewPage() {
   }
 
   const openDemo = () => {
-    if (!(modal instanceof HTMLElement) || !(modalFrame instanceof HTMLElement)) return;
-    renderPreviewSurface(modalFrame, {
+    if (!(modal instanceof HTMLElement)) return;
+    const previewSurface = ensureModalPreviewSurface(modal, modalFrame, "templateViewerSurface");
+    if (!(previewSurface instanceof HTMLElement)) return;
+    renderPreviewSurface(previewSurface, {
       projectName: `${selected.name} Demo`,
       template: selected.name,
       target: selected.target,
@@ -1192,9 +1220,11 @@ function initTemplateViewPage() {
   };
 
   const closeDemo = () => {
-    if (!(modal instanceof HTMLElement) || !(modalFrame instanceof HTMLElement)) return;
+    if (!(modal instanceof HTMLElement)) return;
+    const previewSurface = ensureModalPreviewSurface(modal, modalFrame, "templateViewerSurface");
+    if (!(previewSurface instanceof HTMLElement)) return;
     modal.classList.add("hidden");
-    clearPreviewSurface(modalFrame);
+    clearPreviewSurface(previewSurface);
     document.body.classList.remove("modal-open");
   };
 
@@ -2423,20 +2453,24 @@ function initAppBuilder() {
   };
 
   const closeTemplateDemo = () => {
-    if (!(templateDemoModal instanceof HTMLElement) || !(templateDemoFrame instanceof HTMLElement)) return;
+    if (!(templateDemoModal instanceof HTMLElement)) return;
+    const previewSurface = ensureModalPreviewSurface(templateDemoModal, templateDemoFrame, "templateDemoSurface");
+    if (!(previewSurface instanceof HTMLElement)) return;
     templateDemoModal.classList.add("hidden");
-    clearPreviewSurface(templateDemoFrame);
+    clearPreviewSurface(previewSurface);
     document.body.classList.remove("modal-open");
   };
 
   const openTemplateDemo = (templateName) => {
     const selectedTemplate = String(templateName || "").trim();
     if (!selectedTemplate) return;
-    if (!(templateDemoModal instanceof HTMLElement) || !(templateDemoFrame instanceof HTMLElement)) return;
+    if (!(templateDemoModal instanceof HTMLElement)) return;
+    const previewSurface = ensureModalPreviewSurface(templateDemoModal, templateDemoFrame, "templateDemoSurface");
+    if (!(previewSurface instanceof HTMLElement)) return;
     if (templateDemoTitle instanceof HTMLElement) {
       templateDemoTitle.textContent = `${selectedTemplate} Demo`;
     }
-    templateDemoFrame.innerHTML = buildTemplateDemoHtml(selectedTemplate);
+    previewSurface.innerHTML = buildTemplateDemoHtml(selectedTemplate);
     templateDemoModal.classList.remove("hidden");
     document.body.classList.add("modal-open");
   };
