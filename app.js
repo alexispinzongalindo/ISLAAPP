@@ -25,7 +25,129 @@ const OPS_SESSION_TOKEN_KEY = "islaapp_session_token";
   initOpsPage();
   initPricing();
   initSupportForm();
+  initMotionEffects();
 })();
+
+function initMotionEffects() {
+  const prefersReducedMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (prefersReducedMotion) {
+    document.documentElement.classList.add("reduced-motion");
+    return;
+  }
+
+  document.documentElement.classList.add("motion-enabled");
+  const lenis = initLenisMotion();
+  initGsapMotion(lenis);
+}
+
+function initLenisMotion() {
+  if (typeof window.Lenis !== "function") return null;
+  if (window.__islaLenis) return window.__islaLenis;
+
+  const lenis = new window.Lenis({
+    duration: 1.08,
+    smoothWheel: true,
+    wheelMultiplier: 0.92,
+    touchMultiplier: 1.15,
+    normalizeWheel: true,
+  });
+
+  window.__islaLenis = lenis;
+  return lenis;
+}
+
+function initGsapMotion(lenis) {
+  const gsap = window.gsap;
+  const ScrollTrigger = window.ScrollTrigger;
+
+  if (!gsap) {
+    if (lenis) {
+      const tick = (time) => {
+        lenis.raf(time);
+        window.requestAnimationFrame(tick);
+      };
+      window.requestAnimationFrame(tick);
+    }
+    return;
+  }
+
+  if (ScrollTrigger) {
+    gsap.registerPlugin(ScrollTrigger);
+  }
+
+  if (lenis) {
+    if (ScrollTrigger) {
+      lenis.on("scroll", ScrollTrigger.update);
+      gsap.ticker.add((time) => {
+        lenis.raf(time * 1000);
+      });
+      gsap.ticker.lagSmoothing(0);
+    } else {
+      const tick = (time) => {
+        lenis.raf(time);
+        window.requestAnimationFrame(tick);
+      };
+      window.requestAnimationFrame(tick);
+    }
+  }
+
+  const topbar = document.querySelector(".topbar");
+  if (topbar instanceof HTMLElement) {
+    gsap.from(topbar, { y: -20, autoAlpha: 0, duration: 0.7, ease: "power2.out" });
+  }
+
+  const revealTargets = Array.from(
+    document.querySelectorAll(".hero, .page-intro, .section-panel, .template-showcase-card, .category-card, .feature-grid article, .status-box")
+  ).filter((node) => node instanceof HTMLElement && !node.classList.contains("hidden"));
+
+  revealTargets.forEach((node, index) => {
+    if (!(node instanceof HTMLElement)) return;
+    if (node.dataset.motionReady === "1") return;
+    node.dataset.motionReady = "1";
+
+    const baseAnimation = {
+      autoAlpha: 1,
+      y: 0,
+      duration: 0.82,
+      ease: "power2.out",
+      delay: Math.min(index * 0.02, 0.2),
+    };
+
+    if (ScrollTrigger) {
+      gsap.fromTo(
+        node,
+        { autoAlpha: 0, y: 34 },
+        {
+          ...baseAnimation,
+          scrollTrigger: {
+            trigger: node,
+            start: "top 88%",
+            end: "bottom 12%",
+            toggleActions: "play none none reverse",
+          },
+        }
+      );
+      return;
+    }
+
+    gsap.fromTo(node, { autoAlpha: 0, y: 34 }, baseAnimation);
+  });
+
+  const cards = Array.from(document.querySelectorAll(".template-showcase-card, .category-card, .plan-card"));
+  cards.forEach((card) => {
+    if (!(card instanceof HTMLElement)) return;
+    card.addEventListener("mouseenter", () => {
+      gsap.to(card, { y: -6, duration: 0.3, ease: "power2.out" });
+    });
+    card.addEventListener("mouseleave", () => {
+      gsap.to(card, { y: 0, duration: 0.35, ease: "power2.out" });
+    });
+  });
+
+  if (ScrollTrigger) {
+    window.setTimeout(() => ScrollTrigger.refresh(), 60);
+  }
+}
 
 function getUseCaseCatalog() {
   return [
