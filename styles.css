@@ -1,6 +1,10 @@
 :root {
   --sand-100: #efe7dc;
   --sand-200: #ddd4c5;
+  --pastel-blue: #c7d8ff;
+  --pastel-lilac: #d8c7ff;
+  --pastel-peach: #ffd7c4;
+  --pastel-mint: #c8f2e0;
   --ink: #1d2233;
   --blue: #2350d5;
   --magenta: #e72a6f;
@@ -31,6 +35,60 @@ body {
     radial-gradient(circle at 20% 20%, #f8f3ea 0%, transparent 36%),
     radial-gradient(circle at 80% 0%, #e8e0d4 0%, transparent 30%),
     linear-gradient(150deg, var(--sand-100), var(--sand-200));
+  position: relative;
+  overflow-x: hidden;
+}
+
+body::before,
+body::after {
+  content: "";
+  position: fixed;
+  inset: -20vmax;
+  pointer-events: none;
+  z-index: 0;
+  mix-blend-mode: screen;
+}
+
+body::before {
+  background:
+    radial-gradient(circle at 16% 28%, rgba(199, 216, 255, 0.52) 0, rgba(199, 216, 255, 0) 44%),
+    radial-gradient(circle at 78% 16%, rgba(216, 199, 255, 0.46) 0, rgba(216, 199, 255, 0) 42%),
+    radial-gradient(circle at 66% 76%, rgba(255, 215, 196, 0.44) 0, rgba(255, 215, 196, 0) 46%);
+  filter: blur(28px) saturate(115%);
+  animation: pastelFloatA 26s ease-in-out infinite alternate;
+}
+
+body::after {
+  background:
+    radial-gradient(circle at 24% 76%, rgba(200, 242, 224, 0.38) 0, rgba(200, 242, 224, 0) 42%),
+    radial-gradient(circle at 84% 66%, rgba(199, 216, 255, 0.32) 0, rgba(199, 216, 255, 0) 39%),
+    radial-gradient(circle at 46% 12%, rgba(255, 215, 196, 0.3) 0, rgba(255, 215, 196, 0) 38%);
+  filter: blur(34px) saturate(108%);
+  animation: pastelFloatB 34s ease-in-out infinite alternate;
+}
+
+@keyframes pastelFloatA {
+  0% {
+    transform: translate3d(-2.8%, -1.6%, 0) scale(1.02);
+  }
+  50% {
+    transform: translate3d(1.9%, 1.6%, 0) scale(1.06);
+  }
+  100% {
+    transform: translate3d(3.6%, -1.2%, 0) scale(1.03);
+  }
+}
+
+@keyframes pastelFloatB {
+  0% {
+    transform: translate3d(2.4%, 1.5%, 0) scale(1.01);
+  }
+  50% {
+    transform: translate3d(-2.1%, -1.2%, 0) scale(1.07);
+  }
+  100% {
+    transform: translate3d(-3.4%, 1.1%, 0) scale(1.03);
+  }
 }
 
 body.modal-open {
@@ -49,6 +107,7 @@ body.modal-open {
   inset: 0;
   pointer-events: none;
   opacity: 0.16;
+  z-index: 0;
   background-image:
     repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.22), rgba(255, 255, 255, 0.22) 1px, transparent 1px, transparent 3px);
 }
