@@ -1188,10 +1188,6 @@ function initTemplateViewPage() {
   const liveUrlInput = document.querySelector("#templateViewLiveUrl");
   const useButton = document.querySelector("#templateViewUseTemplate");
   const cloneButton = document.querySelector("#templateViewCloneTemplate");
-  const modal = document.querySelector("#templateViewerModal");
-  const modalFrame = document.querySelector("#templateViewerFrame");
-  const modalTitle = document.querySelector("#templateViewerTitle");
-  const modalClose = document.querySelector("#templateViewerClose");
 
   const params = new URLSearchParams(window.location.search);
   const selected =
@@ -1232,6 +1228,9 @@ function initTemplateViewPage() {
   if (liveLink instanceof HTMLAnchorElement) {
     liveLink.href = liveHref;
   }
+  if (viewButton instanceof HTMLAnchorElement) {
+    viewButton.href = liveHref;
+  }
   if (liveUrlInput instanceof HTMLInputElement) {
     liveUrlInput.value = liveHref;
   }
@@ -1242,15 +1241,6 @@ function initTemplateViewPage() {
     if (!opened) {
       window.location.href = liveHref;
     }
-  };
-
-  const closeDemo = () => {
-    if (!(modal instanceof HTMLElement)) return;
-    const previewSurface = ensureModalPreviewSurface(modal, modalFrame, "templateViewerSurface");
-    if (!(previewSurface instanceof HTMLElement)) return;
-    modal.classList.add("hidden");
-    clearPreviewSurface(previewSurface);
-    document.body.classList.remove("modal-open");
   };
 
   const buildBuilderUrl = (autoClone) => {
@@ -1272,24 +1262,19 @@ function initTemplateViewPage() {
   if (viewButton instanceof HTMLButtonElement) {
     viewButton.addEventListener("click", openDemo);
   }
+  if (viewButton instanceof HTMLAnchorElement) {
+    viewButton.addEventListener("click", (event) => {
+      // Keep a stable fallback for environments that block popups.
+      event.preventDefault();
+      openDemo();
+    });
+  }
   if (useButton instanceof HTMLAnchorElement) {
     useButton.href = buildBuilderUrl(false);
   }
   if (cloneButton instanceof HTMLAnchorElement) {
     cloneButton.href = buildBuilderUrl(true);
   }
-
-  if (modalClose instanceof HTMLButtonElement) {
-    modalClose.addEventListener("click", closeDemo);
-  }
-  if (modal instanceof HTMLElement) {
-    modal.addEventListener("click", (event) => {
-      if (event.target === modal) closeDemo();
-    });
-  }
-  document.addEventListener("keydown", (event) => {
-    if (event.key === "Escape") closeDemo();
-  });
 }
 
 function initTemplateLivePage() {
