@@ -25,8 +25,16 @@ SERVICE_REQUESTS_FILE = DATA_DIR / "service-requests.json"
 AUTH_USERS_FILE = DATA_DIR / "auth-users.json"
 AUTH_SESSIONS_FILE = DATA_DIR / "auth-sessions.json"
 PROVIDER_CONFIG_FILE = DATA_DIR / "provider-config.json"
-HOST = os.environ.get("HOST", "0.0.0.0").strip() or "0.0.0.0"
-PORT = int(os.environ.get("PORT", "4173"))
+IS_RENDER = bool(str(os.environ.get("RENDER", "")).strip()) or bool(str(os.environ.get("RENDER_SERVICE_ID", "")).strip())
+HOST = "0.0.0.0" if IS_RENDER else (os.environ.get("HOST", "0.0.0.0").strip() or "0.0.0.0")
+_default_port = "10000" if IS_RENDER else "4173"
+_raw_port = str(os.environ.get("PORT", _default_port)).strip() or _default_port
+try:
+    PORT = int(_raw_port)
+except ValueError:
+    PORT = int(_default_port)
+if PORT < 1 or PORT > 65535:
+    PORT = int(_default_port)
 ALLOWED_REQUEST_STATUSES = {
     "submitted",
     "reviewing",
@@ -72,6 +80,17 @@ class AppHandler(SimpleHTTPRequestHandler):
 
     def do_GET(self) -> None:  # noqa: N802 - stdlib method name
         route = urlparse(self.path).path
+        if route in {"/healthz", "/api/healthz"}:
+            self.send_json(
+                HTTPStatus.OK,
+                {
+                    "ok": True,
+                    "status": "healthy",
+                    "host": HOST,
+                    "port": PORT,
+                },
+            )
+            return
         if route == "/api/auth-config":
             self.send_json(
                 HTTPStatus.OK,
@@ -2129,8 +2148,10 @@ def escape_html(raw: str) -> str:
 def main() -> None:
     server = ThreadingHTTPServer((HOST, PORT), AppHandler)
     display_host = "127.0.0.1" if HOST == "0.0.0.0" else HOST
-    print(f"Serving islaAPP at http://{display_host}:{PORT}")
-    print(f"Project scaffolds will be created in: {PROJECTS_DIR}")
+    print(f"Serving islaAPP at http://{display_host}:{PORT}", flush=True)
+    print(f"Project scaffolds will be created in: {PROJECTS_DIR}", flush=True)
+    if IS_RENDER:
+        print("Render mode detected: enforcing 0.0.0.0 bind and Render-compatible port.", flush=True)
     try:
         server.serve_forever()
     except KeyboardInterrupt:

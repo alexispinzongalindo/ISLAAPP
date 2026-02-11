@@ -3,10 +3,10 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Template Catalog | islaAPP</title>
+    <title>Template Live Demo | islaAPP</title>
     <meta
       name="description"
-      content="Browse islaAPP templates by category, preview them, and jump straight into customization."
+      content="Open a live template demo and jump directly into customization with islaAPP."
     />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -67,33 +67,30 @@
       <a class="btn btn-small" href="app-builder.html">Start Building</a>
     </header>
 
-    <main>
-      <section class="page-intro">
-        <h1>Template Catalog</h1>
-        <p class="lead">Browse by category, open a full template detail page, then use or clone directly into App Builder.</p>
-      </section>
-
-      <section class="section-panel" id="templatesCatalog">
-        <div class="form-grid">
-          <label class="form-field">
-            Search templates
-            <input id="templatesSearch" type="text" placeholder="Search template name or description..." />
-          </label>
-        </div>
-        <div class="template-filters">
-          <button class="toggle-btn is-active" type="button" data-catalog-filter="all">All</button>
-          <button class="toggle-btn" type="button" data-catalog-filter="business">Business</button>
-          <button class="toggle-btn" type="button" data-catalog-filter="commerce">Commerce</button>
-          <button class="toggle-btn" type="button" data-catalog-filter="community">Community</button>
-          <button class="toggle-btn" type="button" data-catalog-filter="service">Service</button>
-        </div>
-        <p class="muted" id="templatesCatalogCount">0 templates</p>
-        <div class="template-showcase-grid" id="templatesCatalogGrid"></div>
+    <main id="templateLiveRoot">
+      <section class="section-panel template-live-layout">
+        <article>
+          <p class="eyebrow">LIVE TEMPLATE</p>
+          <h1 id="templateLiveTitle">Template Live Demo</h1>
+          <p class="lead" id="templateLiveSubtitle">Template summary appears here.</p>
+          <div class="template-pill-row" id="templateLiveChips">
+            <span class="template-pill">Customizable</span>
+          </div>
+          <div class="actions">
+            <a class="btn btn-primary" id="templateLiveUse" href="app-builder.html">Use Template</a>
+            <a class="btn btn-ghost" id="templateLiveClone" href="app-builder.html">Clone Template</a>
+            <a class="btn btn-ghost" href="templates.html">Back To Templates</a>
+          </div>
+        </article>
+        <article class="status-box">
+          <h3>Live Preview</h3>
+          <iframe id="templateLiveFrame" class="fast-preview-frame" title="Template live preview"></iframe>
+        </article>
       </section>
     </main>
 
     <footer class="site-footer">
-      <p><span class="brand-inline">islaAPP</span> template catalog helps clients pick quickly even when they are unsure what to build.</p>
+      <p><span class="brand-inline">islaAPP</span> live template demos help clients validate before buying customization.</p>
       <small>&copy; <span data-year></span> islaAPP. All rights reserved.</small>
     </footer>
 

@@ -7,8 +7,8 @@ services:
     branch: main
     autoDeploy: true
     buildCommand: echo "No build step required"
-    startCommand: python3 dev_server.py
-    healthCheckPath: /index.html
+    startCommand: python3 -u dev_server.py
+    healthCheckPath: /healthz
     envVars:
       - key: PYTHON_VERSION
         value: 3.11.9

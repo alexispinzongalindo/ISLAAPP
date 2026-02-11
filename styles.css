@@ -383,6 +383,61 @@ h1 span {
   aspect-ratio: 16 / 10;
   border-radius: 0.8rem;
   border: 1px solid rgba(35, 80, 213, 0.18);
+  position: relative;
+  overflow: hidden;
+}
+
+.template-thumb-status {
+  position: absolute;
+  top: 0.55rem;
+  left: 0.55rem;
+  border-radius: 999px;
+  padding: 0.2rem 0.55rem;
+  font-size: 0.72rem;
+  font-weight: 800;
+  color: #1d2845;
+  background: rgba(255, 245, 226, 0.92);
+  border: 1px solid rgba(35, 80, 213, 0.16);
+}
+
+.template-card-meta-row {
+  margin-top: 0.55rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.55rem;
+}
+
+.template-meta-chip {
+  border-radius: 999px;
+  padding: 0.18rem 0.52rem;
+  font-size: 0.74rem;
+  font-weight: 700;
+  color: #283762;
+  border: 1px solid rgba(35, 80, 213, 0.2);
+  background: rgba(255, 255, 255, 0.72);
+}
+
+.template-clone-count {
+  font-size: 0.8rem;
+  color: #516083;
+  font-weight: 700;
+}
+
+.template-card-tags {
+  margin-top: 0.55rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+.template-card-tag {
+  border-radius: 999px;
+  padding: 0.18rem 0.5rem;
+  font-size: 0.7rem;
+  color: #2b3b67;
+  border: 1px solid rgba(35, 80, 213, 0.2);
+  background: rgba(249, 252, 255, 0.85);
 }
 
 .template-view-layout {
@@ -421,6 +476,67 @@ h1 span {
 
 .template-view-copy h1 {
   margin: 0;
+}
+
+.template-view-stats {
+  display: grid;
+  gap: 0.55rem;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.template-stat-card {
+  border: 1px solid rgba(35, 80, 213, 0.16);
+  border-radius: 0.8rem;
+  padding: 0.55rem 0.65rem;
+  background: #fffdf8;
+}
+
+.template-stat-card span {
+  display: block;
+  font-size: 0.74rem;
+  color: #627092;
+  font-weight: 700;
+}
+
+.template-stat-card strong {
+  display: block;
+  margin-top: 0.2rem;
+  color: #26345d;
+}
+
+.template-block-title {
+  margin: 0.35rem 0 0;
+  color: #283963;
+  font-size: 0.9rem;
+  font-weight: 800;
+}
+
+.template-pill-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+.template-pill {
+  border-radius: 999px;
+  padding: 0.25rem 0.65rem;
+  font-size: 0.74rem;
+  font-weight: 700;
+  color: #2a3a65;
+  border: 1px solid rgba(35, 80, 213, 0.18);
+  background: rgba(255, 255, 255, 0.75);
+}
+
+.template-pill.tech {
+  background: rgba(236, 246, 255, 0.85);
+  border-color: rgba(35, 80, 213, 0.22);
+}
+
+.template-live-layout {
+  display: grid;
+  gap: 0.9rem;
+  grid-template-columns: 0.9fr 1.1fr;
+  align-items: start;
 }
 
 .enterprise-hero {
@@ -1536,7 +1652,9 @@ textarea:focus {
 
   .category-grid,
   .template-showcase-grid,
-  .template-view-layout {
+  .template-view-layout,
+  .template-live-layout,
+  .template-view-stats {
     grid-template-columns: 1fr;
   }
 

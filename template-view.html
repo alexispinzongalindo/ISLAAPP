@@ -72,18 +72,50 @@
         <article class="template-view-media">
           <a class="btn btn-ghost btn-inline" href="templates.html">Back To Templates</a>
           <div class="template-view-preview template-thumb-saas" id="templateViewPreview"></div>
+          <div class="template-view-stats">
+            <article class="template-stat-card">
+              <span>Status</span>
+              <strong id="templateViewStatus">Customizable</strong>
+            </article>
+            <article class="template-stat-card">
+              <span>Clones</span>
+              <strong id="templateViewCloneCount">0 clones</strong>
+            </article>
+            <article class="template-stat-card">
+              <span>Launch Goal</span>
+              <strong id="templateViewTargetPill">MVP in 1 month</strong>
+            </article>
+          </div>
         </article>
         <article class="template-view-copy">
           <p class="eyebrow" id="templateViewSubtitle">TEMPLATE</p>
           <h1 id="templateViewTitle">Template Name</h1>
           <p class="lead" id="templateViewDescription">Template description appears here.</p>
+          <div class="template-pill-row">
+            <span class="template-pill" id="templateViewCategoryPill">BUSINESS</span>
+            <span class="template-pill tech" id="templateViewStackPill">React + Supabase</span>
+          </div>
+          <h4 class="template-block-title">Perfect for</h4>
+          <div class="template-pill-row" id="templateViewPerfectFor">
+            <span class="template-pill">Use case</span>
+          </div>
+          <h4 class="template-block-title">Tech stack</h4>
+          <div class="template-pill-row" id="templateViewTechTags">
+            <span class="template-pill tech">React</span>
+          </div>
+          <h4 class="template-block-title">What is included</h4>
           <ul class="checklist" id="templateViewHighlights">
             <li>Core features</li>
             <li>Stack guidance</li>
             <li>Launch baseline</li>
           </ul>
+          <label class="form-field form-field-full">
+            Live app URL
+            <input id="templateViewLiveUrl" type="text" readonly />
+          </label>
           <div class="actions">
-            <button class="btn btn-ghost" id="templateViewOpenDemo" type="button">View App</button>
+            <a class="btn btn-ghost" id="templateViewOpenLive" href="#" target="_blank" rel="noopener noreferrer">View Live App</a>
+            <button class="btn btn-ghost" id="templateViewOpenDemo" type="button">Quick Demo</button>
             <a class="btn btn-primary" id="templateViewUseTemplate" href="app-builder.html">Use Template</a>
             <a class="btn btn-ghost" id="templateViewCloneTemplate" href="app-builder.html">Clone Template</a>
           </div>

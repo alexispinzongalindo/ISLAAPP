@@ -8,6 +8,7 @@ const OPS_SESSION_TOKEN_KEY = "islaapp_session_token";
   initMarketingNav();
   initTemplatesPage();
   initTemplateViewPage();
+  initTemplateLivePage();
   initOnboardingChecklist();
   initOnboardingPlan();
   initOnboardingAICoach();
@@ -67,140 +68,197 @@ function initMarketingNav() {
 }
 
 function getTemplateCatalog() {
-  return [
+  const templates = [
     {
       id: "saas-dashboard",
       name: "SaaS Dashboard",
       category: "business",
+      status: "Featured",
       thumbClass: "template-thumb-saas",
       shortDescription: "Admin, analytics, subscriptions.",
       longDescription: "Best for analytics products, admin dashboards, and subscription-ready SaaS launches.",
       stack: "React + Supabase",
       target: "MVP in 1 month",
+      clones: 412,
+      perfectFor: ["B2B tools", "Analytics apps", "Internal operations"],
+      techTags: ["React", "Supabase", "Auth", "Reports"],
       features: ["User authentication", "Admin dashboard", "Analytics reports", "Team collaboration"],
     },
     {
       id: "client-portal",
       name: "Client Portal",
       category: "business",
+      status: "Customizable",
       thumbClass: "template-thumb-portal",
       shortDescription: "Projects, files, progress timeline.",
       longDescription: "Best for agencies and service teams managing client projects and shared files.",
       stack: "React + Supabase",
       target: "MVP in 1 month",
+      clones: 289,
+      perfectFor: ["Agencies", "Freelancers", "Client services"],
+      techTags: ["React", "Supabase", "File sharing", "Notifications"],
       features: ["User authentication", "Team collaboration", "Notifications", "Admin dashboard"],
     },
     {
       id: "marketplace",
       name: "Marketplace",
       category: "commerce",
+      status: "Featured",
       thumbClass: "template-thumb-market",
       shortDescription: "Listings, checkout, seller profiles.",
       longDescription: "Best for multi-vendor catalogs where customers browse listings and checkout online.",
       stack: "Next.js + PostgreSQL",
       target: "Production in 2 months",
+      clones: 507,
+      perfectFor: ["Digital products", "Physical goods", "Multi-vendor platforms"],
+      techTags: ["Next.js", "PostgreSQL", "Payments", "Admin"],
       features: ["User authentication", "Payments and billing", "Notifications", "Admin dashboard"],
     },
     {
       id: "ecommerce-storefront",
       name: "E-commerce Storefront",
       category: "commerce",
+      status: "Popular",
       thumbClass: "template-thumb-store",
       shortDescription: "Products, cart, customer accounts.",
       longDescription: "Best for direct-to-consumer stores with inventory, cart, and order workflows.",
       stack: "Next.js + PostgreSQL",
       target: "Production in 2 months",
+      clones: 621,
+      perfectFor: ["Retail brands", "D2C stores", "Catalog sales"],
+      techTags: ["Next.js", "PostgreSQL", "Checkout", "Order flow"],
       features: ["User authentication", "Payments and billing", "Notifications", "Analytics reports"],
     },
     {
       id: "booking-platform",
       name: "Booking Platform",
       category: "service",
+      status: "Fast launch",
       thumbClass: "template-thumb-booking",
       shortDescription: "Calendar, availability, reminders.",
       longDescription: "Best for appointment-based businesses that need scheduling and reminders.",
       stack: "React + Supabase",
       target: "Beta in 2 weeks",
+      clones: 355,
+      perfectFor: ["Clinics", "Salons", "Professional services"],
+      techTags: ["React", "Supabase", "Calendar", "Reminders"],
       features: ["User authentication", "Notifications", "Admin dashboard"],
     },
     {
       id: "support-helpdesk",
       name: "Support Helpdesk",
       category: "service",
+      status: "Customizable",
       thumbClass: "template-thumb-helpdesk",
       shortDescription: "Ticket queues and SLA workflow.",
       longDescription: "Best for support teams handling tickets, priorities, and service SLAs.",
       stack: "Node API + React Frontend",
       target: "MVP in 1 month",
+      clones: 238,
+      perfectFor: ["Support teams", "IT operations", "Customer success"],
+      techTags: ["Node API", "React", "SLA tracking", "Reporting"],
       features: ["User authentication", "Team collaboration", "Notifications", "Analytics reports"],
     },
     {
       id: "community-platform",
       name: "Community Platform",
       category: "community",
+      status: "Popular",
       thumbClass: "template-thumb-community",
       shortDescription: "Feeds, groups, moderation.",
       longDescription: "Best for groups, memberships, and moderated social discussion spaces.",
       stack: "React + Supabase",
       target: "MVP in 1 month",
+      clones: 474,
+      perfectFor: ["Member clubs", "Forums", "Private communities"],
+      techTags: ["React", "Supabase", "Feeds", "Moderation"],
       features: ["User authentication", "Team collaboration", "Notifications"],
     },
     {
       id: "creator-membership-hub",
       name: "Creator Membership Hub",
       category: "community",
+      status: "Featured",
       thumbClass: "template-thumb-membership",
       shortDescription: "Paid content and member access.",
       longDescription: "Best for creators selling premium content and gated member access.",
       stack: "React + Supabase",
       target: "MVP in 1 month",
+      clones: 329,
+      perfectFor: ["Creators", "Coaches", "Paid communities"],
+      techTags: ["React", "Supabase", "Billing", "Access control"],
       features: ["User authentication", "Payments and billing", "Notifications", "Analytics reports"],
     },
     {
       id: "crm-workspace",
       name: "CRM Workspace",
       category: "business",
+      status: "Enterprise ready",
       thumbClass: "template-thumb-crm",
       shortDescription: "Leads, deals, team pipeline.",
       longDescription: "Best for pipeline management, lead tracking, and sales follow-up operations.",
       stack: "Node API + React Frontend",
       target: "MVP in 1 month",
+      clones: 276,
+      perfectFor: ["Sales teams", "B2B services", "Revenue ops"],
+      techTags: ["Node API", "React", "Pipelines", "Dashboards"],
       features: ["User authentication", "Team collaboration", "Admin dashboard", "Analytics reports"],
     },
     {
       id: "hr-recruiting-portal",
       name: "HR Recruiting Portal",
       category: "business",
+      status: "Enterprise ready",
       thumbClass: "template-thumb-hr",
       shortDescription: "Candidates, stages, interviews.",
       longDescription: "Best for hiring teams managing candidates, stages, and interview processes.",
       stack: "Node API + React Frontend",
       target: "MVP in 1 month",
+      clones: 211,
+      perfectFor: ["HR teams", "Recruiters", "Talent operations"],
+      techTags: ["Node API", "React", "Hiring funnel", "Scorecards"],
       features: ["User authentication", "Team collaboration", "Notifications", "Analytics reports"],
     },
     {
       id: "real-estate-listings",
       name: "Real Estate Listings",
       category: "service",
+      status: "Customizable",
       thumbClass: "template-thumb-realestate",
       shortDescription: "Properties, tours, lead capture.",
       longDescription: "Best for brokers and agencies showcasing properties and capturing buyer leads.",
       stack: "React + Supabase",
       target: "MVP in 1 month",
+      clones: 194,
+      perfectFor: ["Real estate agencies", "Property teams", "Independent brokers"],
+      techTags: ["React", "Supabase", "Listings", "Lead forms"],
       features: ["User authentication", "Notifications", "Admin dashboard"],
     },
     {
       id: "restaurant-ordering",
       name: "Restaurant Ordering",
       category: "service",
+      status: "Fast launch",
       thumbClass: "template-thumb-restaurant",
       shortDescription: "Menu, orders, kitchen queue.",
       longDescription: "Best for restaurants and food operators taking digital orders and tracking kitchen status.",
       stack: "React + Supabase",
       target: "Beta in 2 weeks",
+      clones: 448,
+      perfectFor: ["Restaurants", "Food trucks", "Cafe chains"],
+      techTags: ["React", "Supabase", "Ordering", "Kitchen queue"],
       features: ["User authentication", "Payments and billing", "Notifications", "Admin dashboard"],
     },
   ];
+
+  return templates.map((item) => ({
+    status: "Customizable",
+    clones: 0,
+    perfectFor: [],
+    techTags: [],
+    liveUrl: `template-live.html?template=${item.id}`,
+    ...item,
+  }));
 }
 
 function findTemplateById(templateId) {
@@ -284,14 +342,57 @@ function initTemplatesPage() {
   const grid = document.querySelector("#templatesCatalogGrid");
   if (!(grid instanceof HTMLElement)) return;
 
+  const templates = getTemplateCatalog();
+  grid.innerHTML = templates
+    .map((template) => {
+      const descriptionSearchText = [template.shortDescription, template.longDescription, ...(Array.isArray(template.perfectFor) ? template.perfectFor : [])]
+        .filter(Boolean)
+        .join(" ");
+      const tags = (Array.isArray(template.techTags) ? template.techTags.slice(0, 3) : []).map(
+        (tag) => `<span class="template-card-tag">${escapeHtml(String(tag || ""))}</span>`
+      );
+      return `
+        <article
+          class="template-showcase-card"
+          data-template-card
+          data-category="${escapeAttribute(String(template.category || ""))}"
+          data-name="${escapeAttribute(String(template.name || ""))}"
+          data-description="${escapeAttribute(descriptionSearchText)}"
+        >
+          <div class="template-showcase-thumb ${escapeAttribute(String(template.thumbClass || ""))}">
+            <span class="template-thumb-status">${escapeHtml(String(template.status || "Customizable"))}</span>
+          </div>
+          <div class="template-card-meta-row">
+            <span class="template-meta-chip">${escapeHtml(String(template.stack || ""))}</span>
+            <span class="template-clone-count">${escapeHtml(formatCompactNumber(template.clones))} clones</span>
+          </div>
+          <h3>${escapeHtml(String(template.name || ""))}</h3>
+          <p>${escapeHtml(String(template.shortDescription || ""))}</p>
+          <div class="template-card-tags">${tags.join("")}</div>
+          <div class="actions">
+            <a class="btn btn-ghost btn-inline" href="template-view.html?template=${escapeAttribute(String(template.id || ""))}">View App</a>
+            <a
+              class="btn btn-ghost btn-inline"
+              href="${escapeAttribute(String(template.liveUrl || "#"))}"
+              target="_blank"
+              rel="noopener noreferrer"
+            >Live URL</a>
+          </div>
+        </article>
+      `;
+    })
+    .join("");
+
   const cards = Array.from(grid.querySelectorAll("[data-template-card]"));
   const filterButtons = Array.from(document.querySelectorAll("[data-catalog-filter]"));
   const searchInput = document.querySelector("#templatesSearch");
+  const catalogCount = document.querySelector("#templatesCatalogCount");
 
   const applyFilters = () => {
     const activeFilterButton = filterButtons.find((button) => button.classList.contains("is-active"));
     const activeCategory = String(activeFilterButton?.dataset.catalogFilter || "all").toLowerCase();
     const searchValue = searchInput instanceof HTMLInputElement ? searchInput.value.trim().toLowerCase() : "";
+    let visibleCount = 0;
 
     cards.forEach((card) => {
       const category = String(card.getAttribute("data-category") || "").toLowerCase();
@@ -299,8 +400,14 @@ function initTemplatesPage() {
       const description = String(card.getAttribute("data-description") || "").toLowerCase();
       const categoryMatch = activeCategory === "all" || category === activeCategory;
       const searchMatch = !searchValue || name.includes(searchValue) || description.includes(searchValue);
-      card.classList.toggle("hidden", !(categoryMatch && searchMatch));
+      const visible = categoryMatch && searchMatch;
+      if (visible) visibleCount += 1;
+      card.classList.toggle("hidden", !visible);
     });
+
+    if (catalogCount instanceof HTMLElement) {
+      catalogCount.textContent = `${visibleCount} templates`;
+    }
   };
 
   if (filterButtons.length > 0) {
@@ -328,7 +435,16 @@ function initTemplateViewPage() {
   const description = document.querySelector("#templateViewDescription");
   const highlights = document.querySelector("#templateViewHighlights");
   const previewCard = document.querySelector("#templateViewPreview");
+  const status = document.querySelector("#templateViewStatus");
+  const stack = document.querySelector("#templateViewStackPill");
+  const target = document.querySelector("#templateViewTargetPill");
+  const category = document.querySelector("#templateViewCategoryPill");
+  const clones = document.querySelector("#templateViewCloneCount");
+  const perfectFor = document.querySelector("#templateViewPerfectFor");
+  const techTags = document.querySelector("#templateViewTechTags");
   const viewButton = document.querySelector("#templateViewOpenDemo");
+  const liveLink = document.querySelector("#templateViewOpenLive");
+  const liveUrlInput = document.querySelector("#templateViewLiveUrl");
   const useButton = document.querySelector("#templateViewUseTemplate");
   const cloneButton = document.querySelector("#templateViewCloneTemplate");
   const modal = document.querySelector("#templateViewerModal");
@@ -348,11 +464,30 @@ function initTemplateViewPage() {
   if (title instanceof HTMLElement) title.textContent = selected.name;
   if (subtitle instanceof HTMLElement) subtitle.textContent = `${selected.category.toUpperCase()} TEMPLATE`;
   if (description instanceof HTMLElement) description.textContent = selected.longDescription;
+  if (status instanceof HTMLElement) status.textContent = selected.status;
+  if (stack instanceof HTMLElement) stack.textContent = selected.stack;
+  if (target instanceof HTMLElement) target.textContent = selected.target;
+  if (category instanceof HTMLElement) category.textContent = String(selected.category || "").toUpperCase();
+  if (clones instanceof HTMLElement) clones.textContent = `${formatCompactNumber(selected.clones)} clones`;
   if (highlights instanceof HTMLElement) {
     highlights.innerHTML = selected.features.map((item) => `<li>${escapeHtml(item)}</li>`).join("");
   }
+  if (perfectFor instanceof HTMLElement) {
+    perfectFor.innerHTML = selected.perfectFor.map((item) => `<span class="template-pill">${escapeHtml(item)}</span>`).join("");
+  }
+  if (techTags instanceof HTMLElement) {
+    techTags.innerHTML = selected.techTags.map((item) => `<span class="template-pill tech">${escapeHtml(item)}</span>`).join("");
+  }
   if (previewCard instanceof HTMLElement) {
     previewCard.className = `template-view-preview ${selected.thumbClass}`;
+  }
+
+  const liveHref = resolveTemplateLiveUrl(selected.liveUrl || `template-live.html?template=${selected.id}`);
+  if (liveLink instanceof HTMLAnchorElement) {
+    liveLink.href = liveHref;
+  }
+  if (liveUrlInput instanceof HTMLInputElement) {
+    liveUrlInput.value = liveHref;
   }
 
   const openDemo = () => {
@@ -415,6 +550,63 @@ function initTemplateViewPage() {
   document.addEventListener("keydown", (event) => {
     if (event.key === "Escape") closeDemo();
   });
+}
+
+function initTemplateLivePage() {
+  const root = document.querySelector("#templateLiveRoot");
+  if (!(root instanceof HTMLElement)) return;
+
+  const title = document.querySelector("#templateLiveTitle");
+  const subtitle = document.querySelector("#templateLiveSubtitle");
+  const frame = document.querySelector("#templateLiveFrame");
+  const useButton = document.querySelector("#templateLiveUse");
+  const cloneButton = document.querySelector("#templateLiveClone");
+  const chips = document.querySelector("#templateLiveChips");
+
+  const params = new URLSearchParams(window.location.search);
+  const selected =
+    findTemplateById(params.get("template")) ||
+    findTemplateById(params.get("template_id")) ||
+    findTemplateByName(params.get("template")) ||
+    getTemplateCatalog()[0];
+
+  if (!selected) return;
+
+  if (title instanceof HTMLElement) title.textContent = `${selected.name} Live Demo`;
+  if (subtitle instanceof HTMLElement) subtitle.textContent = selected.longDescription;
+  if (chips instanceof HTMLElement) {
+    const tokenList = [selected.status, selected.stack, `${formatCompactNumber(selected.clones)} clones`];
+    chips.innerHTML = tokenList.map((item) => `<span class="template-pill">${escapeHtml(String(item || ""))}</span>`).join("");
+  }
+
+  const buildBuilderUrl = (autoClone) => {
+    const query = new URLSearchParams({
+      template_id: selected.id,
+      template: selected.name,
+      stack: selected.stack,
+      target: selected.target,
+      features: selected.features.join("|"),
+      project: `${selected.name} Client Build`,
+      source: "template-live",
+    });
+    if (autoClone) {
+      query.set("autoclone", "1");
+    }
+    return `app-builder.html?${query.toString()}`;
+  };
+
+  if (useButton instanceof HTMLAnchorElement) useButton.href = buildBuilderUrl(false);
+  if (cloneButton instanceof HTMLAnchorElement) cloneButton.href = buildBuilderUrl(true);
+
+  if (frame instanceof HTMLIFrameElement) {
+    frame.srcdoc = buildAppPreviewHtml({
+      projectName: `${selected.name} Live`,
+      template: selected.name,
+      target: selected.target,
+      features: selected.features,
+      owner: "islaAPP",
+    });
+  }
 }
 
 function setYear() {
@@ -3714,6 +3906,23 @@ function formatIsoDate(value) {
   const date = new Date(value);
   if (Number.isNaN(date.getTime())) return "Unknown";
   return date.toLocaleString();
+}
+
+function formatCompactNumber(value) {
+  const numericValue = Number(value);
+  if (!Number.isFinite(numericValue) || numericValue <= 0) return "0";
+  return new Intl.NumberFormat("en-US", { notation: "compact" }).format(numericValue);
+}
+
+function resolveTemplateLiveUrl(pathValue) {
+  const raw = String(pathValue || "").trim();
+  if (!raw) return "";
+  if (/^https?:\/\//i.test(raw)) return raw;
+  try {
+    return new URL(raw, window.location.href).href;
+  } catch (_error) {
+    return raw;
+  }
 }
 
 function getRequestStatusOptions() {
