@@ -7,6 +7,10 @@ const OPS_SESSION_TOKEN_KEY = "islaapp_session_token";
   setYear();
   initMarketingNav();
   initHomeCatalogSections();
+  initUseCasesPage();
+  initResourcesPage();
+  initProductPage();
+  initEnterprisePage();
   initTemplatesPage();
   initTemplateViewPage();
   initTemplateLivePage();
@@ -83,6 +87,169 @@ function initHomeCatalogSections() {
       )
       .join("");
   }
+}
+
+function initUseCasesPage() {
+  const categoryGrid = document.querySelector("#useCaseCategoryGrid");
+  const templateGrid = document.querySelector("#useCaseTemplateGrid");
+  if (!(categoryGrid instanceof HTMLElement) || !(templateGrid instanceof HTMLElement)) return;
+
+  const categories = getUseCaseCatalog();
+  categoryGrid.innerHTML = categories
+    .map(
+      (item) => `
+        <article class="category-card">
+          <h3>${escapeHtml(String(item.title || ""))}</h3>
+          <p>${escapeHtml(String(item.count || 0))} Apps</p>
+        </article>
+      `
+    )
+    .join("");
+
+  const templates = getTemplateCatalog();
+  templateGrid.innerHTML = templates
+    .map(
+      (item) => `
+        <article class="template-showcase-card" data-usecase-template data-category="${escapeAttribute(String(item.category || ""))}">
+          <div class="template-showcase-thumb ${escapeAttribute(String(item.thumbClass || ""))}">
+            <span class="template-thumb-status">${escapeHtml(String(item.status || "Customizable"))}</span>
+          </div>
+          <div class="template-card-meta-row">
+            <span class="template-meta-chip">${escapeHtml(String(item.stack || ""))}</span>
+            <span class="template-clone-count">${escapeHtml(formatCompactNumber(item.clones))} clones</span>
+          </div>
+          <h3>${escapeHtml(String(item.name || ""))}</h3>
+          <p>${escapeHtml(String(item.shortDescription || ""))}</p>
+          <div class="actions">
+            <a class="btn btn-ghost btn-inline" href="template-view.html?template=${escapeAttribute(String(item.id || ""))}">View App</a>
+            <a class="btn btn-ghost btn-inline" href="app-builder.html?template_id=${escapeAttribute(String(item.id || ""))}">Use Template</a>
+          </div>
+        </article>
+      `
+    )
+    .join("");
+
+  const filterButtons = Array.from(document.querySelectorAll("[data-usecase-filter]"));
+  const queryCategory = String(new URLSearchParams(window.location.search).get("category") || "").toLowerCase();
+  const allowedFilters = new Set(filterButtons.map((button) => String(button.getAttribute("data-usecase-filter") || "").toLowerCase()));
+  const normalizedInitial = allowedFilters.has(queryCategory) ? queryCategory : "all";
+  const cards = Array.from(templateGrid.querySelectorAll("[data-usecase-template]"));
+
+  const applyFilter = (category) => {
+    const requested = String(category || "all").toLowerCase();
+    const active = allowedFilters.has(requested) ? requested : "all";
+    filterButtons.forEach((button) => {
+      button.classList.toggle("is-active", String(button.getAttribute("data-usecase-filter") || "").toLowerCase() === active);
+    });
+    cards.forEach((card) => {
+      const cardCategory = String(card.getAttribute("data-category") || "").toLowerCase();
+      const visible = active === "all" || cardCategory === active;
+      card.classList.toggle("hidden", !visible);
+    });
+  };
+
+  filterButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+      applyFilter(String(button.getAttribute("data-usecase-filter") || "all"));
+    });
+  });
+
+  applyFilter(normalizedInitial);
+}
+
+function initResourcesPage() {
+  const resourcesGrid = document.querySelector("#resourcesGrid");
+  const faqList = document.querySelector("#resourcesFaqList");
+  if (!(resourcesGrid instanceof HTMLElement) || !(faqList instanceof HTMLElement)) return;
+
+  const resources = [
+    { title: "Docs & Quickstart", description: "Step-by-step setup, environment requirements, and deploy checklist.", href: "guide.html", cta: "Open Docs" },
+    { title: "Pricing & Packaging", description: "Use plan ladders and service add-ons to quote clients clearly.", href: "pricing.html", cta: "View Pricing" },
+    { title: "Launch Support", description: "Submit launch tickets for custom implementation and migration help.", href: "support.html", cta: "Open Support" },
+    { title: "Provider Setup", description: "Connect Render, domain, and database providers from one setup flow.", href: "setup.html", cta: "Open Setup" },
+  ];
+
+  resourcesGrid.innerHTML = resources
+    .map(
+      (item) => `
+        <article>
+          <h3>${escapeHtml(item.title)}</h3>
+          <p>${escapeHtml(item.description)}</p>
+          <a class="btn btn-ghost btn-inline" href="${escapeAttribute(item.href)}">${escapeHtml(item.cta)}</a>
+        </article>
+      `
+    )
+    .join("");
+
+  const faqs = [
+    "Who does the coding? The AI builds the first version automatically, then your team reviews and customizes.",
+    "Can non-technical clients use it? Yes, with guided onboarding and template-first options.",
+    "When should clients add database/hosting/domain? After first proof, AI recommends only what is needed.",
+    "Can we start simple and scale later? Yes, start with MVP templates and add services as usage grows.",
+  ];
+
+  faqList.innerHTML = faqs.map((item) => `<li>${escapeHtml(item)}</li>`).join("");
+}
+
+function initProductPage() {
+  const capabilities = document.querySelector("#productCapabilities");
+  const process = document.querySelector("#productProcess");
+  if (!(capabilities instanceof HTMLElement) || !(process instanceof HTMLElement)) return;
+
+  const capabilityItems = [
+    { title: "AI Prompt Builder", detail: "Client types what they want. AI drafts the app and preview instantly." },
+    { title: "Template Marketplace", detail: "Visual templates for clients who are unsure what to build first." },
+    { title: "Proof-First Workflow", detail: "Show working output before asking for provider setup." },
+    { title: "Guided Launch Steps", detail: "AI reveals database, hosting, domain, and ops requirements in order." },
+    { title: "Ops Control Center", detail: "Track requests, provisioning status, and project scaffolds in one dashboard." },
+    { title: "Service Packaging", detail: "Bundle development, setup, and support into clear paid plans." },
+  ];
+
+  capabilities.innerHTML = capabilityItems
+    .map(
+      (item) => `
+        <article>
+          <h3>${escapeHtml(item.title)}</h3>
+          <p>${escapeHtml(item.detail)}</p>
+        </article>
+      `
+    )
+    .join("");
+
+  const processItems = [
+    "Client enters app idea in plain language.",
+    "AI generates first draft and live preview.",
+    "Client approves concept and picks template path or custom path.",
+    "AI prompts for only needed launch services.",
+    "Team packages pricing and pushes to production.",
+  ];
+  process.innerHTML = processItems.map((item) => `<li>${escapeHtml(item)}</li>`).join("");
+}
+
+function initEnterprisePage() {
+  const enterprisePacks = document.querySelector("#enterprisePackages");
+  if (!(enterprisePacks instanceof HTMLElement)) return;
+
+  const rows = [
+    { tier: "Starter Team", scope: "Up to 5 internal apps", support: "Business-hours support", timeline: "2-4 weeks" },
+    { tier: "Growth Studio", scope: "Templates + custom workflows", support: "Priority support", timeline: "4-8 weeks" },
+    { tier: "Enterprise Program", scope: "Multi-team rollout + governance", support: "Dedicated success manager", timeline: "8-16 weeks" },
+  ];
+
+  enterprisePacks.innerHTML = rows
+    .map(
+      (row) => `
+        <article class="status-box">
+          <h3>${escapeHtml(row.tier)}</h3>
+          <ul>
+            <li><strong>Scope:</strong> ${escapeHtml(row.scope)}</li>
+            <li><strong>Support:</strong> ${escapeHtml(row.support)}</li>
+            <li><strong>Timeline:</strong> ${escapeHtml(row.timeline)}</li>
+          </ul>
+        </article>
+      `
+    )
+    .join("");
 }
 
 function initMarketingNav() {
