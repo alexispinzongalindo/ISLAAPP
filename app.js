@@ -422,7 +422,8 @@ function initMarketingNav() {
 }
 
 function createUnsplashTemplateImage(photoId, altText) {
-  const base = `https://images.unsplash.com/${photoId}`;
+  const normalizedId = String(photoId || "").startsWith("photo-") ? String(photoId || "") : `photo-${String(photoId || "")}`;
+  const base = `https://images.unsplash.com/${normalizedId}`;
   const widths = [480, 768, 1080, 1400];
   const buildSrcSet = (format) =>
     widths
