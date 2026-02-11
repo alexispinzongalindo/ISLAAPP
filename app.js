@@ -911,14 +911,8 @@ function initTemplateViewPage() {
 
   const openDemo = () => {
     if (!(modal instanceof HTMLElement) || !(modalFrame instanceof HTMLIFrameElement)) return;
-    modalFrame.src = "about:blank";
-    modalFrame.srcdoc = buildAppPreviewHtml({
-      projectName: `${selected.name} Demo`,
-      template: selected.name,
-      target: selected.target,
-      features: selected.features,
-      owner: "islaAPP",
-    });
+    modalFrame.srcdoc = "";
+    modalFrame.src = liveHref;
     if (modalTitle instanceof HTMLElement) modalTitle.textContent = `${selected.name} Demo`;
     modal.classList.remove("hidden");
     document.body.classList.add("modal-open");
@@ -2168,11 +2162,15 @@ function initAppBuilder() {
     const selectedTemplate = String(templateName || "").trim();
     if (!selectedTemplate) return;
     if (!(templateDemoModal instanceof HTMLElement) || !(templateDemoFrame instanceof HTMLIFrameElement)) return;
+    const templateMeta = templateByName[selectedTemplate] || null;
+    const templateHref = templateMeta
+      ? resolveTemplateLiveUrl(templateMeta.liveUrl || `template-live.html?template=${templateMeta.id}`)
+      : "";
     if (templateDemoTitle instanceof HTMLElement) {
       templateDemoTitle.textContent = `${selectedTemplate} Demo`;
     }
-    templateDemoFrame.src = "about:blank";
-    templateDemoFrame.srcdoc = buildTemplateDemoHtml(selectedTemplate);
+    templateDemoFrame.srcdoc = "";
+    templateDemoFrame.src = templateHref || "about:blank";
     templateDemoModal.classList.remove("hidden");
     document.body.classList.add("modal-open");
   };
