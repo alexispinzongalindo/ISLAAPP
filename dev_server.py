@@ -81,15 +81,7 @@ class AppHandler(SimpleHTTPRequestHandler):
     def do_GET(self) -> None:  # noqa: N802 - stdlib method name
         route = urlparse(self.path).path
         if route in {"/healthz", "/api/healthz"}:
-            self.send_json(
-                HTTPStatus.OK,
-                {
-                    "ok": True,
-                    "status": "healthy",
-                    "host": HOST,
-                    "port": PORT,
-                },
-            )
+            self.send_text(HTTPStatus.OK, "ok")
             return
         if route == "/api/auth-config":
             self.send_json(
@@ -426,6 +418,8 @@ class AppHandler(SimpleHTTPRequestHandler):
     def do_HEAD(self) -> None:  # noqa: N802 - stdlib method name
         route = urlparse(self.path).path
         if route in {
+            "/healthz",
+            "/api/healthz",
             "/api/auth-config",
             "/api/auth-session",
             "/api/auth-users",
@@ -437,6 +431,9 @@ class AppHandler(SimpleHTTPRequestHandler):
             "/api/projects",
         }:
             self.send_response(HTTPStatus.OK)
+            self.send_header("Content-Type", "text/plain; charset=utf-8")
+            self.send_header("Content-Length", "0")
+            self.send_header("Cache-Control", "no-store")
             self.end_headers()
             return
         super().do_HEAD()
@@ -464,9 +461,22 @@ class AppHandler(SimpleHTTPRequestHandler):
         self.end_headers()
         self.wfile.write(response)
 
+    def send_text(self, status: HTTPStatus, text: str) -> None:
+        response = text.encode("utf-8")
+        self.send_response(int(status))
+        self.send_header("Content-Type", "text/plain; charset=utf-8")
+        self.send_header("Cache-Control", "no-store")
+        self.send_header("Content-Length", str(len(response)))
+        self.end_headers()
+        self.wfile.write(response)
+
     def log_message(self, fmt: str, *args: Any) -> None:
+        route = urlparse(self.path).path
+        if route in {"/healthz", "/api/healthz"}:
+            return
         stamp = datetime.now().strftime("%H:%M:%S")
-        print(f"[{stamp}] {self.address_string()} - {fmt % args}")
+        client_ip = self.client_address[0] if self.client_address else "-"
+        print(f"[{stamp}] {client_ip} - {fmt % args}")
 
 
 def validate_body(body: Any) -> str | None:
