@@ -1237,19 +1237,11 @@ function initTemplateViewPage() {
   }
 
   const openDemo = () => {
-    if (!(modal instanceof HTMLElement)) return;
-    const previewSurface = ensureModalPreviewSurface(modal, modalFrame, "templateViewerSurface");
-    if (!(previewSurface instanceof HTMLElement)) return;
-    renderPreviewSurface(previewSurface, {
-      projectName: `${selected.name} Demo`,
-      template: selected.name,
-      target: selected.target,
-      features: selected.features,
-      owner: "islaAPP",
-    });
-    if (modalTitle instanceof HTMLElement) modalTitle.textContent = `${selected.name} Demo`;
-    modal.classList.remove("hidden");
-    document.body.classList.add("modal-open");
+    // Safari/Render-safe path: open the dedicated live demo page instead of modal embedding.
+    const opened = window.open(liveHref, "_blank", "noopener,noreferrer");
+    if (!opened) {
+      window.location.href = liveHref;
+    }
   };
 
   const closeDemo = () => {
