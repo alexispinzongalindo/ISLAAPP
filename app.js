@@ -6,6 +6,7 @@ const OPS_SESSION_TOKEN_KEY = "islaapp_session_token";
 (function initSite() {
   setYear();
   initMarketingNav();
+  initHomeCatalogSections();
   initTemplatesPage();
   initTemplateViewPage();
   initTemplateLivePage();
@@ -21,6 +22,68 @@ const OPS_SESSION_TOKEN_KEY = "islaapp_session_token";
   initPricing();
   initSupportForm();
 })();
+
+function getUseCaseCatalog() {
+  return [
+    { id: "productivity", title: "Productivity", count: 55 },
+    { id: "education", title: "Educational", count: 43 },
+    { id: "financial", title: "Financial", count: 37 },
+    { id: "entertainment", title: "Entertainment", count: 35 },
+    { id: "health", title: "Health & Wellness", count: 38 },
+    { id: "bi", title: "Business Intelligence", count: 20 },
+    { id: "creative", title: "Creative Tools", count: 16 },
+    { id: "marketing", title: "Marketing & Sales", count: 18 },
+    { id: "commerce", title: "E-commerce & Retail", count: 14 },
+    { id: "community", title: "Community", count: 13 },
+    { id: "hr", title: "HR & Recruitment", count: 10 },
+    { id: "travel", title: "Travel Planning", count: 9 },
+  ];
+}
+
+function initHomeCatalogSections() {
+  const categoryGrid = document.querySelector("#homeCategoryGrid");
+  const templateGrid = document.querySelector("#homeTemplateShowcase");
+
+  if (!(categoryGrid instanceof HTMLElement) && !(templateGrid instanceof HTMLElement)) return;
+
+  if (categoryGrid instanceof HTMLElement) {
+    const categories = getUseCaseCatalog();
+    categoryGrid.innerHTML = categories
+      .map(
+        (item) => `
+          <article class="category-card">
+            <h3>${escapeHtml(String(item.title || ""))}</h3>
+            <p>${escapeHtml(String(item.count || 0))} Apps</p>
+          </article>
+        `
+      )
+      .join("");
+  }
+
+  if (templateGrid instanceof HTMLElement) {
+    const featuredTemplates = getTemplateCatalog()
+      .filter((item) => ["featured", "popular", "fast launch"].includes(String(item.status || "").toLowerCase()))
+      .slice(0, 3);
+
+    const templatesToRender = featuredTemplates.length > 0 ? featuredTemplates : getTemplateCatalog().slice(0, 3);
+    templateGrid.innerHTML = templatesToRender
+      .map(
+        (item) => `
+          <article class="template-showcase-card">
+            <div class="template-showcase-thumb ${escapeAttribute(String(item.thumbClass || ""))}">
+              <span class="template-thumb-status">${escapeHtml(String(item.status || "Customizable"))}</span>
+            </div>
+            <h3>${escapeHtml(String(item.name || ""))}</h3>
+            <p>${escapeHtml(String(item.shortDescription || item.longDescription || ""))}</p>
+            <div class="actions">
+              <a class="btn btn-ghost btn-inline" href="template-view.html?template=${escapeAttribute(String(item.id || ""))}">View Template</a>
+            </div>
+          </article>
+        `
+      )
+      .join("");
+  }
+}
 
 function initMarketingNav() {
   const nav = document.querySelector(".page-home .marketing-nav");
