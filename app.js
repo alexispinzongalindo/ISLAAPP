@@ -78,6 +78,7 @@ function getTemplateCountLabel(count) {
   initMarketingNav();
   initStartHerePage();
   initHomeCatalogSections();
+  initHomeAIPulse();
   initUseCasesPage();
   initResourcesPage();
   initProductPage();
@@ -500,6 +501,58 @@ function initHomeCatalogSections() {
       )
       .join("");
   }
+}
+
+function initHomeAIPulse() {
+  const grid = document.querySelector("#homeAiPulseGrid");
+  if (!(grid instanceof HTMLElement)) return;
+
+  const templates = getTemplateCatalog()
+    .slice()
+    .sort((a, b) => Number(b.clones || 0) - Number(a.clones || 0))
+    .slice(0, 4);
+
+  if (templates.length === 0) return;
+
+  const computeConfidence = (template, tick) => {
+    const base = 62 + Math.min(28, Math.round(Number(template.clones || 0) / 40));
+    const wave = Math.round(Math.sin((tick + Number(template.clones || 0)) * 0.55) * 6);
+    return Math.max(58, Math.min(99, base + wave));
+  };
+
+  const computeLiveRequests = (template, tick) => {
+    const base = 6 + Math.round(Number(template.clones || 0) / 120);
+    const wave = Math.round(Math.cos((tick + Number(template.clones || 0)) * 0.7) * 3);
+    return Math.max(3, base + wave);
+  };
+
+  let tick = 0;
+  const renderPulse = () => {
+    tick += 1;
+    grid.innerHTML = templates
+      .map((template) => {
+        const confidence = computeConfidence(template, tick);
+        const liveRequests = computeLiveRequests(template, tick);
+        return `
+          <article class="ai-pulse-card">
+            <h3>${escapeHtml(String(template.name || ""))}</h3>
+            <p>${escapeHtml(String(template.shortDescription || ""))}</p>
+            <div class="ai-pulse-meta">
+              <span>${escapeHtml(String(template.stack || ""))}</span>
+              <strong>${escapeHtml(String(confidence))}% ${escapeHtml(getCopy("ready", "listo"))}</strong>
+            </div>
+            <div class="ai-pulse-meta">
+              <span>${escapeHtml(getCopy("Live requests", "Solicitudes activas"))}</span>
+              <strong>${escapeHtml(String(liveRequests))}</strong>
+            </div>
+          </article>
+        `;
+      })
+      .join("");
+  };
+
+  renderPulse();
+  window.setInterval(renderPulse, 4200);
 }
 
 function initUseCasesPage() {
@@ -2551,6 +2604,14 @@ function initAppBuilder() {
   const featurePresetButtons = Array.from(document.querySelectorAll("[data-feature-preset]"));
   const liveSummaryList = document.querySelector("#builderLiveSummaryList");
   const fastExampleButtons = Array.from(document.querySelectorAll("[data-fast-example]"));
+  const enhancePromptButton = document.querySelector("#builderEnhancePrompt");
+  const ideaBurstButton = document.querySelector("#builderIdeaBurst");
+  const featureHintButton = document.querySelector("#builderFeatureHint");
+  const aiPromptScore = document.querySelector("#builderAiPromptScore");
+  const aiComplexity = document.querySelector("#builderAiComplexity");
+  const aiStackHint = document.querySelector("#builderAiStackHint");
+  const aiConfidence = document.querySelector("#builderAiConfidence");
+  const aiSignals = document.querySelector("#builderAiSignals");
   const templateDetail = document.querySelector("#builderTemplateDetail");
   const templatePreview = document.querySelector("#builderTemplatePreview");
   const templateTitle = document.querySelector("#builderTemplateTitle");
@@ -2584,6 +2645,7 @@ function initAppBuilder() {
   let fallbackTemplateName = "";
   let quickGuideAction = "step1";
   let activeStep = 1;
+  let latestAiDraft = null;
   const templateCatalog = getTemplateCatalog();
   const manualStepGuide = [
     {
@@ -2779,6 +2841,57 @@ function initAppBuilder() {
     };
   };
 
+  const evaluatePromptSignals = (prompt, draft) => {
+    const text = String(prompt || "").trim();
+    const words = text.split(/\s+/).filter(Boolean);
+    const wordCount = words.length;
+    const keywordWeight =
+      Number(/(login|auth|payment|dashboard|analytics|booking|community|store|admin)/i.test(text)) * 14 +
+      Number(/(mobile|responsive|notifications|automation|workflow|portal|api)/i.test(text)) * 14;
+    const structureWeight = Number(text.includes(",") || text.includes("with")) * 10 + Number(text.length > 80) * 14;
+    const score = Math.max(0, Math.min(100, wordCount * 2 + keywordWeight + structureWeight));
+
+    const complexity =
+      wordCount >= 32 ? getCopy("High", "Alta") : wordCount >= 16 ? getCopy("Medium", "Media") : getCopy("Low", "Baja");
+
+    const stackHint = draft && draft.stack ? draft.stack : inferDraftFromPrompt(text, "Owner").stack;
+    const confidenceValue = Math.max(35, Math.min(99, score + (draft ? 18 : 0)));
+
+    const signalLines = [];
+    if (!text) {
+      signalLines.push(getCopy("Type your prompt to activate AI signals.", "Escribe tu prompt para activar senales IA."));
+      return { score: 0, complexity: getCopy("Low", "Baja"), stackHint, confidence: 0, signalLines };
+    }
+
+    signalLines.push(
+      getCopy(`Detected ${wordCount} prompt words.`, `Detectadas ${wordCount} palabras en el prompt.`)
+    );
+    signalLines.push(
+      getCopy(`Recommended stack: ${stackHint}.`, `Stack recomendado: ${stackHint}.`)
+    );
+    signalLines.push(
+      getCopy(
+        confidenceValue >= 75 ? "Prompt quality is strong for AI generation." : "Prompt can be improved for better AI output.",
+        confidenceValue >= 75
+          ? "La calidad del prompt es fuerte para generacion IA."
+          : "El prompt puede mejorar para mejor salida IA."
+      )
+    );
+
+    return { score, complexity, stackHint, confidence: confidenceValue, signalLines };
+  };
+
+  const renderAiLiveSignals = (prompt, draft) => {
+    const signal = evaluatePromptSignals(prompt, draft);
+    if (aiPromptScore instanceof HTMLElement) aiPromptScore.textContent = String(Math.round(signal.score));
+    if (aiComplexity instanceof HTMLElement) aiComplexity.textContent = signal.complexity;
+    if (aiStackHint instanceof HTMLElement) aiStackHint.textContent = signal.stackHint;
+    if (aiConfidence instanceof HTMLElement) aiConfidence.textContent = `${Math.round(signal.confidence)}%`;
+    if (aiSignals instanceof HTMLElement) {
+      aiSignals.innerHTML = signal.signalLines.map((line) => `<li>${escapeHtml(line)}</li>`).join("");
+    }
+  };
+
   const requestAiBuildDraft = async ({ prompt, owner }) => {
     const localFallback = inferDraftFromPrompt(prompt, owner);
     const templateOptions = templateInputs.map((input) => String(input.value || ""));
@@ -2853,6 +2966,34 @@ function initAppBuilder() {
     }
   };
 
+  const buildEnhancedPrompt = (draft) => {
+    const data = draft && typeof draft === "object" ? draft : inferDraftFromPrompt("", "Owner");
+    const features = Array.isArray(data.features) && data.features.length > 0 ? data.features.slice(0, 4).join(", ") : "authentication, dashboard";
+    return `Build ${data.projectName} using ${data.stack}. Include ${features}. Target ${data.target}. Deliver responsive layout and clear onboarding flow.`;
+  };
+
+  const getBurstTemplates = (prompt) => {
+    const inferred = inferDraftFromPrompt(prompt, "Owner");
+    const preferredCategory = (() => {
+      const templateMatch = templateCatalog.find((item) => item.name === inferred.template);
+      return templateMatch ? String(templateMatch.category || "") : "";
+    })();
+
+    const scored = templateCatalog
+      .map((item) => {
+        let score = 0;
+        if (preferredCategory && String(item.category || "") === preferredCategory) score += 3;
+        if (String(prompt || "").toLowerCase().includes(String(item.name || "").toLowerCase().split(" ")[0])) score += 2;
+        score += Math.min(4, Math.round(Number(item.clones || 0) / 180));
+        return { item, score };
+      })
+      .sort((a, b) => b.score - a.score)
+      .slice(0, 3)
+      .map((entry) => entry.item);
+
+    return scored;
+  };
+
   const quickPreviewHtml = (payload) => buildAppPreviewEmbed(payload);
 
   const buildTemplateDemoHtml = (templateName) => {
@@ -2887,9 +3028,11 @@ function initAppBuilder() {
     setInputValue("#builderOwner", inferred.owner);
     setSelectValue("#builderStack", inferred.stack);
     setSelectValue("#builderTarget", inferred.target);
+    latestAiDraft = inferred;
     updateTemplateUI();
     renderAiGuide();
     setActiveStep(4);
+    renderAiLiveSignals(String(inferred.prompt || ""), inferred);
   };
 
   const scrollChatToBottom = () => {
@@ -2998,6 +3141,9 @@ function initAppBuilder() {
     }
     setThinking(false);
     if (growthPanel) growthPanel.classList.add("hidden");
+    const currentPrompt = fastPromptInput instanceof HTMLTextAreaElement ? String(fastPromptInput.value || "") : "";
+    latestAiDraft = null;
+    renderAiLiveSignals(currentPrompt, null);
     renderQuickGuide();
   };
 
@@ -3746,6 +3892,7 @@ function initAppBuilder() {
   if (fastPromptInput instanceof HTMLTextAreaElement) {
     fastPromptInput.addEventListener("input", () => {
       writeFastPromptState();
+      renderAiLiveSignals(String(fastPromptInput.value || ""), latestAiDraft);
       renderQuickGuide();
     });
   }
@@ -3761,8 +3908,114 @@ function initAppBuilder() {
         if (!example) return;
         fastPromptInput.value = example;
         writeFastPromptState();
+        renderAiLiveSignals(example, latestAiDraft);
         renderQuickGuide();
         fastPromptInput.focus();
+      });
+    });
+  }
+
+  const withToolBusy = async (button, runner) => {
+    if (!(button instanceof HTMLButtonElement)) return;
+    const previousLabel = button.textContent || "";
+    button.disabled = true;
+    button.textContent = getCopy("Working...", "Trabajando...");
+    try {
+      await runner();
+    } finally {
+      button.disabled = false;
+      button.textContent = previousLabel;
+    }
+  };
+
+  if (enhancePromptButton instanceof HTMLButtonElement) {
+    enhancePromptButton.addEventListener("click", async () => {
+      await withToolBusy(enhancePromptButton, async () => {
+        const prompt = valueOf("#builderFastPrompt");
+        const owner = valueOf("#builderFastOwner");
+        if (!prompt) {
+          appendChatMessage(
+            "assistant",
+            getCopy(
+              "Type a prompt first so I can enhance it.",
+              "Escribe primero un prompt para poder mejorarlo."
+            )
+          );
+          return;
+        }
+
+        setThinking(true);
+        const aiResult = await requestAiBuildDraft({ prompt, owner });
+        const inferred = aiResult.draft;
+        latestAiDraft = inferred;
+        const enhancedPrompt = buildEnhancedPrompt({
+          ...inferred,
+          projectName: inferred.projectName || suggestProjectName(prompt),
+          prompt,
+        });
+        if (fastPromptInput instanceof HTMLTextAreaElement) {
+          fastPromptInput.value = enhancedPrompt;
+          fastPromptInput.focus();
+        }
+        writeFastPromptState();
+        renderAiLiveSignals(enhancedPrompt, inferred);
+        appendChatMessageHtml(
+          "assistant",
+          `
+            <p><strong>${escapeHtml(getCopy("Prompt enhanced.", "Prompt mejorado."))}</strong></p>
+            <p>${escapeHtml(getCopy("I optimized your request with stack, features, and launch target.", "Optimice tu solicitud con stack, funciones y objetivo de lanzamiento."))}</p>
+          `
+        );
+        setThinking(false);
+      });
+    });
+  }
+
+  if (ideaBurstButton instanceof HTMLButtonElement) {
+    ideaBurstButton.addEventListener("click", async () => {
+      await withToolBusy(ideaBurstButton, async () => {
+        const prompt = valueOf("#builderFastPrompt");
+        const burst = getBurstTemplates(prompt || "business app");
+        const listMarkup = burst
+          .map(
+            (item) =>
+              `<li><strong>${escapeHtml(String(item.name || ""))}</strong> - ${escapeHtml(String(item.shortDescription || ""))}</li>`
+          )
+          .join("");
+        appendChatMessageHtml(
+          "assistant",
+          `
+            <p><strong>${escapeHtml(getCopy("AI Idea Burst", "Rafaga de ideas IA"))}</strong></p>
+            <ul>${listMarkup}</ul>
+          `
+        );
+        const signalPrompt = prompt || burst.map((item) => item.name).join(" ");
+        renderAiLiveSignals(signalPrompt, latestAiDraft);
+      });
+    });
+  }
+
+  if (featureHintButton instanceof HTMLButtonElement) {
+    featureHintButton.addEventListener("click", async () => {
+      await withToolBusy(featureHintButton, async () => {
+        const prompt = valueOf("#builderFastPrompt");
+        const inferred = inferDraftFromPrompt(prompt || "Build a business dashboard with authentication", valueOf("#builderFastOwner"));
+        latestAiDraft = inferred;
+        const selectedSet = new Set(inferred.features || []);
+        featureInputs.forEach((input) => {
+          input.checked = selectedSet.has(String(input.value || ""));
+        });
+        renderAiGuide();
+        renderBuilderLiveSummary();
+        renderQuickGuide();
+        renderAiLiveSignals(prompt, inferred);
+        appendChatMessageHtml(
+          "assistant",
+          `
+            <p><strong>${escapeHtml(getCopy("Feature hints applied.", "Sugerencias de funciones aplicadas."))}</strong></p>
+            <p>${escapeHtml(getCopy("I pre-selected features based on your current idea.", "Preseleccione funciones segun tu idea actual."))}</p>
+          `
+        );
       });
     });
   }
@@ -3802,10 +4055,12 @@ function initAppBuilder() {
         await new Promise((resolve) => window.setTimeout(resolve, 850));
         const aiResult = await requestAiBuildDraft({ prompt, owner: ownerName });
         const inferred = aiResult.draft;
+        latestAiDraft = inferred;
         applyInferredDraftToWizard(inferred);
         setAdvancedVisible(true);
         saveDraft(false);
         renderGrowthRecommendations(inferred);
+        renderAiLiveSignals(prompt, inferred);
 
         if (fastPreviewFrame instanceof HTMLIFrameElement) {
           fastPreviewFrame.src = "about:blank";

@@ -147,6 +147,11 @@
                 <button class="toggle-btn" type="button" data-fast-example="Build an ecommerce storefront with products, checkout, and order tracking.">E-commerce Store</button>
                 <button class="toggle-btn" type="button" data-fast-example="Build a community platform with member profiles, posts, and moderation tools.">Community App</button>
               </div>
+              <div class="builder-ai-tools">
+                <button class="btn btn-ghost btn-small" type="button" id="builderEnhancePrompt">Enhance Prompt</button>
+                <button class="btn btn-ghost btn-small" type="button" id="builderIdeaBurst">Generate Ideas</button>
+                <button class="btn btn-ghost btn-small" type="button" id="builderFeatureHint">Suggest Features</button>
+              </div>
               <label class="form-field">
                 Your name (optional)
                 <input id="builderFastOwner" type="text" placeholder="Owner name" data-i18n-placeholder-en="Owner name" data-i18n-placeholder-es="Nombre del responsable" />
@@ -160,6 +165,30 @@
           <article class="status-box">
             <h3 data-i18n-en="Live Preview" data-i18n-es="Vista previa en vivo">Live Preview</h3>
             <iframe id="builderFastPreviewFrame" class="fast-preview-frame" title="AI app preview"></iframe>
+            <article class="status-box builder-ai-live" id="builderAiLivePanel" aria-live="polite">
+              <h3>AI Live Intelligence</h3>
+              <div class="ai-live-grid">
+                <article class="ai-live-card">
+                  <p>Prompt score</p>
+                  <strong id="builderAiPromptScore">0</strong>
+                </article>
+                <article class="ai-live-card">
+                  <p>Complexity</p>
+                  <strong id="builderAiComplexity">Low</strong>
+                </article>
+                <article class="ai-live-card">
+                  <p>Suggested stack</p>
+                  <strong id="builderAiStackHint">React + Supabase</strong>
+                </article>
+                <article class="ai-live-card">
+                  <p>Launch confidence</p>
+                  <strong id="builderAiConfidence">0%</strong>
+                </article>
+              </div>
+              <ul class="checklist" id="builderAiSignals">
+                <li>Type your prompt to activate AI signals.</li>
+              </ul>
+            </article>
             <article class="status-box hidden" id="builderGrowthPanel">
               <h3 data-i18n-en="After Build: Next Steps" data-i18n-es="Despues de crear: siguientes pasos">After Build: Next Steps</h3>
               <ul class="checklist" id="builderGrowthList">

@@ -481,6 +481,69 @@ h1 span {
   line-height: 1.48;
 }
 
+.ai-pulse-panel {
+  overflow: hidden;
+}
+
+.ai-pulse-grid {
+  margin-top: 0.85rem;
+  display: grid;
+  gap: 0.8rem;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.ai-pulse-card {
+  border: 1px solid rgba(120, 183, 220, 0.36);
+  border-radius: 0.9rem;
+  background: linear-gradient(150deg, rgba(10, 75, 108, 0.72), rgba(14, 98, 137, 0.6));
+  padding: 0.75rem;
+  display: grid;
+  gap: 0.45rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.ai-pulse-card::after {
+  content: "";
+  position: absolute;
+  left: -30%;
+  top: -30%;
+  width: 60%;
+  height: 160%;
+  background: linear-gradient(120deg, transparent, rgba(250, 255, 255, 0.2), transparent);
+  transform: translateX(-140%);
+  animation: aiPulseScan 4.8s ease-in-out infinite;
+}
+
+.ai-pulse-card h3 {
+  margin: 0;
+  font-size: 0.92rem;
+  color: #fff1d3;
+}
+
+.ai-pulse-card p {
+  margin: 0;
+  font-size: 0.83rem;
+  color: #cae4f7;
+}
+
+.ai-pulse-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.ai-pulse-meta span {
+  font-size: 0.72rem;
+  color: #b3d5ee;
+}
+
+.ai-pulse-meta strong {
+  font-size: 0.8rem;
+  color: #9ff6dd;
+}
+
 .template-showcase-thumb {
   width: 100%;
   aspect-ratio: 16 / 10;
@@ -969,6 +1032,55 @@ code {
 .visual-mini-card strong {
   font-size: 0.78rem;
   color: #d8efff;
+}
+
+.builder-ai-tools {
+  display: grid;
+  gap: 0.5rem;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.builder-ai-live {
+  margin-top: 0.85rem;
+}
+
+.ai-live-grid {
+  margin-top: 0.65rem;
+  display: grid;
+  gap: 0.55rem;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.ai-live-card {
+  border: 1px solid rgba(120, 183, 220, 0.35);
+  border-radius: 0.75rem;
+  padding: 0.6rem;
+  background: rgba(8, 70, 101, 0.55);
+  display: grid;
+  gap: 0.18rem;
+}
+
+.ai-live-card p {
+  margin: 0;
+  font-size: 0.76rem;
+  color: #bcd8ed;
+}
+
+.ai-live-card strong {
+  color: #fff0d2;
+  font-size: 0.96rem;
+}
+
+@keyframes aiPulseScan {
+  0% {
+    transform: translateX(-150%);
+  }
+  50% {
+    transform: translateX(210%);
+  }
+  100% {
+    transform: translateX(210%);
+  }
 }
 
 .motion-enabled .template-showcase-card,
@@ -2113,6 +2225,12 @@ textarea:focus {
   .template-detail,
   .quickstart-grid,
   .builder-visual-strip {
+    grid-template-columns: 1fr;
+  }
+
+  .builder-ai-tools,
+  .ai-live-grid,
+  .ai-pulse-grid {
     grid-template-columns: 1fr;
   }
 
