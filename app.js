@@ -556,7 +556,7 @@ function renderTemplateImagePicture(template, options) {
 }
 
 function getTemplateCatalog() {
-  const templates = [
+  const coreTemplates = [
     {
       id: "saas-dashboard",
       name: "SaaS Dashboard",
@@ -751,6 +751,177 @@ function getTemplateCatalog() {
     },
   ];
 
+  const profileByPreset = {
+    saas: {
+      stack: "React + Supabase",
+      target: "MVP in 1 month",
+      techTags: ["React", "Supabase", "Dashboards", "Auth"],
+      features: ["User authentication", "Admin dashboard", "Analytics reports", "Team collaboration"],
+      perfectFor: ["Operations teams", "Service businesses", "Agencies"],
+    },
+    portal: {
+      stack: "React + Supabase",
+      target: "MVP in 1 month",
+      techTags: ["React", "Supabase", "Client portal", "File sharing"],
+      features: ["User authentication", "Team collaboration", "Notifications", "Admin dashboard"],
+      perfectFor: ["Client services", "Freelancers", "Agency teams"],
+    },
+    market: {
+      stack: "Next.js + PostgreSQL",
+      target: "Production in 2 months",
+      techTags: ["Next.js", "PostgreSQL", "Marketplace", "Payments"],
+      features: ["User authentication", "Payments and billing", "Notifications", "Admin dashboard"],
+      perfectFor: ["Marketplaces", "B2B directories", "Digital catalogs"],
+    },
+    store: {
+      stack: "Next.js + PostgreSQL",
+      target: "Production in 2 months",
+      techTags: ["Next.js", "PostgreSQL", "Checkout", "Catalog"],
+      features: ["User authentication", "Payments and billing", "Notifications", "Analytics reports"],
+      perfectFor: ["Retail brands", "Local stores", "Commerce teams"],
+    },
+    booking: {
+      stack: "React + Supabase",
+      target: "Beta in 2 weeks",
+      techTags: ["React", "Supabase", "Calendar", "Booking"],
+      features: ["User authentication", "Notifications", "Admin dashboard"],
+      perfectFor: ["Clinics", "Salons", "Coaches"],
+    },
+    helpdesk: {
+      stack: "Node API + React Frontend",
+      target: "MVP in 1 month",
+      techTags: ["Node API", "React", "Tickets", "SLA"],
+      features: ["User authentication", "Team collaboration", "Notifications", "Analytics reports"],
+      perfectFor: ["Support teams", "IT ops", "Customer success"],
+    },
+    community: {
+      stack: "React + Supabase",
+      target: "MVP in 1 month",
+      techTags: ["React", "Supabase", "Feeds", "Moderation"],
+      features: ["User authentication", "Team collaboration", "Notifications"],
+      perfectFor: ["Communities", "Networks", "Creator groups"],
+    },
+    membership: {
+      stack: "React + Supabase",
+      target: "MVP in 1 month",
+      techTags: ["React", "Supabase", "Membership", "Billing"],
+      features: ["User authentication", "Payments and billing", "Notifications", "Analytics reports"],
+      perfectFor: ["Creators", "Course sellers", "Private communities"],
+    },
+    crm: {
+      stack: "Node API + React Frontend",
+      target: "MVP in 1 month",
+      techTags: ["Node API", "React", "CRM", "Automation"],
+      features: ["User authentication", "Team collaboration", "Admin dashboard", "Analytics reports"],
+      perfectFor: ["Sales teams", "Service agencies", "Consultancies"],
+    },
+    hr: {
+      stack: "Node API + React Frontend",
+      target: "MVP in 1 month",
+      techTags: ["Node API", "React", "Recruiting", "Workflows"],
+      features: ["User authentication", "Team collaboration", "Notifications", "Analytics reports"],
+      perfectFor: ["HR teams", "Recruiters", "Hiring managers"],
+    },
+    realestate: {
+      stack: "React + Supabase",
+      target: "MVP in 1 month",
+      techTags: ["React", "Supabase", "Listings", "Lead capture"],
+      features: ["User authentication", "Notifications", "Admin dashboard"],
+      perfectFor: ["Real estate brokers", "Property teams", "Developers"],
+    },
+    restaurant: {
+      stack: "React + Supabase",
+      target: "Beta in 2 weeks",
+      techTags: ["React", "Supabase", "Menus", "Orders"],
+      features: ["User authentication", "Payments and billing", "Notifications", "Admin dashboard"],
+      perfectFor: ["Restaurants", "Food businesses", "Delivery teams"],
+    },
+  };
+
+  const expansionSeeds = [
+    { name: "Task Management Flow", category: "business", preset: "saas", shortDescription: "Tasks, priorities, team workflow.", perfectFor: ["Project teams", "Operations managers"] },
+    { name: "Finance Performance Hub", category: "business", preset: "saas", shortDescription: "Revenue, KPIs, forecasting board.", perfectFor: ["Finance teams", "Founders"] },
+    { name: "Agency Delivery Desk", category: "business", preset: "portal", shortDescription: "Client updates, files, approvals.", perfectFor: ["Agencies", "Studios"] },
+    { name: "Legal Case Tracker", category: "business", preset: "portal", shortDescription: "Cases, documents, milestones.", perfectFor: ["Law firms", "Legal teams"] },
+    { name: "Quote And Proposal Manager", category: "business", preset: "crm", shortDescription: "Pipeline, quotes, deal status.", perfectFor: ["Sales teams", "Consultants"] },
+    { name: "Recruitment Command Center", category: "business", preset: "hr", shortDescription: "Applicants, interviews, scorecards.", perfectFor: ["Recruiting teams", "HR ops"] },
+    { name: "Inventory Operations Board", category: "business", preset: "saas", shortDescription: "Stock, reorder alerts, reports.", perfectFor: ["Warehouses", "Retail ops"] },
+    { name: "Service Business CRM", category: "business", preset: "crm", shortDescription: "Leads, follow-ups, account health.", perfectFor: ["Service companies", "B2B teams"] },
+    { name: "Artist Management Portal", category: "business", preset: "portal", shortDescription: "Bookings, events, contracts.", perfectFor: ["Talent agencies", "Managers"] },
+
+    { name: "Serenity Spa And Salon", category: "commerce", preset: "store", shortDescription: "Services catalog, booking, checkout.", perfectFor: ["Salons", "Beauty studios"] },
+    { name: "Burger Builder", category: "commerce", preset: "restaurant", shortDescription: "Menu builder, cart, online orders.", perfectFor: ["Fast-food brands", "Cloud kitchens"] },
+    { name: "Print Tee Studio", category: "commerce", preset: "store", shortDescription: "Custom product previews and checkout.", perfectFor: ["Print shops", "Merch brands"] },
+    { name: "Auto Parts Finder", category: "commerce", preset: "market", shortDescription: "Parts catalog and fitment filters.", perfectFor: ["Auto retailers", "Parts dealers"] },
+    { name: "Digital Download Market", category: "commerce", preset: "market", shortDescription: "Sell files, licenses, subscriptions.", perfectFor: ["Creators", "Digital sellers"] },
+    { name: "Local Market Delivery", category: "commerce", preset: "store", shortDescription: "Grocery catalog and delivery slots.", perfectFor: ["Grocers", "Local delivery teams"] },
+    { name: "Hotel Booking Engine", category: "commerce", preset: "booking", shortDescription: "Rooms, rates, guest checkout.", perfectFor: ["Hotels", "Vacation rentals"] },
+    { name: "Freelancer Marketplace", category: "commerce", preset: "market", shortDescription: "Talent listings and service checkout.", perfectFor: ["Agencies", "Freelancer platforms"] },
+    { name: "Pet Storefront", category: "commerce", preset: "store", shortDescription: "Products, subscriptions, loyalty.", perfectFor: ["Pet shops", "Niche brands"] },
+    { name: "Fitness Program Store", category: "commerce", preset: "store", shortDescription: "Workout plans and digital checkout.", perfectFor: ["Fitness coaches", "Gyms"] },
+
+    { name: "Creator Fan Community", category: "community", preset: "membership", shortDescription: "Member posts, gated spaces, perks.", perfectFor: ["Creators", "Influencer brands"] },
+    { name: "Coaching Cohort Hub", category: "community", preset: "community", shortDescription: "Discussions, lessons, milestones.", perfectFor: ["Coaches", "Mentors"] },
+    { name: "Gaming Community Arena", category: "community", preset: "community", shortDescription: "Guilds, chats, event schedule.", perfectFor: ["Gaming communities", "Esports groups"] },
+    { name: "Alumni Network Platform", category: "community", preset: "community", shortDescription: "Profiles, networking, events.", perfectFor: ["Schools", "University groups"] },
+    { name: "Neighborhood Exchange", category: "community", preset: "community", shortDescription: "Local posts, requests, updates.", perfectFor: ["Community groups", "Neighborhood teams"] },
+    { name: "Paid Newsletter Club", category: "community", preset: "membership", shortDescription: "Subscriber content and member perks.", perfectFor: ["Writers", "Media creators"] },
+    { name: "Learning Circle Community", category: "community", preset: "membership", shortDescription: "Cohorts, tasks, progress wall.", perfectFor: ["Course creators", "Schools"] },
+    { name: "Event Membership Club", category: "community", preset: "membership", shortDescription: "Tickets, private members, chat.", perfectFor: ["Event brands", "Community clubs"] },
+    { name: "Forum Plus Help Center", category: "community", preset: "helpdesk", shortDescription: "Community forum with support queue.", perfectFor: ["SaaS products", "Support communities"] },
+
+    { name: "Clinic Appointment Desk", category: "service", preset: "booking", shortDescription: "Patient booking and reminders.", perfectFor: ["Clinics", "Medical teams"] },
+    { name: "Home Services Scheduler", category: "service", preset: "booking", shortDescription: "Jobs, calendars, crew dispatch.", perfectFor: ["Field service teams", "Contractors"] },
+    { name: "Pool Marketing Calculator", category: "service", preset: "saas", shortDescription: "Lead forms and ROI estimator.", perfectFor: ["Marketing teams", "Pool service companies"] },
+    { name: "Pressure Washing Website", category: "service", preset: "realestate", shortDescription: "Lead capture and service booking.", perfectFor: ["Pressure washing teams", "Local businesses"] },
+    { name: "Mental Wellness Practice", category: "service", preset: "booking", shortDescription: "Sessions, intake, follow-up workflow.", perfectFor: ["Therapists", "Wellness clinics"] },
+    { name: "Car Wash Booking App", category: "service", preset: "booking", shortDescription: "Packages, schedules, payment flow.", perfectFor: ["Car wash teams", "Auto detailers"] },
+    { name: "Repair Ticket Center", category: "service", preset: "helpdesk", shortDescription: "Service tickets and status updates.", perfectFor: ["Repair shops", "Tech support teams"] },
+    { name: "Travel Itinerary Planner", category: "service", preset: "realestate", shortDescription: "Trip plans, bookings, reminders.", perfectFor: ["Travel agencies", "Tour planners"] },
+    { name: "Restaurant Table Booking", category: "service", preset: "restaurant", shortDescription: "Reservations, waitlist, guest notes.", perfectFor: ["Restaurants", "Hospitality teams"] },
+    { name: "Cyber Security Consultancy Site", category: "service", preset: "realestate", shortDescription: "Service pages, lead forms, audits.", perfectFor: ["Security consultants", "B2B firms"] },
+  ];
+
+  const statusCycle = ["Featured", "Popular", "Customizable", "Fast launch", "Enterprise ready"];
+  const slugify = (value) =>
+    String(value || "")
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-+|-+$/g, "")
+      .replace(/-{2,}/g, "-");
+
+  const usedIds = new Set(coreTemplates.map((item) => String(item.id || "")));
+  const expandedTemplates = expansionSeeds.map((seed, index) => {
+    const preset = String(seed.preset || "saas").toLowerCase();
+    const profile = profileByPreset[preset] || profileByPreset.saas;
+    const baseId = slugify(seed.name);
+    let id = baseId;
+    let suffix = 2;
+    while (usedIds.has(id)) {
+      id = `${baseId}-${suffix}`;
+      suffix += 1;
+    }
+    usedIds.add(id);
+
+    return {
+      id,
+      name: seed.name,
+      category: seed.category,
+      status: seed.status || statusCycle[index % statusCycle.length],
+      thumbClass: `template-thumb-${preset}`,
+      image: createTemplatePhotoImage(preset, `${seed.name} template preview`),
+      shortDescription: seed.shortDescription,
+      longDescription: `${seed.shortDescription} Built for ${seed.perfectFor.join(", ").toLowerCase()} with launch-ready structure.`,
+      stack: seed.stack || profile.stack,
+      target: seed.target || profile.target,
+      clones: Number(seed.clones || 120 + ((index * 37) % 880)),
+      perfectFor: Array.isArray(seed.perfectFor) && seed.perfectFor.length > 0 ? seed.perfectFor : profile.perfectFor,
+      techTags: Array.isArray(seed.techTags) && seed.techTags.length > 0 ? seed.techTags : profile.techTags,
+      features: Array.isArray(seed.features) && seed.features.length > 0 ? seed.features : profile.features,
+    };
+  });
+
+  const templates = [...coreTemplates, ...expandedTemplates];
   return templates.map((item) => ({
     status: "Customizable",
     clones: 0,
