@@ -2607,6 +2607,8 @@ function initAppBuilder() {
   const enhancePromptButton = document.querySelector("#builderEnhancePrompt");
   const ideaBurstButton = document.querySelector("#builderIdeaBurst");
   const featureHintButton = document.querySelector("#builderFeatureHint");
+  const applyCustomizationButton = document.querySelector("#builderApplyCustomization");
+  const aiCustomizeInput = document.querySelector("#builderAiCustomizeInput");
   const aiPromptScore = document.querySelector("#builderAiPromptScore");
   const aiComplexity = document.querySelector("#builderAiComplexity");
   const aiStackHint = document.querySelector("#builderAiStackHint");
@@ -2755,8 +2757,14 @@ function initAppBuilder() {
       JSON.stringify({
         prompt: String(fastPromptInput.value || "").trim(),
         owner: String(fastOwnerInput.value || "").trim(),
+        customization: aiCustomizeInput instanceof HTMLTextAreaElement ? String(aiCustomizeInput.value || "").trim() : "",
       })
     );
+  };
+
+  const getCustomizationInstruction = () => {
+    if (!(aiCustomizeInput instanceof HTMLTextAreaElement)) return "";
+    return String(aiCustomizeInput.value || "").trim();
   };
 
   const titleWords = (input) =>
@@ -2892,8 +2900,10 @@ function initAppBuilder() {
     }
   };
 
-  const requestAiBuildDraft = async ({ prompt, owner }) => {
-    const localFallback = inferDraftFromPrompt(prompt, owner);
+  const requestAiBuildDraft = async ({ prompt, owner, instruction, currentDraft }) => {
+    const customizationText = String(instruction || "").trim();
+    const promptWithCustomization = customizationText ? `${String(prompt || "").trim()} ${customizationText}` : prompt;
+    const localFallback = inferDraftFromPrompt(promptWithCustomization, owner);
     const templateOptions = templateInputs.map((input) => String(input.value || ""));
     const featureOptions = featureInputs.map((input) => String(input.value || ""));
     const stackOptions = Array.from(form.querySelectorAll("#builderStack option")).map((option) => String(option.value || ""));
@@ -2922,7 +2932,12 @@ function initAppBuilder() {
       const response = await fetch("/api/ai-build", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ prompt, owner }),
+        body: JSON.stringify({
+          prompt,
+          owner,
+          instruction: customizationText,
+          currentDraft: currentDraft && typeof currentDraft === "object" ? currentDraft : null,
+        }),
       });
 
       const payload = await response.json();
@@ -3142,8 +3157,9 @@ function initAppBuilder() {
     setThinking(false);
     if (growthPanel) growthPanel.classList.add("hidden");
     const currentPrompt = fastPromptInput instanceof HTMLTextAreaElement ? String(fastPromptInput.value || "") : "";
+    const instruction = getCustomizationInstruction();
     latestAiDraft = null;
-    renderAiLiveSignals(currentPrompt, null);
+    renderAiLiveSignals(`${currentPrompt} ${instruction}`.trim(), null);
     renderQuickGuide();
   };
 
@@ -3779,6 +3795,9 @@ function initAppBuilder() {
   if (fastOwnerInput instanceof HTMLInputElement && typeof savedFast.owner === "string") {
     fastOwnerInput.value = savedFast.owner;
   }
+  if (aiCustomizeInput instanceof HTMLTextAreaElement && typeof savedFast.customization === "string") {
+    aiCustomizeInput.value = savedFast.customization;
+  }
 
   updateTemplateUI();
   hydrateBuilderTemplateThumbs();
@@ -3892,12 +3911,19 @@ function initAppBuilder() {
   if (fastPromptInput instanceof HTMLTextAreaElement) {
     fastPromptInput.addEventListener("input", () => {
       writeFastPromptState();
-      renderAiLiveSignals(String(fastPromptInput.value || ""), latestAiDraft);
+      renderAiLiveSignals(`${String(fastPromptInput.value || "")} ${getCustomizationInstruction()}`.trim(), latestAiDraft);
       renderQuickGuide();
     });
   }
   if (fastOwnerInput instanceof HTMLInputElement) {
     fastOwnerInput.addEventListener("input", writeFastPromptState);
+  }
+  if (aiCustomizeInput instanceof HTMLTextAreaElement) {
+    aiCustomizeInput.addEventListener("input", () => {
+      writeFastPromptState();
+      const prompt = valueOf("#builderFastPrompt");
+      renderAiLiveSignals(`${prompt} ${getCustomizationInstruction()}`.trim(), latestAiDraft);
+    });
   }
 
   if (fastExampleButtons.length > 0 && fastPromptInput instanceof HTMLTextAreaElement) {
@@ -3908,7 +3934,7 @@ function initAppBuilder() {
         if (!example) return;
         fastPromptInput.value = example;
         writeFastPromptState();
-        renderAiLiveSignals(example, latestAiDraft);
+        renderAiLiveSignals(`${example} ${getCustomizationInstruction()}`.trim(), latestAiDraft);
         renderQuickGuide();
         fastPromptInput.focus();
       });
@@ -3928,6 +3954,27 @@ function initAppBuilder() {
     }
   };
 
+  const summarizeDraftChanges = (beforeDraft, afterDraft) => {
+    if (!beforeDraft || typeof beforeDraft !== "object") return [];
+    if (!afterDraft || typeof afterDraft !== "object") return [];
+    const changes = [];
+    if (String(beforeDraft.template || "") !== String(afterDraft.template || "")) {
+      changes.push(`Template: ${String(beforeDraft.template || "") || "N/A"} -> ${String(afterDraft.template || "") || "N/A"}`);
+    }
+    if (String(beforeDraft.stack || "") !== String(afterDraft.stack || "")) {
+      changes.push(`Stack: ${String(beforeDraft.stack || "") || "N/A"} -> ${String(afterDraft.stack || "") || "N/A"}`);
+    }
+    if (String(beforeDraft.target || "") !== String(afterDraft.target || "")) {
+      changes.push(`Target: ${String(beforeDraft.target || "") || "N/A"} -> ${String(afterDraft.target || "") || "N/A"}`);
+    }
+    const beforeFeatures = Array.isArray(beforeDraft.features) ? beforeDraft.features : [];
+    const afterFeatures = Array.isArray(afterDraft.features) ? afterDraft.features : [];
+    if (beforeFeatures.join("|") !== afterFeatures.join("|")) {
+      changes.push(`Features: ${beforeFeatures.length} -> ${afterFeatures.length}`);
+    }
+    return changes.slice(0, 4);
+  };
+
   if (enhancePromptButton instanceof HTMLButtonElement) {
     enhancePromptButton.addEventListener("click", async () => {
       await withToolBusy(enhancePromptButton, async () => {
@@ -3945,28 +3992,41 @@ function initAppBuilder() {
         }
 
         setThinking(true);
-        const aiResult = await requestAiBuildDraft({ prompt, owner });
-        const inferred = aiResult.draft;
-        latestAiDraft = inferred;
-        const enhancedPrompt = buildEnhancedPrompt({
-          ...inferred,
-          projectName: inferred.projectName || suggestProjectName(prompt),
-          prompt,
-        });
-        if (fastPromptInput instanceof HTMLTextAreaElement) {
-          fastPromptInput.value = enhancedPrompt;
-          fastPromptInput.focus();
+        try {
+          const aiResult = await requestAiBuildDraft({
+            prompt,
+            owner,
+            instruction: getCustomizationInstruction(),
+            currentDraft: latestAiDraft,
+          });
+          const inferred = aiResult.draft;
+          latestAiDraft = inferred;
+          const enhancedPrompt = buildEnhancedPrompt({
+            ...inferred,
+            projectName: inferred.projectName || suggestProjectName(prompt),
+            prompt,
+          });
+          if (fastPromptInput instanceof HTMLTextAreaElement) {
+            fastPromptInput.value = enhancedPrompt;
+            fastPromptInput.focus();
+          }
+          writeFastPromptState();
+          renderAiLiveSignals(`${enhancedPrompt} ${getCustomizationInstruction()}`.trim(), inferred);
+          appendChatMessageHtml(
+            "assistant",
+            `
+              <p><strong>${escapeHtml(getCopy("Prompt enhanced.", "Prompt mejorado."))}</strong></p>
+              <p>${escapeHtml(getCopy("I optimized your request with stack, features, and launch target.", "Optimice tu solicitud con stack, funciones y objetivo de lanzamiento."))}</p>
+            `
+          );
+        } catch (error) {
+          appendChatMessage(
+            "assistant",
+            `I hit an error while enhancing the prompt: ${error instanceof Error ? error.message : "Unknown error"}`
+          );
+        } finally {
+          setThinking(false);
         }
-        writeFastPromptState();
-        renderAiLiveSignals(enhancedPrompt, inferred);
-        appendChatMessageHtml(
-          "assistant",
-          `
-            <p><strong>${escapeHtml(getCopy("Prompt enhanced.", "Prompt mejorado."))}</strong></p>
-            <p>${escapeHtml(getCopy("I optimized your request with stack, features, and launch target.", "Optimice tu solicitud con stack, funciones y objetivo de lanzamiento."))}</p>
-          `
-        );
-        setThinking(false);
       });
     });
   }
@@ -3989,7 +4049,7 @@ function initAppBuilder() {
             <ul>${listMarkup}</ul>
           `
         );
-        const signalPrompt = prompt || burst.map((item) => item.name).join(" ");
+        const signalPrompt = `${prompt || burst.map((item) => item.name).join(" ")} ${getCustomizationInstruction()}`.trim();
         renderAiLiveSignals(signalPrompt, latestAiDraft);
       });
     });
@@ -4008,7 +4068,7 @@ function initAppBuilder() {
         renderAiGuide();
         renderBuilderLiveSummary();
         renderQuickGuide();
-        renderAiLiveSignals(prompt, inferred);
+        renderAiLiveSignals(`${prompt} ${getCustomizationInstruction()}`.trim(), inferred);
         appendChatMessageHtml(
           "assistant",
           `
@@ -4020,10 +4080,96 @@ function initAppBuilder() {
     });
   }
 
+  if (applyCustomizationButton instanceof HTMLButtonElement) {
+    applyCustomizationButton.addEventListener("click", async () => {
+      await withToolBusy(applyCustomizationButton, async () => {
+        const instruction = getCustomizationInstruction();
+        const prompt = valueOf("#builderFastPrompt") || (latestAiDraft && String(latestAiDraft.prompt || "")) || "";
+        const owner = valueOf("#builderFastOwner") || (latestAiDraft && String(latestAiDraft.owner || "")) || "";
+
+        if (!instruction) {
+          appendChatMessage(
+            "assistant",
+            getCopy(
+              "Add a customization instruction first, then click Apply Customization.",
+              "Agrega una instruccion de personalizacion y luego haz clic en Aplicar personalizacion."
+            )
+          );
+          if (aiCustomizeInput instanceof HTMLTextAreaElement) aiCustomizeInput.focus();
+          return;
+        }
+
+        if (!prompt && !latestAiDraft) {
+          appendChatMessage(
+            "assistant",
+            getCopy(
+              "Type your app idea first, then apply customization.",
+              "Escribe primero tu idea de app y luego aplica la personalizacion."
+            )
+          );
+          if (fastPromptInput instanceof HTMLTextAreaElement) fastPromptInput.focus();
+          return;
+        }
+
+        const beforeDraft = latestAiDraft || inferDraftFromPrompt(prompt, owner);
+        setThinking(true);
+        try {
+          const aiResult = await requestAiBuildDraft({
+            prompt: prompt || String(beforeDraft.prompt || ""),
+            owner,
+            instruction,
+            currentDraft: beforeDraft,
+          });
+          const customized = aiResult.draft;
+          latestAiDraft = customized;
+          applyInferredDraftToWizard(customized);
+          setAdvancedVisible(true);
+          saveDraft(false);
+          renderGrowthRecommendations(customized);
+
+          if (fastPreviewFrame instanceof HTMLIFrameElement) {
+            fastPreviewFrame.src = "about:blank";
+            fastPreviewFrame.srcdoc = quickPreviewHtml(customized);
+          }
+
+          const changes = summarizeDraftChanges(beforeDraft, customized);
+          appendChatMessageHtml(
+            "assistant",
+            `
+              <p><strong>${escapeHtml(getCopy("Customization applied.", "Personalizacion aplicada."))}</strong></p>
+              <p>${escapeHtml(getCopy("AI updated your build plan and synced manual options.", "La IA actualizo tu plan y sincronizo las opciones manuales."))}</p>
+              ${
+                changes.length > 0
+                  ? `<ul>${changes.map((line) => `<li>${escapeHtml(line)}</li>`).join("")}</ul>`
+                  : `<p>${escapeHtml(getCopy("No major structure changes were needed.", "No se requirieron cambios estructurales mayores."))}</p>`
+              }
+              ${
+                aiResult.source === "openai"
+                  ? `<p><strong>${escapeHtml(getCopy("AI mode:", "Modo IA:"))}</strong> OpenAI customization.</p>`
+                  : `<p><strong>${escapeHtml(getCopy("AI mode:", "Modo IA:"))}</strong> ${escapeHtml(
+                      getCopy("Local fallback customization", "Personalizacion local de respaldo")
+                    )}${aiResult.note ? ` (${escapeHtml(aiResult.note)})` : ""}.</p>`
+              }
+            `
+          );
+          renderAiLiveSignals(`${prompt} ${instruction}`.trim(), customized);
+        } catch (error) {
+          appendChatMessage(
+            "assistant",
+            `I hit an error while applying customization: ${error instanceof Error ? error.message : "Unknown error"}`
+          );
+        } finally {
+          setThinking(false);
+        }
+      });
+    });
+  }
+
   if (fastClearButton instanceof HTMLButtonElement) {
     fastClearButton.addEventListener("click", () => {
       if (fastPromptInput instanceof HTMLTextAreaElement) fastPromptInput.value = "";
       if (fastOwnerInput instanceof HTMLInputElement) fastOwnerInput.value = "";
+      if (aiCustomizeInput instanceof HTMLTextAreaElement) aiCustomizeInput.value = "";
       localStorage.removeItem(fastStorageKey);
       renderFastIdleState();
       renderQuickGuide();
@@ -4035,12 +4181,16 @@ function initAppBuilder() {
       event.preventDefault();
       const prompt = valueOf("#builderFastPrompt");
       const ownerName = valueOf("#builderFastOwner");
+      const instruction = getCustomizationInstruction();
       if (!prompt) {
         appendChatMessage("assistant", "Please type your app idea first, then click Build My First Draft.");
         return;
       }
 
       appendChatMessage("user", prompt);
+      if (instruction) {
+        appendChatMessage("user", `Customization: ${instruction}`);
+      }
       writeFastPromptState();
       if (fastPromptInput instanceof HTMLTextAreaElement) {
         fastPromptInput.value = "";
@@ -4053,14 +4203,19 @@ function initAppBuilder() {
 
       try {
         await new Promise((resolve) => window.setTimeout(resolve, 850));
-        const aiResult = await requestAiBuildDraft({ prompt, owner: ownerName });
+        const aiResult = await requestAiBuildDraft({
+          prompt,
+          owner: ownerName,
+          instruction,
+          currentDraft: latestAiDraft,
+        });
         const inferred = aiResult.draft;
         latestAiDraft = inferred;
         applyInferredDraftToWizard(inferred);
         setAdvancedVisible(true);
         saveDraft(false);
         renderGrowthRecommendations(inferred);
-        renderAiLiveSignals(prompt, inferred);
+        renderAiLiveSignals(`${prompt} ${instruction}`.trim(), inferred);
 
         if (fastPreviewFrame instanceof HTMLIFrameElement) {
           fastPreviewFrame.src = "about:blank";
@@ -4094,6 +4249,8 @@ function initAppBuilder() {
           features: inferred.features,
           stack: inferred.stack,
           target: inferred.target,
+          aiPrompt: prompt,
+          aiInstruction: instruction,
         });
 
         if (scaffold.ok) {
@@ -4111,6 +4268,13 @@ function initAppBuilder() {
             `
               <p>Proof complete. I also created your project scaffold at <code>${projectDir}</code>.</p>
               <p>You can ${previewLink}.</p>
+              ${
+                scaffold.aiSource === "openai"
+                  ? "<p><strong>Code generation:</strong> OpenAI customization build active.</p>"
+                  : scaffold.aiNote
+                  ? `<p><strong>Code generation:</strong> ${escapeHtml(scaffold.aiNote)}</p>`
+                  : ""
+              }
               <p>Next: open <a href="${escapeAttribute("projects.html")}">Projects</a> to review files and preview.</p>
               <p>Database and hosting are already included. Use <a href="${escapeAttribute("setup.html")}">Setup</a> only for optional external integrations.</p>
             `
@@ -4179,6 +4343,8 @@ function initAppBuilder() {
       features: selectedFeatures,
       stack,
       target,
+      aiPrompt: latestAiDraft && typeof latestAiDraft.prompt === "string" ? latestAiDraft.prompt : "",
+      aiInstruction: getCustomizationInstruction(),
     });
 
     if (submitBtn) {
@@ -4191,9 +4357,10 @@ function initAppBuilder() {
       const successLines = briefLines.concat([
         `Project folder created: ${scaffold.projectDir}`,
         `Files: ${(scaffold.files || []).join(", ")}`,
+        scaffold.aiSource === "openai" ? "Code generation: OpenAI customization active." : scaffold.aiNote ? `Code generation: ${scaffold.aiNote}` : "",
         "Open Projects dashboard: projects.html",
         "Next action: Preview the project, then choose pricing only when needed.",
-      ]);
+      ]).filter(Boolean);
       showStatus(output, "success", "Starter project created", successLines);
       renderQuickGuide();
     } else {
@@ -4443,6 +4610,8 @@ async function createStarterProject(payload) {
       projectDir: parsed.projectDir || "",
       files: Array.isArray(parsed.files) ? parsed.files : [],
       stack: parsed.stack || "",
+      aiSource: parsed.aiSource || "",
+      aiNote: parsed.aiNote || "",
     };
   } catch (error) {
     return { ok: false, error: "Server unavailable or page is not served from dev_server.py" };

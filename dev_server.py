@@ -241,11 +241,15 @@ class AppHandler(SimpleHTTPRequestHandler):
 
         prompt = str(body.get("prompt", "")).strip() if isinstance(body, dict) else ""
         owner = str(body.get("owner", "")).strip() if isinstance(body, dict) else ""
+        instruction = str(body.get("instruction", "")).strip() if isinstance(body, dict) else ""
+        current_draft = body.get("currentDraft") if isinstance(body, dict) else None
+        if not isinstance(current_draft, dict):
+            current_draft = None
         if len(prompt) < 6:
             self.send_json(HTTPStatus.BAD_REQUEST, {"ok": False, "error": "Prompt must be at least 6 characters."})
             return
 
-        result = generate_ai_build_plan(prompt=prompt, owner=owner)
+        result = generate_ai_build_plan(prompt=prompt, owner=owner, instruction=instruction, current_draft=current_draft)
         self.send_json(HTTPStatus.OK, result)
 
     def handle_service_request(self) -> None:
@@ -1325,8 +1329,44 @@ def normalize_ai_features(value: Any, fallback: list[str]) -> list[str]:
     return result or fallback
 
 
-def normalize_ai_draft_payload(raw: dict[str, Any], prompt: str, owner: str) -> dict[str, Any]:
-    fallback = infer_ai_draft_fallback(prompt, owner)
+def normalize_ai_steps(value: Any, fallback: list[str]) -> list[str]:
+    if not isinstance(value, list):
+        return list(fallback)
+    steps: list[str] = []
+    for item in value:
+        text = str(item or "").strip()
+        if text:
+            steps.append(text[:180])
+    if not steps:
+        return list(fallback)
+    return steps[:4]
+
+
+def build_ai_seed_draft(prompt: str, owner: str, instruction: str, current_draft: dict[str, Any] | None = None) -> dict[str, Any]:
+    seed_prompt = f"{prompt} {instruction}".strip() if instruction else prompt
+    fallback = infer_ai_draft_fallback(seed_prompt, owner)
+    if not isinstance(current_draft, dict):
+        return fallback
+    return {
+        "projectName": str(current_draft.get("projectName", "")).strip() or fallback["projectName"],
+        "template": normalize_ai_choice(current_draft.get("template"), AI_TEMPLATE_OPTIONS, fallback["template"]),
+        "features": normalize_ai_features(current_draft.get("features"), list(fallback["features"])),
+        "stack": normalize_ai_choice(current_draft.get("stack"), AI_STACK_OPTIONS, fallback["stack"]),
+        "target": normalize_ai_choice(current_draft.get("target"), AI_TARGET_OPTIONS, fallback["target"]),
+        "owner": str(current_draft.get("owner", "")).strip() or fallback["owner"],
+        "summary": str(current_draft.get("summary", "")).strip() or fallback["summary"],
+        "nextSteps": normalize_ai_steps(current_draft.get("nextSteps"), list(fallback["nextSteps"])),
+    }
+
+
+def normalize_ai_draft_payload(
+    raw: dict[str, Any],
+    prompt: str,
+    owner: str,
+    instruction: str = "",
+    current_draft: dict[str, Any] | None = None,
+) -> dict[str, Any]:
+    fallback = build_ai_seed_draft(prompt, owner, instruction, current_draft)
     return {
         "projectName": str(raw.get("projectName", "")).strip() or fallback["projectName"],
         "template": normalize_ai_choice(raw.get("template"), AI_TEMPLATE_OPTIONS, fallback["template"]),
@@ -1335,7 +1375,7 @@ def normalize_ai_draft_payload(raw: dict[str, Any], prompt: str, owner: str) -> 
         "target": normalize_ai_choice(raw.get("target"), AI_TARGET_OPTIONS, fallback["target"]),
         "owner": str(raw.get("owner", "")).strip() or fallback["owner"],
         "summary": str(raw.get("summary", "")).strip() or fallback["summary"],
-        "nextSteps": raw.get("nextSteps", fallback["nextSteps"]) if isinstance(raw.get("nextSteps"), list) else fallback["nextSteps"],
+        "nextSteps": normalize_ai_steps(raw.get("nextSteps"), list(fallback["nextSteps"])),
     }
 
 
@@ -1355,8 +1395,14 @@ def extract_openai_content(payload: Any) -> str:
     return str(content).strip()
 
 
-def generate_ai_build_plan(*, prompt: str, owner: str) -> dict[str, Any]:
-    fallback = infer_ai_draft_fallback(prompt, owner)
+def generate_ai_build_plan(
+    *,
+    prompt: str,
+    owner: str,
+    instruction: str = "",
+    current_draft: dict[str, Any] | None = None,
+) -> dict[str, Any]:
+    fallback = build_ai_seed_draft(prompt, owner, instruction, current_draft)
     api_key = env("OPENAI_API_KEY")
     model = env("OPENAI_MODEL", "gpt-4o-mini")
 
@@ -1371,6 +1417,7 @@ def generate_ai_build_plan(*, prompt: str, owner: str) -> dict[str, Any]:
     system_prompt = (
         "You are an app planning assistant for islaAPP. Return only valid JSON with keys: "
         "projectName, template, features, stack, target, owner, summary, nextSteps. "
+        "If customization instruction exists, update only what is needed and keep the rest stable. "
         "Use only these templates: "
         + ", ".join(AI_TEMPLATE_OPTIONS)
         + ". Use only these features: "
@@ -1382,10 +1429,14 @@ def generate_ai_build_plan(*, prompt: str, owner: str) -> dict[str, Any]:
         + ". nextSteps must be an array of 3 short strings."
     )
 
+    draft_seed_text = json.dumps(fallback, ensure_ascii=False)
+    instruction_line = instruction.strip() or "No customization instruction provided."
     user_prompt = (
         f"Client request: {prompt}\n"
         f"Owner: {owner or 'Founder'}\n"
-        "Generate best first draft plan."
+        f"Current draft seed: {draft_seed_text}\n"
+        f"Customization instruction: {instruction_line}\n"
+        "Generate the best draft plan for build and customization."
     )
 
     response = provider_api_request(
@@ -1441,8 +1492,137 @@ def generate_ai_build_plan(*, prompt: str, owner: str) -> dict[str, Any]:
             "note": "OpenAI response shape invalid. Using fallback.",
         }
 
-    draft = normalize_ai_draft_payload(parsed, prompt, owner)
+    draft = normalize_ai_draft_payload(parsed, prompt, owner, instruction, current_draft)
     return {"ok": True, "source": "openai", "draft": draft}
+
+
+def strip_markdown_fence(value: Any) -> str:
+    text = str(value or "").strip()
+    if not text.startswith("```"):
+        return text
+    lines = text.splitlines()
+    if len(lines) <= 1:
+        return text.strip("`").strip()
+    if lines[0].startswith("```"):
+        lines = lines[1:]
+    if lines and lines[-1].strip() == "```":
+        lines = lines[:-1]
+    return "\n".join(lines).strip()
+
+
+def generate_ai_static_files(*, context: dict[str, Any], prompt: str, instruction: str) -> dict[str, Any]:
+    fallback_files = build_static_files(context)
+    api_key = env("OPENAI_API_KEY")
+    model = env("OPENAI_MODEL", "gpt-4o-mini")
+
+    if not api_key:
+        return {
+            "ok": False,
+            "source": "fallback",
+            "files": fallback_files,
+            "note": "OPENAI_API_KEY is not configured. Using scaffold template files.",
+        }
+
+    system_prompt = (
+        "You generate starter web app files. Return only valid JSON with keys: "
+        "index_html, styles_css, app_js, readme_md. "
+        "Use plain HTML/CSS/JS without external CDNs. "
+        "index_html must include a stylesheet link to styles.css and script tag for app.js. "
+        "Prefer card-based visual sections, clear CTAs, and concise copy."
+    )
+
+    project_context = json.dumps(
+        {
+            "projectName": context.get("project_name", ""),
+            "owner": context.get("owner", ""),
+            "template": context.get("template", ""),
+            "stack": context.get("stack", ""),
+            "target": context.get("target", ""),
+            "features": context.get("features", []),
+        },
+        ensure_ascii=False,
+    )
+    user_prompt = (
+        f"Project context: {project_context}\n"
+        f"Original build request: {prompt}\n"
+        f"Customization instruction: {instruction or 'No extra customization.'}\n"
+        "Generate complete, valid starter files now."
+    )
+
+    response = provider_api_request(
+        method="POST",
+        url="https://api.openai.com/v1/chat/completions",
+        headers={"Authorization": f"Bearer {api_key}"},
+        payload={
+            "model": model,
+            "temperature": 0.4,
+            "response_format": {"type": "json_object"},
+            "messages": [
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": user_prompt},
+            ],
+        },
+        timeout=55,
+    )
+
+    if not response.get("ok"):
+        return {
+            "ok": False,
+            "source": "fallback",
+            "files": fallback_files,
+            "note": f"OpenAI file generation failed: {response.get('error')}",
+        }
+
+    content = extract_openai_content(response.get("data"))
+    if not content:
+        return {
+            "ok": False,
+            "source": "fallback",
+            "files": fallback_files,
+            "note": "OpenAI returned empty file payload. Using scaffold template files.",
+        }
+
+    try:
+        parsed = json.loads(content)
+    except json.JSONDecodeError:
+        return {
+            "ok": False,
+            "source": "fallback",
+            "files": fallback_files,
+            "note": "OpenAI file payload was invalid JSON. Using scaffold template files.",
+        }
+
+    if not isinstance(parsed, dict):
+        return {
+            "ok": False,
+            "source": "fallback",
+            "files": fallback_files,
+            "note": "OpenAI file payload shape invalid. Using scaffold template files.",
+        }
+
+    index_html = strip_markdown_fence(parsed.get("index_html", ""))
+    styles_css = strip_markdown_fence(parsed.get("styles_css", ""))
+    app_js = strip_markdown_fence(parsed.get("app_js", ""))
+    readme_md = strip_markdown_fence(parsed.get("readme_md", ""))
+
+    html_ok = "styles.css" in index_html and "app.js" in index_html and "<html" in index_html.lower()
+    css_ok = len(styles_css) >= 40
+    js_ok = len(app_js) >= 20
+    if not (html_ok and css_ok and js_ok):
+        return {
+            "ok": False,
+            "source": "fallback",
+            "files": fallback_files,
+            "note": "OpenAI returned incomplete web files. Using scaffold template files.",
+        }
+
+    files = {
+        "README.md": readme_md or fallback_files.get("README.md", ""),
+        "index.html": index_html,
+        "styles.css": styles_css,
+        "app.js": app_js,
+    }
+    return {"ok": True, "source": "openai", "files": files, "note": "OpenAI generated customized static app files."}
 
 
 def provision_service_request(request_id: str, options: dict[str, str]) -> dict[str, Any]:
@@ -1968,6 +2148,8 @@ def create_project_scaffold(body: dict[str, Any]) -> dict[str, Any]:
     stack = body["stack"].strip()
     target = body["target"].strip()
     features = [item.strip() for item in body["features"]]
+    ai_prompt = str(body.get("aiPrompt", "")).strip()
+    ai_instruction = str(body.get("aiInstruction", "")).strip()
 
     project_dir = unique_project_dir(slugify(project_name))
     project_dir.mkdir(parents=True, exist_ok=False)
@@ -1983,6 +2165,16 @@ def create_project_scaffold(body: dict[str, Any]) -> dict[str, Any]:
     }
 
     files = build_files_for_stack(context)
+    ai_source = "scaffold"
+    ai_note = ""
+    if stack == "HTML/CSS/JS" and (ai_prompt or ai_instruction):
+        ai_result = generate_ai_static_files(context=context, prompt=ai_prompt or project_name, instruction=ai_instruction)
+        ai_source = str(ai_result.get("source", "fallback"))
+        ai_note = str(ai_result.get("note", "")).strip()
+        ai_files = ai_result.get("files")
+        if isinstance(ai_files, dict) and ai_files:
+            files = {str(key): str(value) for key, value in ai_files.items()}
+
     files["project-brief.json"] = json.dumps(
         {
             "projectName": project_name,
@@ -2004,6 +2196,8 @@ def create_project_scaffold(body: dict[str, Any]) -> dict[str, Any]:
         "projectName": project_name,
         "stack": stack,
         "files": sorted(files.keys()),
+        "aiSource": ai_source,
+        "aiNote": ai_note,
     }
 
 
