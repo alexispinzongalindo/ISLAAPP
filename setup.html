@@ -3,10 +3,10 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Provider Setup Wizard | islaAPP</title>
+    <title>Advanced Integrations Setup | islaAPP</title>
     <meta
       name="description"
-      content="Save provider keys in one guided setup wizard when you are ready to launch."
+      content="Optional setup for external provider keys when you want custom infrastructure."
     />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -65,7 +65,7 @@
         <a href="projects.html">Projects</a>
         <a href="services.html">Services</a>
         <a href="ops.html">Ops</a>
-        <a class="is-current" href="setup.html">Setup Wizard</a>
+        <a class="is-current" href="setup.html">Advanced Setup</a>
         <a href="pricing.html">Pricing</a>
         <a href="support.html">Support</a>
       </nav>
@@ -74,24 +74,24 @@
 
     <main>
       <section class="page-intro">
-        <h1>Setup Wizard (Launch Only)</h1>
+        <h1>Advanced Setup (Optional)</h1>
         <p class="lead">
-          Use this page only when you are ready to connect real hosting, domain, and database providers.
+          Built-in database, hosting, and default app URL are already included. Use this page only for external providers.
         </p>
         <ol class="steps">
-          <li><strong>Step 1:</strong> Paste provider keys.</li>
-          <li><strong>Step 2:</strong> Save settings.</li>
-          <li><strong>Step 3:</strong> Confirm connection status.</li>
+          <li><strong>Step 1:</strong> Decide if you need external providers.</li>
+          <li><strong>Step 2:</strong> Paste provider keys (optional).</li>
+          <li><strong>Step 3:</strong> Save settings and confirm connection status.</li>
         </ol>
       </section>
 
       <section class="section-panel">
         <h2>
           <svg class="mini-icon" viewBox="0 0 96 96" aria-hidden="true"><use href="#orbit-icon"></use></svg>
-          1) Add Provider Keys
+          1) Optional Provider Keys
         </h2>
         <p class="muted">
-          Keys are saved in this local workspace and reused later. Leave a field blank to keep the current value.
+          Only needed if you want external infrastructure. Leave fields blank if you are using built-in services.
         </p>
 
         <form id="providerSetupForm">
@@ -202,7 +202,7 @@
           </div>
 
           <div class="actions">
-            <button class="btn btn-primary" type="submit">Save Keys</button>
+            <button class="btn btn-primary" type="submit">Save Optional Keys</button>
             <button class="btn btn-ghost" type="button" id="providerSetupTest">Check Connections</button>
             <a class="btn btn-ghost" href="services.html">Go To Services</a>
           </div>
@@ -214,7 +214,7 @@
       <section class="section-panel">
         <h2>
           <svg class="mini-icon" viewBox="0 0 96 96" aria-hidden="true"><use href="#orbit-icon"></use></svg>
-          2) Saved Keys
+          2) Saved Optional Keys
         </h2>
         <p class="muted">Masked values confirm which settings are currently saved.</p>
         <ul class="checklist" id="providerSetupSavedKeys">
@@ -225,15 +225,15 @@
       <section class="section-panel">
         <h2>
           <svg class="mini-icon" viewBox="0 0 96 96" aria-hidden="true"><use href="#orbit-icon"></use></svg>
-          3) Connection Status
+          3) External Connection Status
         </h2>
-        <p class="muted">Use this to confirm providers are connected before sending service requests.</p>
+        <p class="muted">Use this only when you are configuring external integrations.</p>
         <div class="provider-health" id="providerSetupHealth"></div>
       </section>
     </main>
 
     <footer class="site-footer">
-      <p><span class="brand-inline">islaAPP</span> Setup Wizard helps you connect providers without terminal commands.</p>
+      <p><span class="brand-inline">islaAPP</span> advanced setup is optional for teams needing custom external providers.</p>
       <small>&copy; <span data-year></span> islaAPP. All rights reserved.</small>
     </footer>
 

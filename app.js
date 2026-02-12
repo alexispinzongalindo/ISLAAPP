@@ -445,7 +445,7 @@ function initResourcesPage() {
     { title: "Docs & Quickstart", description: "Step-by-step setup, environment requirements, and deploy checklist.", href: "guide.html", cta: "Open Docs" },
     { title: "Pricing & Packaging", description: "Use plan ladders and service add-ons to quote clients clearly.", href: "pricing.html", cta: "View Pricing" },
     { title: "Launch Support", description: "Submit launch tickets for custom implementation and migration help.", href: "support.html", cta: "Open Support" },
-    { title: "Provider Setup", description: "Connect Render, domain, and database providers from one setup flow.", href: "setup.html", cta: "Open Setup" },
+    { title: "Advanced Integrations", description: "Optional: connect external providers if you need custom infrastructure.", href: "setup.html", cta: "Open Setup (Optional)" },
   ];
 
   resourcesGrid.innerHTML = resources
@@ -463,7 +463,7 @@ function initResourcesPage() {
   const faqs = [
     "Who does the coding? The AI builds the first version automatically, then your team reviews and customizes.",
     "Can non-technical clients use it? Yes, with guided onboarding and template-first options.",
-    "When should clients add database/hosting/domain? After first proof, AI recommends only what is needed.",
+    "How are database/hosting/domain provided? They are included by default, and custom providers are optional.",
     "Can we start simple and scale later? Yes, start with MVP templates and add services as usage grows.",
   ];
 
@@ -478,8 +478,8 @@ function initProductPage() {
   const capabilityItems = [
     { title: "AI Prompt Builder", detail: "Client types what they want. AI drafts the app and preview instantly." },
     { title: "Template Marketplace", detail: "Visual templates for clients who are unsure what to build first." },
-    { title: "Proof-First Workflow", detail: "Show working output before asking for provider setup." },
-    { title: "Guided Launch Steps", detail: "AI reveals database, hosting, domain, and ops requirements in order." },
+    { title: "Proof-First Workflow", detail: "Show working output before asking for optional integrations." },
+    { title: "Guided Launch Steps", detail: "AI marks built-in infrastructure as ready and shows optional add-ons." },
     { title: "Ops Control Center", detail: "Track requests, provisioning status, and project scaffolds in one dashboard." },
     { title: "Service Packaging", detail: "Bundle development, setup, and support into clear paid plans." },
   ];
@@ -499,7 +499,8 @@ function initProductPage() {
     "Client enters app idea in plain language.",
     "AI generates first draft and live preview.",
     "Client approves concept and picks template path or custom path.",
-    "AI prompts for only needed launch services.",
+    "Database, hosting, and app URL are included by default.",
+    "AI prompts for optional launch integrations only when needed.",
     "Team packages pricing and pushes to production.",
   ];
   process.innerHTML = processItems.map((item) => `<li>${escapeHtml(item)}</li>`).join("");
@@ -1294,13 +1295,13 @@ function buildAppPreviewHtml({ projectName, template, target, features, owner })
               <article class="card">
                 <strong>Launch guidance</strong>
                 <ul>
-                  <li>Add domain and hosting only when needed</li>
-                  <li>Enable database as features expand</li>
+                  <li>Database and hosting are included by default</li>
+                  <li>Use default app URL or add custom domain later</li>
                   <li>Publish after test flow passes</li>
                 </ul>
               </article>
             </section>
-            <div class="proof">Prototype is working. Next, AI asks for only the required launch services.</div>
+            <div class="proof">Prototype is working. Next, AI shows optional integrations only when needed.</div>
           </main>
         </div>
       </section>
@@ -1344,13 +1345,13 @@ function buildAppPreviewEmbed({ projectName, template, target, features, owner }
               <article style="border:1px solid rgba(50,86,199,.14);border-radius:.8rem;background:#fff;padding:.7rem;">
                 <strong style="color:#21345c;font-size:.86rem;">Launch guidance</strong>
                 <ul style="margin:.5rem 0 0;padding-left:1.05rem;">
-                  <li style="margin-top:6px;">Add domain and hosting only when needed</li>
-                  <li style="margin-top:6px;">Enable database as features expand</li>
+                  <li style="margin-top:6px;">Database and hosting are included by default</li>
+                  <li style="margin-top:6px;">Use default app URL or add custom domain later</li>
                   <li style="margin-top:6px;">Publish after test flow passes</li>
                 </ul>
               </article>
             </section>
-            <div style="border-radius:.75rem;border:1px solid rgba(16,121,90,.3);background:#ecfbf5;color:#17634c;padding:.58rem .68rem;font-size:.8rem;font-weight:700;">Prototype is working. Next, AI asks for only the required launch services.</div>
+            <div style="border-radius:.75rem;border:1px solid rgba(16,121,90,.3);background:#ecfbf5;color:#17634c;padding:.58rem .68rem;font-size:.8rem;font-weight:700;">Prototype is working. Next, AI shows optional integrations only when needed.</div>
           </main>
         </div>
       </div>
@@ -1841,12 +1842,12 @@ function initOnboardingAICoach() {
     };
   };
 
-  const stageLabel = (checks, intakeComplete, missingProviderCount, hasBuilderDraft) => {
+  const stageLabel = (checks, intakeComplete, missingIntegrationCount, hasBuilderDraft) => {
     if (!checks.idea) return "Stage 1: Define the idea";
     if (!checks.content || !checks.features) return "Stage 2: Gather requirements";
     if (!intakeComplete) return "Stage 3: Complete intake form";
     if (!hasBuilderDraft || !checks.builder) return "Stage 4: Build app plan";
-    if (missingProviderCount > 0) return "Stage 5: Connect provider accounts";
+    if (missingIntegrationCount > 0) return "Stage 5: Configure external integrations (if needed)";
     if (!checks.pricing) return "Stage 6: Pricing and kickoff";
     return "Stage 7: Ready to launch";
   };
@@ -1873,12 +1874,12 @@ function initOnboardingAICoach() {
         <li>Checklist progress: ${checklistDone}/${checklistTotal}</li>
         <li>Intake form: ${intake.complete ? "Complete" : "Missing fields"}</li>
         <li>App Builder draft: ${draft.hasDraft ? "Detected" : "Not started"}</li>
-        <li>Required services connected: ${requirements.filter((item) => item.required && item.ready).length}/${requirements.filter((item) => item.required).length}</li>
+        <li>Core services ready: ${requirements.filter((item) => item.required && item.ready).length}/${requirements.filter((item) => item.required).length}</li>
       </ul>
     `;
 
     if (!draft.hasDraft || requirements.length === 0) {
-      requirementsRoot.innerHTML = "<li>After selecting stack/features in App Builder, AI will list database, hosting, GitHub, domain, and more.</li>";
+      requirementsRoot.innerHTML = "<li>After selecting stack/features in App Builder, AI will show built-in services and optional integrations.</li>";
     } else {
       requirementsRoot.innerHTML = requirements
         .map((item) => {
@@ -1908,10 +1909,9 @@ function initOnboardingAICoach() {
       actions.push(`Open App Builder, choose stack/features, and save draft.`);
     }
     if (requiredMissing.length > 0) {
-      actions.push(`Open Setup Wizard and connect required providers.`);
-    }
-    if (draft.hasDraft && requiredMissing.length === 0) {
-      actions.push(`Open Services and submit provisioning request.`);
+      actions.push(`Open Setup and configure only the needed external integrations.`);
+    } else if (draft.hasDraft) {
+      actions.push(`Open Projects and review your generated app.`);
     }
     if (!checks.pricing) {
       actions.push(`Review pricing and submit kickoff support ticket.`);
@@ -2057,8 +2057,8 @@ function initGuidePage() {
     if (!checks.content || !checks.features) return "Stage 2: Complete onboarding checklist";
     if (!intake.complete) return "Stage 3: Complete intake details";
     if (!draft.hasDraft || !checks.builder) return "Stage 4: Build app plan";
-    if (requiredMissing.length > 0) return "Stage 5: Connect required providers";
-    if (requestSummary.total === 0) return "Stage 6: Submit service request";
+    if (requiredMissing.length > 0) return "Stage 5: Configure optional integrations";
+    if (requestSummary.total === 0) return "Stage 6: Optional service request";
     if (requestSummary.failed > 0) return "Stage 7: Fix failed provisioning";
     if (requestSummary.pending > 0) return "Stage 8: Provisioning in progress";
     if (!checks.pricing) return "Stage 9: Confirm pricing and support";
@@ -2090,7 +2090,7 @@ function initGuidePage() {
         <li>Checklist: ${checksDone}/${checksTotal}</li>
         <li>Intake form: ${intake.complete ? "Complete" : "Missing fields"}</li>
         <li>App Builder draft: ${draft.hasDraft ? "Detected" : "Not started"}</li>
-        <li>Required services ready: ${requiredReady}/${required.length}</li>
+        <li>Core services ready: ${requiredReady}/${required.length}</li>
         <li>Service requests: ${requestSummary.total} total (${requestSummary.pending} pending, ${requestSummary.failed} failed, ${requestSummary.active} active)</li>
         <li>Latest request status: <span class="${latestStatusClass}">${escapeHtml(String(requestSummary.latestStatus || "none"))}</span></li>
         <li>Projects scaffolded: ${projectCount}</li>
@@ -2098,7 +2098,7 @@ function initGuidePage() {
     `;
 
     if (!draft.hasDraft || requirements.length === 0) {
-      requirementsRoot.innerHTML = "<li>Open App Builder and save a draft to see exact required services.</li>";
+      requirementsRoot.innerHTML = "<li>Open App Builder and save a draft to see built-in services and optional integrations.</li>";
     } else {
       requirementsRoot.innerHTML = requirements
         .map((item) => {
@@ -2121,9 +2121,10 @@ function initGuidePage() {
     if (!checks.features) actions.push("List core features like auth, billing, and reports.");
     if (!intake.complete) actions.push("Complete intake fields in Onboarding.");
     if (!draft.hasDraft || !checks.builder) actions.push("Open App Builder and save a full draft.");
-    if (requiredMissing.length > 0) actions.push(`Open Setup Wizard and connect: ${requiredMissing.map((item) => item.title).join(", ")}.`);
+    if (requiredMissing.length > 0) actions.push(`Optional integrations to configure: ${requiredMissing.map((item) => item.title).join(", ")}.`);
     if (requestSummary.total === 0 && draft.hasDraft && requiredMissing.length === 0) {
-      actions.push("Open Services, add plans to cart, and submit the first service request.");
+      actions.push("Core infra is ready. Open Projects and publish when ready.");
+      actions.push("Use Services only if you need optional external integrations.");
     }
     if (requestSummary.failed > 0) actions.push("Open Ops and use Retry Failed after fixing provider keys.");
     if (requestSummary.pending > 0) actions.push("Open Ops and monitor provisioning until requests are active.");
@@ -2139,9 +2140,9 @@ function initGuidePage() {
     } else if (!draft.hasDraft || !checks.builder) {
       setPrimaryAction("Open App Builder", "app-builder.html");
     } else if (requiredMissing.length > 0) {
-      setPrimaryAction("Connect Providers", "setup.html");
+      setPrimaryAction("Optional Integrations", "setup.html");
     } else if (requestSummary.total === 0) {
-      setPrimaryAction("Submit Service Request", "services.html");
+      setPrimaryAction("Open Projects", "projects.html");
     } else if (requestSummary.failed > 0 || requestSummary.pending > 0) {
       setPrimaryAction("Run Ops Provisioning", "ops.html");
     } else if (!checks.pricing) {
@@ -2173,18 +2174,18 @@ function initGuidePage() {
         working: false,
       },
       {
-        title: "Provider Setup",
+        title: "Core Infra Ready",
         detail: required.length === 0 ? "Waiting for builder selections" : `${requiredReady}/${required.length} ready`,
-        href: "setup.html",
+        href: "projects.html",
         ready: required.length > 0 && requiredReady === required.length,
         working: requiredReady > 0 && requiredReady < required.length,
       },
       {
-        title: "Service Request",
-        detail: requestSummary.total > 0 ? `${requestSummary.total} request(s)` : "No requests submitted",
+        title: "Optional Integrations",
+        detail: requestSummary.total > 0 ? `${requestSummary.total} request(s)` : "Not required",
         href: "services.html",
-        ready: requestSummary.total > 0,
-        working: false,
+        ready: requiredMissing.length === 0,
+        working: requestSummary.total > 0,
       },
       {
         title: "Ops Provisioning",
@@ -2682,9 +2683,8 @@ function initAppBuilder() {
     const missing = requirements.filter((item) => item.required && !item.ready);
     const recommendations = [];
 
-    recommendations.push(
-      `AI proved the first build. Next, save this app and continue in <a href="${escapeAttribute("services.html")}">Services</a> when ready.`
-    );
+    recommendations.push(`AI proved the first build. Database, hosting, and app URL are already included.`);
+    recommendations.push(`Next: open <a href="${escapeAttribute("projects.html")}">Projects</a> and review your generated app.`);
 
     if (Array.isArray(inferred.nextSteps) && inferred.nextSteps.length > 0) {
       inferred.nextSteps.slice(0, 3).forEach((step) => {
@@ -2694,9 +2694,9 @@ function initAppBuilder() {
 
     if (missing.length > 0) {
       recommendations.push(
-        `Required launch setup detected: ${escapeHtml(missing.map((item) => item.title).join(", "))}. Connect in <a href="${escapeAttribute(
+        `Optional integrations detected: ${escapeHtml(missing.map((item) => item.title).join(", "))}. Configure only if needed in <a href="${escapeAttribute(
           "setup.html"
-        )}">Setup Wizard</a>.`
+        )}">Setup</a>.`
       );
     }
 
@@ -3487,7 +3487,7 @@ function initAppBuilder() {
               <p>Proof complete. I also created your project scaffold at <code>${projectDir}</code>.</p>
               <p>You can ${previewLink}.</p>
               <p>Next: open <a href="${escapeAttribute("projects.html")}">Projects</a> to review files and preview.</p>
-              <p>Only when you are ready to launch, connect providers in <a href="${escapeAttribute("setup.html")}">Setup Wizard</a>.</p>
+              <p>Database and hosting are already included. Use <a href="${escapeAttribute("setup.html")}">Setup</a> only for optional external integrations.</p>
             `
           );
           renderQuickGuide();
@@ -3614,42 +3614,45 @@ function deriveBuilderRequirements({ stack, features, target, providerHealthById
   if (normalizedStack) {
     addRequirement({
       id: "hosting",
-      title: "Hosting (Render)",
-      reason: "Needed to deploy your app so users can open it online.",
-      actionLabel: "Open Setup Wizard",
-      actionHref: "setup.html",
-      providerId: "render",
+      title: "Managed Hosting (Built-in)",
+      reason: "Hosting is included by default in islaAPP.",
+      actionLabel: "Included",
+      actionHref: "projects.html",
+      providerId: "",
+      defaultReady: true,
       required: true,
     });
     addRequirement({
       id: "github",
       title: "GitHub Account + Repository",
-      reason: "Render deploys from a Git repository.",
+      reason: "Optional. Needed only if you want external Git-based deployment.",
       actionLabel: "Create GitHub Account",
       actionHref: "https://github.com/signup",
       providerId: "",
-      required: true,
+      required: false,
     });
   }
 
   if (normalizedStack.includes("supabase")) {
     addRequirement({
       id: "database",
-      title: "Database (Supabase)",
-      reason: "This stack expects Supabase for data and auth services.",
-      actionLabel: "Open Setup Wizard",
-      actionHref: "setup.html",
-      providerId: "supabase",
+      title: "Database (Built-in)",
+      reason: "Database is included by default for this stack.",
+      actionLabel: "Included",
+      actionHref: "projects.html",
+      providerId: "",
+      defaultReady: true,
       required: true,
     });
   } else if (normalizedStack.includes("postgresql") || normalizedStack.includes("node api")) {
     addRequirement({
       id: "database",
-      title: "Database (Neon or Supabase)",
-      reason: "Backend stack needs a production database.",
-      actionLabel: "Open Setup Wizard",
-      actionHref: "setup.html",
-      providerId: "neon",
+      title: "Database (Built-in)",
+      reason: "Backend storage is included by default.",
+      actionLabel: "Included",
+      actionHref: "projects.html",
+      providerId: "",
+      defaultReady: true,
       required: true,
     });
   }
@@ -3657,11 +3660,12 @@ function deriveBuilderRequirements({ stack, features, target, providerHealthById
   if (normalizedFeatures.has("user authentication")) {
     addRequirement({
       id: "auth",
-      title: "Authentication Provider",
-      reason: "User login, signup, and sessions need auth configuration.",
-      actionLabel: "Use Supabase Auth",
-      actionHref: "setup.html",
-      providerId: "supabase",
+      title: "Authentication (Built-in)",
+      reason: "Login and session handling are included by default.",
+      actionLabel: "Included",
+      actionHref: "projects.html",
+      providerId: "",
+      defaultReady: true,
       required: true,
     });
   }
@@ -3669,11 +3673,12 @@ function deriveBuilderRequirements({ stack, features, target, providerHealthById
   if (normalizedFeatures.has("team collaboration") || normalizedFeatures.has("analytics reports")) {
     addRequirement({
       id: "database",
-      title: "Database (Neon or Supabase)",
+      title: "Database (Built-in)",
       reason: "Collaboration and analytics features require persistent data storage.",
-      actionLabel: "Open Setup Wizard",
-      actionHref: "setup.html",
-      providerId: requirements.has("database") && requirements.get("database").providerId ? requirements.get("database").providerId : "supabase",
+      actionLabel: "Included",
+      actionHref: "projects.html",
+      providerId: "",
+      defaultReady: true,
       required: true,
     });
   }
@@ -3705,27 +3710,28 @@ function deriveBuilderRequirements({ stack, features, target, providerHealthById
   if (normalizedTarget.includes("mvp") || normalizedTarget.includes("production") || normalizedTarget.includes("scale")) {
     addRequirement({
       id: "domain",
-      title: "Domain (Dynadot)",
-      reason: "Production launch should use a branded domain.",
-      actionLabel: "Open Setup Wizard",
+      title: "Custom Domain (Optional)",
+      reason: "A default app URL is included. Add a branded domain when ready.",
+      actionLabel: "Open Setup (Optional)",
       actionHref: "setup.html",
-      providerId: "dynadot",
-      required: true,
+      providerId: "",
+      required: false,
     });
   } else if (normalizedTarget.includes("beta")) {
     addRequirement({
       id: "domain",
-      title: "Domain (Dynadot)",
-      reason: "Optional for beta. Required before public launch.",
-      actionLabel: "Open Setup Wizard",
+      title: "Custom Domain (Optional)",
+      reason: "Use the included app URL for beta. Add a custom domain later.",
+      actionLabel: "Open Setup (Optional)",
       actionHref: "setup.html",
-      providerId: "dynadot",
+      providerId: "",
       required: false,
     });
   }
 
   const output = Array.from(requirements.values()).map((item) => {
-    const ready = item.providerId ? providerReady(item.providerId) : false;
+    const ready =
+      typeof item.defaultReady === "boolean" ? item.defaultReady : item.providerId ? providerReady(item.providerId) : false;
     return { ...item, ready };
   });
 
@@ -3741,7 +3747,7 @@ function renderBuilderAiGuide({ rootSummary, rootRequirements, rootActions, temp
 
   if (!template && !stack && !target && items.length === 0) {
     rootSummary.innerHTML = "<h3>Waiting For Your Selections</h3><ul><li>Select stack and features to get live launch requirements.</li></ul>";
-    rootRequirements.innerHTML = "<li>Pick features and stack details to generate service requirements.</li>";
+    rootRequirements.innerHTML = "<li>Pick features and stack details to see built-in services and optional integrations.</li>";
     rootActions.innerHTML = "<li>Use Advanced Builder only when you need manual controls.</li>";
     return;
   }
@@ -3752,12 +3758,12 @@ function renderBuilderAiGuide({ rootSummary, rootRequirements, rootActions, temp
       <li>Template: ${escapeHtml(template || "Not selected yet")}</li>
       <li>Stack: ${escapeHtml(stack || "Not selected yet")}</li>
       <li>Launch target: ${escapeHtml(target || "Not selected yet")}</li>
-      <li>Required services ready: ${readyRequired}/${requiredItems.length}</li>
+      <li>Core services ready: ${readyRequired}/${requiredItems.length}</li>
     </ul>
   `;
 
   if (items.length === 0) {
-    rootRequirements.innerHTML = "<li>Select stack and launch target to generate service requirements.</li>";
+    rootRequirements.innerHTML = "<li>Select stack and launch target to generate readiness guidance.</li>";
   } else {
     rootRequirements.innerHTML = items
       .map((item) => {
@@ -3781,18 +3787,15 @@ function renderBuilderAiGuide({ rootSummary, rootRequirements, rootActions, temp
   const actionLines = [];
   actionLines.push("Finalize your app selections (features, stack, and launch target).");
   if (missingRequired.length > 0) {
-    const providers = missingRequired.filter((item) => item.providerId).map((item) => item.title);
-    if (providers.length > 0) {
-      actionLines.push(`Open Setup Wizard and connect: ${providers.join(", ")}.`);
-    }
-    const external = missingRequired.filter((item) => !item.providerId).map((item) => item.title);
+    const external = missingRequired.map((item) => item.title);
     if (external.length > 0) {
-      actionLines.push(`Create required external accounts: ${external.join(", ")}.`);
+      actionLines.push(`Optional integrations to configure: ${external.join(", ")}.`);
     }
   } else if (requiredItems.length > 0) {
-    actionLines.push("All required services look ready. Continue to Services and provision.");
+    actionLines.push("Core infrastructure is ready by default. Continue with build, preview, and launch.");
   }
-  actionLines.push("Generate project brief, then open Services to submit provisioning request.");
+  actionLines.push("Generate starter project, then open Projects to review.");
+  actionLines.push("Use Setup and Services only for optional external integrations.");
 
   rootActions.innerHTML = actionLines.map((line) => `<li>${escapeHtml(line)}</li>`).join("");
 }
@@ -4010,7 +4013,7 @@ async function initOpsPage() {
         <li>${authLine}</li>
         <li>Queue: ${queue.total} total, ${queue.pending} pending, ${queue.failed} failed, ${queue.active} active</li>
         <li>Latest queue status: <span class="${latestStatusClass}">${escapeHtml(String(queue.latestStatus || "none"))}</span></li>
-        <li>Required launch services ready: ${requiredReady}/${required.length}</li>
+        <li>Core launch services ready: ${requiredReady}/${required.length}</li>
       </ul>
     `;
 
@@ -4021,18 +4024,19 @@ async function initOpsPage() {
       actions.push("Sign in or paste a legacy admin token to run provisioning actions.");
     }
     if (!draft.hasDraft) {
-      actions.push("Open App Builder and save a draft so AI can verify full launch requirements.");
+      actions.push("Open App Builder and save a draft so AI can verify built-in services and optional integrations.");
     }
     if (requiredMissing.length > 0) {
-      actions.push(`Open Setup Wizard and connect: ${requiredMissing.map((item) => item.title).join(", ")}.`);
+      actions.push(`Optional integrations to configure: ${requiredMissing.map((item) => item.title).join(", ")}.`);
+      actions.push("Open Setup only if you want to connect external providers.");
     }
     if (missingQueueProviders.length > 0) {
-      actions.push(`Queue references unconfigured providers: ${missingQueueProviders.join(", ")}. Fix these first in Setup Wizard.`);
+      actions.push(`Queue references unconfigured providers: ${missingQueueProviders.join(", ")}. Fix these first in Setup.`);
     }
     if (queue.total === 0) {
-      actions.push("No requests in queue. Open Services and submit your first service request.");
+      actions.push("No queue actions needed for standard built-in infrastructure.");
     } else if (queue.failed > 0) {
-      actions.push("Select failed requests and click Retry Failed after confirming keys in Setup Wizard.");
+      actions.push("Select failed requests and click Retry Failed after confirming optional keys in Setup.");
     }
     if (queue.pending > 0) {
       if (canProvision) {
@@ -4589,7 +4593,7 @@ async function initServicesPage() {
       <h3>AI Service Readiness</h3>
       <ul>
         <li>Selected services in cart: ${cart.length}</li>
-        <li>Required launch services ready: ${requiredReady}/${required.length}</li>
+        <li>Core launch services ready: ${requiredReady}/${required.length}</li>
         <li>Requests: ${queue.total} total, ${queue.pending} pending, ${queue.failed} failed, ${queue.active} active</li>
         <li>Latest status: <span class="${latestStatusClass}">${escapeHtml(String(queue.latestStatus || "none"))}</span></li>
       </ul>
@@ -4597,13 +4601,14 @@ async function initServicesPage() {
 
     const actions = [];
     if (!draft.hasDraft) {
-      actions.push("Open App Builder and save a draft so AI can map required services automatically.");
+      actions.push("Open App Builder and save a draft so AI can map built-in services and optional integrations.");
     }
     if (requiredMissing.length > 0) {
-      actions.push(`Open Setup Wizard and connect: ${requiredMissing.map((item) => item.title).join(", ")}.`);
+      actions.push(`Optional integrations to configure: ${requiredMissing.map((item) => item.title).join(", ")}.`);
+      actions.push("Open Setup only if you want to connect external providers.");
     }
     if (cart.length === 0) {
-      actions.push("Select at least one plan from the Provider Catalog.");
+      actions.push("You can skip this page unless you need optional external service plans.");
     }
 
     const customerName = valueOf("#serviceCustomerName");
@@ -4614,9 +4619,9 @@ async function initServicesPage() {
     }
 
     if (serviceRequests.length === 0) {
-      actions.push("Submit your first service request.");
+      actions.push("No service requests needed for standard launch flow.");
     } else if (queue.failed > 0) {
-      actions.push("Open Ops and click Retry Failed after fixing provider keys in Setup Wizard.");
+      actions.push("Open Ops and click Retry Failed after fixing optional provider keys in Setup.");
     } else if (queue.pending > 0) {
       actions.push("Open Ops to monitor pending requests and run Provision Now if needed.");
     } else if (queue.active > 0) {

@@ -6,7 +6,7 @@
     <title>Services Marketplace | islaAPP</title>
     <meta
       name="description"
-      content="Connect hosting, domain, and database services when you are ready to launch."
+      content="Optional integrations page for custom providers, add-ons, and external service plans."
     />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -65,7 +65,7 @@
         <a href="projects.html">Projects</a>
         <a class="is-current" href="services.html">Services</a>
         <a href="ops.html">Ops</a>
-        <a href="setup.html">Setup Wizard</a>
+        <a href="setup.html">Advanced Setup</a>
         <a href="pricing.html">Pricing</a>
         <a href="support.html">Support</a>
       </nav>
@@ -74,14 +74,14 @@
 
     <main>
       <section class="page-intro">
-        <h1>Services (Use When Launching)</h1>
+        <h1>Services (Optional Integrations)</h1>
         <p class="lead">
-          You only need this page after your app draft is ready and you want live infrastructure.
+          Database, hosting, and app URL are included by default. Use this page only for external provider add-ons.
         </p>
         <ol class="steps">
-          <li><strong>Step 1:</strong> Connect provider keys in Setup Wizard.</li>
-          <li><strong>Step 2:</strong> Choose services below.</li>
-          <li><strong>Step 3:</strong> Submit a service request.</li>
+          <li><strong>Step 1:</strong> Keep default built-in infrastructure, or choose external add-ons below.</li>
+          <li><strong>Step 2:</strong> If needed, connect external keys in Setup.</li>
+          <li><strong>Step 3:</strong> Submit a request only for optional integrations.</li>
         </ol>
       </section>
 
@@ -90,10 +90,10 @@
           <svg class="mini-icon" viewBox="0 0 96 96" aria-hidden="true"><use href="#orbit-icon"></use></svg>
           What To Do Next
         </h2>
-        <p class="muted">This panel shows your next action based on provider setup and request status.</p>
+        <p class="muted">This panel shows whether you can stay on built-in infrastructure or need optional integrations.</p>
         <div class="actions">
           <button class="btn btn-primary" type="button" id="servicesAiRefresh">Refresh Guidance</button>
-          <a class="btn btn-ghost" href="setup.html">Open Setup Wizard</a>
+          <a class="btn btn-ghost" href="setup.html">Open Setup (Optional)</a>
           <a class="btn btn-ghost" href="ops.html">Open Ops</a>
         </div>
         <div class="advisor-grid">
@@ -106,7 +106,7 @@
           <article class="status-box">
             <h3>Next Actions</h3>
             <ol class="steps" id="servicesAiActions">
-              <li>Connect providers in Setup Wizard before submitting requests.</li>
+              <li>No action needed unless you want external providers.</li>
             </ol>
           </article>
         </div>
@@ -115,12 +115,12 @@
       <section class="section-panel">
         <h2>
           <svg class="mini-icon" viewBox="0 0 96 96" aria-hidden="true"><use href="#orbit-icon"></use></svg>
-          Choose Provider Plans
+          Optional Provider Plans
         </h2>
-        <p class="muted">Select plans to include in your request.</p>
-        <p class="muted">If providers are not connected, open Setup Wizard first.</p>
+        <p class="muted">Select only the external plans you want to add.</p>
+        <p class="muted">If you stay with built-in infrastructure, you can skip this section.</p>
         <div class="actions">
-          <a class="btn btn-ghost" href="setup.html">Open Setup Wizard</a>
+          <a class="btn btn-ghost" href="setup.html">Open Setup (Optional)</a>
         </div>
         <div class="provider-health" id="providerHealthList"></div>
         <div class="provider-grid" id="servicesCatalog"></div>
@@ -129,7 +129,7 @@
       <section class="section-panel">
         <h2>
           <svg class="mini-icon" viewBox="0 0 96 96" aria-hidden="true"><use href="#orbit-icon"></use></svg>
-          Send Service Request
+          Submit Optional Integration Request
         </h2>
         <div class="services-layout">
           <aside class="cart-panel">
@@ -172,12 +172,12 @@
                 </label>
                 <label class="consent">
                   <input id="serviceAutoProvision" type="checkbox" checked />
-                  Automatically run live provisioning after submission.
+                  Automatically run provisioning for optional external services.
                 </label>
-                <p class="muted">If admin auth is enabled, save your token first in Ops.</p>
+                <p class="muted">For built-in infrastructure, this is not required.</p>
               </div>
               <div class="actions">
-                <button class="btn btn-primary" type="submit">Submit Service Request</button>
+                <button class="btn btn-primary" type="submit">Submit Optional Request</button>
                 <a class="btn btn-ghost" href="ops.html">Open Ops</a>
                 <a class="btn btn-ghost" href="support.html">Open Support</a>
               </div>
@@ -190,7 +190,7 @@
       <section class="section-panel">
         <h2>
           <svg class="mini-icon" viewBox="0 0 96 96" aria-hidden="true"><use href="#orbit-icon"></use></svg>
-          Recent Requests
+          Recent Integration Requests
         </h2>
         <div class="actions">
           <button class="btn btn-primary" type="button" id="serviceRequestsRefresh">Refresh Requests</button>
@@ -201,7 +201,7 @@
     </main>
 
     <footer class="site-footer">
-      <p><span class="brand-inline">islaAPP</span> keeps provider setup and requests in one clear flow.</p>
+      <p><span class="brand-inline">islaAPP</span> supports optional external integrations when built-in infrastructure is not enough.</p>
       <small>&copy; <span data-year></span> islaAPP. All rights reserved.</small>
     </footer>
 
