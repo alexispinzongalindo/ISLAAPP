@@ -2597,6 +2597,11 @@ function initAppBuilder() {
   const quickGuideText = document.querySelector("#builderQuickGuideText");
   const quickGuideList = document.querySelector("#builderQuickGuideList");
   const quickGuidePrimary = document.querySelector("#builderQuickGuidePrimary");
+  const quickGuideCard = document.querySelector("#builderQuickGuide");
+  const simpleActions = document.querySelector("#builderSimpleActions");
+  const simpleHint = document.querySelector("#builderSimpleHint");
+  const visualStrip = document.querySelector("#builderVisualStrip");
+  const graphicDeck = document.querySelector("#builderGraphicDeck");
   const fastPreviewFrame = document.querySelector("#builderFastPreviewFrame");
   const previewArt = document.querySelector("#builderPreviewArt");
   const growthPanel = document.querySelector("#builderGrowthPanel");
@@ -2760,6 +2765,16 @@ function initAppBuilder() {
     aiLivePanel.classList.toggle("hidden", !(extrasVisible || hasBuiltDraft));
   };
 
+  const setBeginnerSurface = () => {
+    const reveal = Boolean(extrasVisible || hasBuiltDraft);
+    if (quickGuideCard instanceof HTMLElement) quickGuideCard.classList.toggle("hidden", !reveal);
+    if (simpleActions instanceof HTMLElement) simpleActions.classList.toggle("hidden", !reveal);
+    if (simpleHint instanceof HTMLElement) simpleHint.classList.toggle("hidden", !reveal);
+    if (visualStrip instanceof HTMLElement) visualStrip.classList.toggle("hidden", !reveal);
+    if (graphicDeck instanceof HTMLElement) graphicDeck.classList.toggle("hidden", !reveal);
+    if (chatLog instanceof HTMLElement) chatLog.classList.toggle("hidden", !reveal);
+  };
+
   const setPreviewArtVisible = (visible) => {
     if (!(previewArt instanceof HTMLElement)) return;
     previewArt.classList.toggle("hidden", !Boolean(visible));
@@ -2768,6 +2783,7 @@ function initAppBuilder() {
   const setHasBuiltDraft = (value) => {
     hasBuiltDraft = Boolean(value);
     setAiPanelVisibility();
+    setBeginnerSurface();
   };
 
   const setExtrasVisible = (visible, persist = true) => {
@@ -2777,9 +2793,10 @@ function initAppBuilder() {
     }
     if (extrasToggleButton instanceof HTMLButtonElement) {
       extrasToggleButton.setAttribute("aria-expanded", extrasVisible ? "true" : "false");
-      extrasToggleButton.textContent = extrasVisible ? "Hide Optional Settings" : "Show Optional Settings";
+      extrasToggleButton.textContent = extrasVisible ? "Hide Advanced" : "Show Advanced";
     }
     setAiPanelVisibility();
+    setBeginnerSurface();
     if (persist) {
       localStorage.setItem(extrasStorageKey, extrasVisible ? "1" : "0");
     }
@@ -3100,6 +3117,7 @@ function initAppBuilder() {
     paragraph.textContent = String(text || "");
     article.appendChild(paragraph);
     chatLog.appendChild(article);
+    syncChatDensity();
     scrollChatToBottom();
   };
 
@@ -3109,7 +3127,16 @@ function initAppBuilder() {
     article.className = `ai-msg ${role === "user" ? "ai-msg-user" : "ai-msg-assistant"}`;
     article.innerHTML = String(htmlContent || "");
     chatLog.appendChild(article);
+    syncChatDensity();
     scrollChatToBottom();
+  };
+
+  const syncChatDensity = () => {
+    if (!(chatLog instanceof HTMLElement)) return;
+    const userMessages = chatLog.querySelectorAll(".ai-msg-user").length;
+    const totalMessages = chatLog.querySelectorAll(".ai-msg").length;
+    const compact = userMessages === 0 && totalMessages <= 1;
+    chatLog.classList.toggle("is-compact", compact);
   };
 
   const setThinking = (isThinking) => {

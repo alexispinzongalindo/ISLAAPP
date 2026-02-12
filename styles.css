@@ -1007,7 +1007,7 @@ code {
 }
 
 .builder-graphic-deck {
-  margin-top: 0.75rem;
+  margin-top: 0.45rem;
   display: grid;
   gap: 0.65rem;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -1016,8 +1016,8 @@ code {
 .graphic-card {
   border: 1px solid rgba(120, 183, 220, 0.34);
   border-radius: 0.85rem;
-  min-height: 76px;
-  padding: 0.6rem;
+  min-height: 58px;
+  padding: 0.45rem;
   background: linear-gradient(140deg, rgba(15, 96, 138, 0.55), rgba(83, 35, 132, 0.5));
   display: grid;
   gap: 0.46rem;
@@ -1041,7 +1041,7 @@ code {
 }
 
 .graphic-lines span {
-  height: 8px;
+  height: 6px;
   border-radius: 999px;
   background: linear-gradient(90deg, rgba(255, 255, 255, 0.66), rgba(177, 220, 255, 0.24));
 }
@@ -1679,7 +1679,7 @@ textarea:focus {
 }
 
 .fast-build-grid {
-  margin-top: 0.85rem;
+  margin-top: 0.6rem;
   display: grid;
   gap: 0.9rem;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -1738,22 +1738,33 @@ textarea:focus {
 }
 
 .ai-chat-log {
-  max-height: 360px;
+  max-height: 220px;
+  min-height: 76px;
   overflow: auto;
   border: 1px solid rgba(120, 183, 220, 0.32);
   border-radius: 0.8rem;
   background: rgba(6, 55, 81, 0.58);
-  padding: 0.75rem;
+  padding: 0.55rem;
   display: grid;
-  gap: 0.55rem;
+  gap: 0.42rem;
+}
+
+.ai-chat-log.is-compact {
+  max-height: 92px;
+  min-height: 64px;
+  overflow: hidden;
 }
 
 .ai-msg {
   max-width: 88%;
   border-radius: 0.8rem;
-  padding: 0.6rem 0.7rem;
-  font-size: 0.95rem;
-  line-height: 1.45;
+  padding: 0.5rem 0.62rem;
+  font-size: 0.88rem;
+  line-height: 1.35;
+}
+
+.ai-chat-log.is-compact .ai-msg {
+  max-width: 100%;
 }
 
 .ai-msg p {
@@ -1862,8 +1873,8 @@ textarea:focus {
 .preview-art-card {
   border: 1px solid rgba(120, 183, 220, 0.34);
   border-radius: 0.8rem;
-  padding: 0.58rem;
-  min-height: 92px;
+  padding: 0.5rem;
+  min-height: 74px;
   background: linear-gradient(140deg, rgba(8, 70, 101, 0.58), rgba(71, 39, 124, 0.5));
 }
 

@@ -102,7 +102,7 @@
           <svg class="mini-icon" viewBox="0 0 96 96" aria-hidden="true"><use href="#orbit-icon"></use></svg>
           <span data-i18n-en="AI Builder (Fast Start)" data-i18n-es="Constructor IA (inicio rapido)">AI Builder (Fast Start)</span>
         </h2>
-        <div class="builder-visual-strip">
+        <div class="builder-visual-strip hidden" id="builderVisualStrip">
           <article class="visual-mini-card">
             <span aria-hidden="true">01</span>
             <strong data-i18n-en="Fast Generate" data-i18n-es="Generacion rapida">Fast Generate</strong>
@@ -120,7 +120,7 @@
             <strong data-i18n-en="Project Ready" data-i18n-es="Proyecto listo">Project Ready</strong>
           </article>
         </div>
-        <div class="builder-graphic-deck" aria-hidden="true">
+        <div class="builder-graphic-deck hidden" id="builderGraphicDeck" aria-hidden="true">
           <article class="graphic-card">
             <div class="graphic-dots">
               <span></span><span></span><span></span>
@@ -149,9 +149,9 @@
         <div class="fast-build-grid">
           <article class="status-box ai-chat-shell">
             <h3 data-i18n-en="Describe Your App" data-i18n-es="Describe tu app">Describe Your App</h3>
-            <div class="ai-chat-log" id="builderChatLog" aria-live="polite">
+            <div class="ai-chat-log hidden" id="builderChatLog" aria-live="polite">
               <article class="ai-msg ai-msg-assistant">
-                <p>Tell me what you want to build. I will think, generate the first draft, and then guide your next steps.</p>
+                <p>Type your idea, then click Build. AI handles the setup.</p>
               </article>
             </div>
             <div class="ai-chat-thinking hidden" id="builderChatThinking" data-i18n-en="Building your first draft..." data-i18n-es="Creando tu primer borrador...">Building your first draft...</div>
@@ -160,7 +160,7 @@
                 App idea
                 <textarea
                   id="builderFastPrompt"
-                  rows="3"
+                  rows="2"
                   placeholder="Build a booking app for barbers with login, calendar, and payments."
                   data-i18n-placeholder-en="Build a booking app for barbers with login, calendar, and payments."
                   data-i18n-placeholder-es="Crea una app de reservas para barberos con login, calendario y pagos."
@@ -261,12 +261,12 @@
             </article>
           </article>
         </div>
-        <div class="actions builder-simple-actions">
+        <div class="actions builder-simple-actions hidden" id="builderSimpleActions">
           <button class="btn btn-ghost" type="button" data-builder-advanced-toggle aria-expanded="false" data-i18n-en="Show Manual Options" data-i18n-es="Mostrar opciones manuales">Show Manual Options</button>
           <a class="btn btn-ghost" href="templates.html" data-i18n-en="Browse Templates" data-i18n-es="Explorar plantillas">Browse Templates</a>
         </div>
-        <p class="muted" data-i18n-en="Most users only need the box above. Manual options below are optional." data-i18n-es="La mayoria de usuarios solo necesita el cuadro superior. Las opciones manuales son opcionales.">Most users only need the box above. Manual options below are optional.</p>
-        <article class="status-box builder-quick-guide" id="builderQuickGuide" aria-live="polite">
+        <p class="muted hidden" id="builderSimpleHint" data-i18n-en="Most users only need the box above. Manual options below are optional." data-i18n-es="La mayoria de usuarios solo necesita el cuadro superior. Las opciones manuales son opcionales.">Most users only need the box above. Manual options below are optional.</p>
+        <article class="status-box builder-quick-guide hidden" id="builderQuickGuide" aria-live="polite">
           <h3 data-i18n-en="Do This Next" data-i18n-es="Haz esto ahora">Do This Next</h3>
           <p class="muted" id="builderQuickGuideText">Step 1: Type your app idea above.</p>
           <ol class="steps" id="builderQuickGuideList">
