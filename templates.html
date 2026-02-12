@@ -3,10 +3,10 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Template Catalog | islaAPP</title>
+    <title>Templates | islaAPP</title>
     <meta
       name="description"
-      content="Browse islaAPP templates by category, preview them, and jump straight into customization."
+      content="Browse templates, preview options, and jump back to App Builder with a starter."
     />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -58,26 +58,32 @@
         <span class="brand-name"><span>isla</span><strong>APP</strong></span>
       </a>
       <nav>
-        <a href="product.html">Product</a>
-        <a class="is-current" href="use-cases.html">Use Cases</a>
-        <a href="resources.html">Resources</a>
-        <a href="pricing.html">Pricing</a>
-        <a href="enterprise.html">Enterprise</a>
+        <a href="index.html">Home</a>
+        <a href="start-here.html">Start Here</a>
+        <a href="app-builder.html">Build</a>
+        <a class="is-current" href="templates.html">Templates</a>
+        <a href="projects.html">Projects</a>
+        <a href="support.html">Help</a>
       </nav>
-      <a class="btn btn-small" href="app-builder.html">Start Building</a>
+      <a class="btn btn-small" href="start-here.html">Start Here</a>
     </header>
 
     <main>
       <section class="page-intro">
-        <h1>Template Catalog</h1>
-        <p class="lead">Browse by category, open a full template detail page, then use or clone directly into App Builder.</p>
+        <h1>Templates (Optional)</h1>
+        <p class="lead">Use this page if you want a visual starter before building.</p>
+        <ol class="steps">
+          <li><strong>Step 1:</strong> Search or filter templates.</li>
+          <li><strong>Step 2:</strong> Open a template detail page.</li>
+          <li><strong>Step 3:</strong> Use the template in App Builder.</li>
+        </ol>
       </section>
 
       <section class="section-panel" id="templatesCatalog">
         <div class="form-grid">
           <label class="form-field">
             Search templates
-            <input id="templatesSearch" type="text" placeholder="Search template name or description..." />
+            <input id="templatesSearch" type="text" placeholder="Search by name or description..." />
           </label>
         </div>
         <div class="template-filters">
@@ -87,13 +93,13 @@
           <button class="toggle-btn" type="button" data-catalog-filter="community">Community</button>
           <button class="toggle-btn" type="button" data-catalog-filter="service">Service</button>
         </div>
-        <p class="muted" id="templatesCatalogCount">0 templates</p>
+        <p class="muted" id="templatesCatalogCount">Loading templates...</p>
         <div class="template-showcase-grid" id="templatesCatalogGrid"></div>
       </section>
     </main>
 
     <footer class="site-footer">
-      <p><span class="brand-inline">islaAPP</span> template catalog helps clients pick quickly even when they are unsure what to build.</p>
+      <p><span class="brand-inline">islaAPP</span> templates help you start fast when you prefer visuals first.</p>
       <small>&copy; <span data-year></span> islaAPP. All rights reserved.</small>
     </footer>
 

@@ -256,7 +256,7 @@ function initStartHerePage() {
     const prompt = readFastPrompt();
     const draft = readBuilderDraft();
     const projects = await readProjectSummary();
-    const ideaReady = Boolean(prompt);
+    const ideaReady = Boolean(prompt || draft.hasDraft);
     const buildReady = draft.hasDraft;
     const projectReady = typeof projects.count === "number" && projects.count > 0;
 
@@ -2129,7 +2129,7 @@ function initGuidePage() {
     if (requestSummary.pending > 0) actions.push("Open Ops and monitor provisioning until requests are active.");
     if (!authState.signedIn && authState.bootstrapRequired) actions.push("In Ops, create the first owner account.");
     if (!authState.signedIn && authState.requiresAdminToken) actions.push("In Ops, sign in or add a legacy admin token to run provisioning actions.");
-    if (!checks.pricing) actions.push("Review Pricing and submit Support kickoff ticket.");
+    if (!checks.pricing) actions.push("Review Pricing when you are ready, and contact Support if needed.");
     if (actions.length === 0) actions.push("Everything looks ready. Keep monitoring Ops and support users.");
 
     actionsRoot.innerHTML = actions.map((item) => `<li>${escapeHtml(item)}</li>`).join("");
@@ -2427,7 +2427,7 @@ function initAppBuilder() {
     advancedToggles.forEach((button) => {
       if (button instanceof HTMLElement) {
         button.setAttribute("aria-expanded", advancedVisible ? "true" : "false");
-        button.textContent = advancedVisible ? "Hide Advanced Options" : "Show Advanced Options";
+        button.textContent = advancedVisible ? "Hide Manual Options" : "Show Manual Options";
       }
     });
   };
@@ -2863,36 +2863,45 @@ function initAppBuilder() {
     );
   };
 
+  const readSavedDraftState = () => {
+    const saved = parseChecklistState(localStorage.getItem(storageKey));
+    const projectName = typeof saved.projectName === "string" ? saved.projectName.trim() : "";
+    const stack = typeof saved.stack === "string" ? saved.stack.trim() : "";
+    const target = typeof saved.target === "string" ? saved.target.trim() : "";
+    const hasFeatures = Array.isArray(saved.features) && saved.features.length > 0;
+    return {
+      projectName,
+      hasDraft: Boolean(projectName || stack || target || hasFeatures),
+    };
+  };
+
   const renderQuickGuide = () => {
     if (!(quickGuideText instanceof HTMLElement) || !(quickGuideList instanceof HTMLElement) || !(quickGuidePrimary instanceof HTMLButtonElement)) return;
 
     const promptValue = fastPromptInput instanceof HTMLTextAreaElement ? String(fastPromptInput.value || "").trim() : "";
-    const selectedFeatures = featureInputs.filter((item) => item.checked).map((item) => item.value);
     const projectName = valueOf("#builderProjectName");
-    const owner = valueOf("#builderOwner");
-    const stack = valueOf("#builderStack");
-    const target = valueOf("#builderTarget");
-    const hasIdea = Boolean(promptValue || getSelectedTemplateName() || projectName);
-    const hasPlan = Boolean(selectedFeatures.length > 0 && projectName && owner && stack && target);
     const latestProject = readLatestProjectState();
     const hasProject = latestProject.exists;
+    const savedDraft = readSavedDraftState();
+    const hasIdea = Boolean(promptValue || getSelectedTemplateName() || projectName || savedDraft.projectName);
+    const hasDraft = Boolean(savedDraft.hasDraft || hasProject);
 
     const step1 = hasIdea ? "[Done] Step 1: Describe your idea." : "[Pending] Step 1: Describe your idea.";
-    const step2 = hasPlan ? "[Done] Step 2: Generate your first draft." : "[Pending] Step 2: Generate your first draft.";
-    const step3 = hasProject ? "[Done] Step 3: Create starter project." : "[Pending] Step 3: Create starter project.";
+    const step2 = hasDraft ? "[Done] Step 2: Build your first draft." : "[Pending] Step 2: Build your first draft.";
+    const step3 = hasProject ? "[Done] Step 3: Save your starter project." : "[Pending] Step 3: Save your starter project.";
     quickGuideList.innerHTML = [step1, step2, step3].map((line) => `<li>${escapeHtml(line)}</li>`).join("");
 
     if (!hasIdea) {
       quickGuideAction = "step1";
-      quickGuideText.textContent = "Step 1 now: type your app idea above, then click Build My First Version.";
+      quickGuideText.textContent = "Step 1 now: type your app idea above, then click Build My First Draft.";
       quickGuidePrimary.textContent = "Start Step 1";
-    } else if (!hasPlan) {
+    } else if (!hasDraft) {
       quickGuideAction = "step2";
-      quickGuideText.textContent = "Step 2 now: generate your first draft app from the AI box.";
+      quickGuideText.textContent = "Step 2 now: click Build My First Draft to generate your app.";
       quickGuidePrimary.textContent = "Start Step 2";
     } else if (!hasProject) {
       quickGuideAction = "step3";
-      quickGuideText.textContent = "Step 3 now: create your starter project from Advanced Summary.";
+      quickGuideText.textContent = "Step 3 now: open Manual Options and click Create My Starter Project.";
       quickGuidePrimary.textContent = "Start Step 3";
     } else {
       quickGuideAction = "done";
@@ -3268,7 +3277,7 @@ function initAppBuilder() {
   if (fromStartHere) {
     appendChatMessage(
       "assistant",
-      "Start Here mode is active. First, type your idea and click Build My First Version. You only need advanced options if you want manual control."
+      "Start Here mode is active. First, type your idea and click Build My First Draft. You only need manual options if you want extra control."
     );
     if (fastPromptInput instanceof HTMLTextAreaElement && !String(fastPromptInput.value || "").trim()) {
       fastPromptInput.focus();
@@ -3313,7 +3322,7 @@ function initAppBuilder() {
         if (!projectName || !owner || !stack || !target || selectedFeatures.length === 0) {
           showStatus(output, "error", "Clone blocked", [
             "Template loaded, but required fields are incomplete.",
-            "Complete stack/target/features, then click Generate Brief + Create Project.",
+            "Complete stack/target/features, then click Create My Starter Project.",
           ]);
           return;
         }
@@ -3334,7 +3343,7 @@ function initAppBuilder() {
 
         if (submitBtn) {
           submitBtn.disabled = false;
-          submitBtn.textContent = "Generate Brief + Create Project";
+          submitBtn.textContent = "Create My Starter Project";
         }
 
         if (scaffold.ok) {
@@ -3404,18 +3413,18 @@ function initAppBuilder() {
       const prompt = valueOf("#builderFastPrompt");
       const ownerName = valueOf("#builderFastOwner");
       if (!prompt) {
-        appendChatMessage("assistant", "Please type your app idea first, then click Build My First Version.");
+        appendChatMessage("assistant", "Please type your app idea first, then click Build My First Draft.");
         return;
       }
 
       appendChatMessage("user", prompt);
+      writeFastPromptState();
       if (fastPromptInput instanceof HTMLTextAreaElement) {
         fastPromptInput.value = "";
       }
-      writeFastPromptState();
       if (fastSubmitButton instanceof HTMLButtonElement) {
         fastSubmitButton.disabled = true;
-        fastSubmitButton.textContent = "Thinking...";
+        fastSubmitButton.textContent = "Building...";
       }
       setThinking(true);
 
@@ -3477,9 +3486,8 @@ function initAppBuilder() {
             `
               <p>Proof complete. I also created your project scaffold at <code>${projectDir}</code>.</p>
               <p>You can ${previewLink}.</p>
-              <p>Next: follow the AI Next Steps panel below and connect required providers in <a href="${escapeAttribute(
-                "setup.html"
-              )}">Setup Wizard</a>.</p>
+              <p>Next: open <a href="${escapeAttribute("projects.html")}">Projects</a> to review files and preview.</p>
+              <p>Only when you are ready to launch, connect providers in <a href="${escapeAttribute("setup.html")}">Setup Wizard</a>.</p>
             `
           );
           renderQuickGuide();
@@ -3501,7 +3509,7 @@ function initAppBuilder() {
         setThinking(false);
         if (fastSubmitButton instanceof HTMLButtonElement) {
           fastSubmitButton.disabled = false;
-          fastSubmitButton.textContent = "Build My First Version";
+          fastSubmitButton.textContent = "Build My First Draft";
         }
       }
     });
@@ -3518,7 +3526,7 @@ function initAppBuilder() {
     const target = valueOf("#builderTarget");
 
     if (selectedFeatures.length === 0 || !projectName || !owner || !stack || !target) {
-      showStatus(output, "error", "Brief not generated", [
+      showStatus(output, "error", "Missing details", [
         "Select at least one feature and complete all stack details.",
       ]);
       return;
@@ -3550,7 +3558,7 @@ function initAppBuilder() {
 
     if (submitBtn) {
       submitBtn.disabled = false;
-      submitBtn.textContent = "Generate Brief + Create Project";
+      submitBtn.textContent = "Create My Starter Project";
     }
 
     if (scaffold.ok) {
@@ -3559,17 +3567,17 @@ function initAppBuilder() {
         `Project folder created: ${scaffold.projectDir}`,
         `Files: ${(scaffold.files || []).join(", ")}`,
         "Open Projects dashboard: projects.html",
-        "Next action: Confirm pricing and submit support kickoff ticket.",
+        "Next action: Preview the project, then choose pricing only when needed.",
       ]);
-      showStatus(output, "success", "App project brief generated", successLines);
+      showStatus(output, "success", "Starter project created", successLines);
       renderQuickGuide();
     } else {
       const errorLines = briefLines.concat([
         "Could not create folder automatically.",
         `Reason: ${scaffold.error}`,
-        "Run: python3 dev_server.py, then submit again.",
+        "Run: python3 dev_server.py, then try again.",
       ]);
-      showStatus(output, "error", "Brief generated but project not created", errorLines);
+      showStatus(output, "error", "Could not create starter project", errorLines);
       renderQuickGuide();
     }
 

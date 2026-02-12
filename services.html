@@ -6,7 +6,7 @@
     <title>Services Marketplace | islaAPP</title>
     <meta
       name="description"
-      content="Offer hosting, domains, and databases from external providers directly inside islaAPP."
+      content="Connect hosting, domain, and database services when you are ready to launch."
     />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -74,18 +74,23 @@
 
     <main>
       <section class="page-intro">
-        <h1>External Services Marketplace</h1>
+        <h1>Services (Use When Launching)</h1>
         <p class="lead">
-          Offer hosting, domain, and database services from external providers without users leaving islaAPP.
+          You only need this page after your app draft is ready and you want live infrastructure.
         </p>
+        <ol class="steps">
+          <li><strong>Step 1:</strong> Connect provider keys in Setup Wizard.</li>
+          <li><strong>Step 2:</strong> Choose services below.</li>
+          <li><strong>Step 3:</strong> Submit a service request.</li>
+        </ol>
       </section>
 
       <section class="section-panel">
         <h2>
           <svg class="mini-icon" viewBox="0 0 96 96" aria-hidden="true"><use href="#orbit-icon"></use></svg>
-          AI Services Coach
+          What To Do Next
         </h2>
-        <p class="muted">This assistant tells you what to do next in Services based on provider setup and request status.</p>
+        <p class="muted">This panel shows your next action based on provider setup and request status.</p>
         <div class="actions">
           <button class="btn btn-primary" type="button" id="servicesAiRefresh">Refresh Guidance</button>
           <a class="btn btn-ghost" href="setup.html">Open Setup Wizard</a>
@@ -93,7 +98,7 @@
         </div>
         <div class="advisor-grid">
           <article class="status-box" id="servicesAiSummary">
-            <h3>Waiting For Data</h3>
+            <h3>Checking Status</h3>
             <ul>
               <li>Refreshing provider and request status.</li>
             </ul>
@@ -110,10 +115,10 @@
       <section class="section-panel">
         <h2>
           <svg class="mini-icon" viewBox="0 0 96 96" aria-hidden="true"><use href="#orbit-icon"></use></svg>
-          Provider Catalog
+          Choose Provider Plans
         </h2>
-        <p class="muted">Select plans to build a provisioning request in-app.</p>
-        <p class="muted">Use Setup Wizard to connect provider keys without terminal commands.</p>
+        <p class="muted">Select plans to include in your request.</p>
+        <p class="muted">If providers are not connected, open Setup Wizard first.</p>
         <div class="actions">
           <a class="btn btn-ghost" href="setup.html">Open Setup Wizard</a>
         </div>
@@ -124,7 +129,7 @@
       <section class="section-panel">
         <h2>
           <svg class="mini-icon" viewBox="0 0 96 96" aria-hidden="true"><use href="#orbit-icon"></use></svg>
-          Service Request Builder
+          Send Service Request
         </h2>
         <div class="services-layout">
           <aside class="cart-panel">
@@ -154,7 +159,7 @@
                   <input id="serviceDomainName" type="text" placeholder="example.com" />
                 </label>
                 <label class="form-field">
-                  Region
+                  Region (optional)
                   <input id="serviceRegion" type="text" placeholder="us-east-1" />
                 </label>
                 <label class="form-field form-field-full">
@@ -167,9 +172,9 @@
                 </label>
                 <label class="consent">
                   <input id="serviceAutoProvision" type="checkbox" checked />
-                  Automatically run live provisioning after request submission.
+                  Automatically run live provisioning after submission.
                 </label>
-                <p class="muted">If admin auth is enabled, save your token first in the Ops page.</p>
+                <p class="muted">If admin auth is enabled, save your token first in Ops.</p>
               </div>
               <div class="actions">
                 <button class="btn btn-primary" type="submit">Submit Service Request</button>
@@ -185,7 +190,7 @@
       <section class="section-panel">
         <h2>
           <svg class="mini-icon" viewBox="0 0 96 96" aria-hidden="true"><use href="#orbit-icon"></use></svg>
-          Recent Service Requests
+          Recent Requests
         </h2>
         <div class="actions">
           <button class="btn btn-primary" type="button" id="serviceRequestsRefresh">Refresh Requests</button>
@@ -196,7 +201,7 @@
     </main>
 
     <footer class="site-footer">
-      <p><span class="brand-inline">islaAPP</span> keeps external provider purchases and provisioning in one workflow.</p>
+      <p><span class="brand-inline">islaAPP</span> keeps provider setup and requests in one clear flow.</p>
       <small>&copy; <span data-year></span> islaAPP. All rights reserved.</small>
     </footer>
 

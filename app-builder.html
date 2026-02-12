@@ -6,7 +6,7 @@
     <title>App Builder | islaAPP</title>
     <meta
       name="description"
-      content="Create your app plan with the islaAPP App Builder: choose template, features, stack, launch target, and save your draft."
+      content="Build your first app draft in plain language, preview it, then save a starter project folder."
     />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -70,39 +70,39 @@
 
     <main>
       <section class="page-intro">
-        <h1>Build Your App In Minutes</h1>
+        <h1>Step 2: Build Your First Draft</h1>
         <p class="lead">
-          Describe your idea in plain words. islaAPP will generate your first working version, then guide you through only what is needed to launch.
+          Type your idea in simple words. islaAPP will build your first draft, show a preview, and tell you the next click.
         </p>
         <ol class="steps">
           <li><strong>Step 1:</strong> Describe what you want to build.</li>
-          <li><strong>Step 2:</strong> Click <strong>Build My First Version</strong>.</li>
-          <li><strong>Step 3:</strong> Review preview and continue with suggested next steps.</li>
+          <li><strong>Step 2:</strong> Click <strong>Build My First Draft</strong>.</li>
+          <li><strong>Step 3:</strong> Open Projects to review what was created.</li>
         </ol>
       </section>
 
       <section class="section-panel">
         <h2>
           <svg class="mini-icon" viewBox="0 0 96 96" aria-hidden="true"><use href="#orbit-icon"></use></svg>
-          Create With AI (Fast Start)
+          AI Builder (Fast Start)
         </h2>
-        <p class="muted">Type what you want. AI builds the first draft now. After you see it working, AI shows only the next required setup.</p>
+        <p class="muted">This is the main part. Type your idea and click one button.</p>
         <div class="fast-build-grid">
           <article class="status-box ai-chat-shell">
-            <h3>AI Builder Chat</h3>
+            <h3>Describe Your App</h3>
             <div class="ai-chat-log" id="builderChatLog" aria-live="polite">
               <article class="ai-msg ai-msg-assistant">
                 <p>Tell me what you want to build. I will think, generate the first draft, and then guide your next steps.</p>
               </article>
             </div>
-            <div class="ai-chat-thinking hidden" id="builderChatThinking">AI is thinking...</div>
+            <div class="ai-chat-thinking hidden" id="builderChatThinking">Building your first draft...</div>
             <form id="builderFastForm" class="ai-chat-composer" novalidate>
               <label class="form-field form-field-full">
-                Describe your app
+                App idea
                 <textarea
                   id="builderFastPrompt"
                   rows="3"
-                  placeholder="Build me a booking app for barbers with login, admin dashboard, and payments."
+                  placeholder="Build a booking app for barbers with login, calendar, and payments."
                   required
                 ></textarea>
               </label>
@@ -113,42 +113,42 @@
                 <button class="toggle-btn" type="button" data-fast-example="Build a community platform with member profiles, posts, and moderation tools.">Community App</button>
               </div>
               <label class="form-field">
-                Your Name (optional)
+                Your name (optional)
                 <input id="builderFastOwner" type="text" placeholder="Owner name" />
               </label>
               <div class="actions">
-                <button class="btn btn-primary" type="submit" id="builderFastSubmit">Build My First Version</button>
-                <button class="btn btn-ghost" type="button" id="builderFastClear">Reset</button>
+                <button class="btn btn-primary" type="submit" id="builderFastSubmit">Build My First Draft</button>
+                <button class="btn btn-ghost" type="button" id="builderFastClear">Clear</button>
               </div>
             </form>
           </article>
           <article class="status-box">
-            <h3>Instant Preview</h3>
+            <h3>Live Preview</h3>
             <iframe id="builderFastPreviewFrame" class="fast-preview-frame" title="AI app preview"></iframe>
             <article class="status-box hidden" id="builderGrowthPanel">
-              <h3>AI Next Steps (After Proof)</h3>
+              <h3>After Build: Next Steps</h3>
               <ul class="checklist" id="builderGrowthList">
-                <li>Run your first AI build to unlock next-step recommendations.</li>
+                <li>Build your first draft to unlock next steps.</li>
               </ul>
             </article>
           </article>
         </div>
         <div class="actions builder-simple-actions">
-          <button class="btn btn-ghost" type="button" data-builder-advanced-toggle aria-expanded="false">Show Advanced Options</button>
+          <button class="btn btn-ghost" type="button" data-builder-advanced-toggle aria-expanded="false">Show Manual Options</button>
           <a class="btn btn-ghost" href="templates.html">Browse Templates</a>
         </div>
-        <p class="muted">Most users only need the AI box above. Advanced options are optional.</p>
+        <p class="muted">Most users only need the box above. Manual options below are optional.</p>
         <article class="status-box builder-quick-guide" id="builderQuickGuide" aria-live="polite">
           <h3>Do This Next</h3>
           <p class="muted" id="builderQuickGuideText">Step 1: Type your app idea above.</p>
           <ol class="steps" id="builderQuickGuideList">
             <li>[Pending] Step 1: Describe your idea.</li>
-            <li>[Pending] Step 2: Generate your first draft.</li>
-            <li>[Pending] Step 3: Create starter project.</li>
+            <li>[Pending] Step 2: Build your first draft.</li>
+            <li>[Pending] Step 3: Save your starter project.</li>
           </ol>
           <div class="actions">
             <button class="btn btn-primary" type="button" id="builderQuickGuidePrimary">Start Step 1</button>
-            <a class="btn btn-ghost" href="start-here.html">View Start Guide</a>
+            <a class="btn btn-ghost" href="start-here.html">Open Start Guide</a>
           </div>
         </article>
       </section>
@@ -156,19 +156,19 @@
       <section class="section-panel builder-advanced hidden">
         <h2>
           <svg class="mini-icon" viewBox="0 0 96 96" aria-hidden="true"><use href="#orbit-icon"></use></svg>
-          Advanced Builder (Optional)
+          Manual Options (Optional)
         </h2>
         <p class="muted">
-          Use this only if you want manual control of templates, features, and stack settings.
+          Use this only if you want to manually choose template, features, and stack.
         </p>
         <div class="wizard-steps">
-          <button type="button" class="step-pill is-active" data-step-target="1">1. Template Gallery</button>
+          <button type="button" class="step-pill is-active" data-step-target="1">1. Templates</button>
           <button type="button" class="step-pill" data-step-target="2">2. Features</button>
-          <button type="button" class="step-pill" data-step-target="3">3. Stack</button>
-          <button type="button" class="step-pill" data-step-target="4">4. Summary</button>
+          <button type="button" class="step-pill" data-step-target="3">3. Details</button>
+          <button type="button" class="step-pill" data-step-target="4">4. Save</button>
         </div>
         <article class="status-box builder-live-summary" id="builderLiveSummary" aria-live="polite">
-          <h3>Your Current Plan</h3>
+          <h3>Your Current Selections</h3>
           <ul class="checklist" id="builderLiveSummaryList">
             <li>Template: Not selected yet</li>
             <li>Features: 0 selected</li>
@@ -180,8 +180,8 @@
 
         <form id="builderForm" novalidate>
           <section class="builder-step is-active" data-step-panel="1">
-            <h3>Browse Template Gallery (Optional)</h3>
-            <p class="muted">You can skip templates and use AI chat above. Or pick a visual starting point and we customize it for your customer.</p>
+            <h3>Choose A Template (Optional)</h3>
+            <p class="muted">You can skip templates and just use AI above, or pick one visual starter.</p>
             <div class="template-filters">
               <button class="toggle-btn is-active" type="button" data-template-filter="all">All</button>
               <button class="toggle-btn" type="button" data-template-filter="business">Business</button>
@@ -218,8 +218,8 @@
           </section>
 
           <section class="builder-step" data-step-panel="2">
-            <h3>Select Core Features</h3>
-            <p class="muted">Choose at least one feature to include in your build.</p>
+            <h3>Choose Features</h3>
+            <p class="muted">Pick at least one feature for your app.</p>
             <div class="actions feature-preset-actions">
               <button class="btn btn-ghost btn-small" type="button" data-feature-preset="essentials">Use Essentials</button>
               <button class="btn btn-ghost btn-small" type="button" data-feature-preset="growth">Use Growth Pack</button>
@@ -237,7 +237,7 @@
           </section>
 
           <section class="builder-step" data-step-panel="3">
-            <h3>Set Your Stack And Launch Details</h3>
+            <h3>Project Details</h3>
             <div class="form-grid">
               <label class="form-field">
                 Project Name
@@ -271,8 +271,8 @@
           </section>
 
           <section class="builder-step" data-step-panel="4">
-            <h3>Generate Project Brief</h3>
-            <p class="muted">Create a summary and scaffold a starter app folder in <code>projects/</code>.</p>
+            <h3>Save Starter Project</h3>
+            <p class="muted">This creates a starter app folder in <code>projects/</code>.</p>
             <div class="actions">
               <button class="btn btn-primary" type="submit">Create My Starter Project</button>
               <button class="btn btn-ghost" id="saveDraftBtn" type="button">Save Draft</button>
@@ -285,20 +285,20 @@
       <section class="section-panel builder-advanced hidden">
         <h2>
           <svg class="mini-icon" viewBox="0 0 96 96" aria-hidden="true"><use href="#orbit-icon"></use></svg>
-          AI Launch Guide
+          Launch Requirements (Optional)
         </h2>
         <p class="muted">
-          As you choose stack and features, islaAPP AI will tell you what accounts and services are required to launch.
+          Only needed when you are ready to launch. AI shows what accounts and services are required.
         </p>
         <div class="advisor-grid">
           <article class="status-box" id="builderAiSummary">
-            <h3>Waiting For Your Selections</h3>
+            <h3>Waiting For Selections</h3>
             <ul>
-              <li>Select stack and features to get live launch requirements.</li>
+              <li>Pick stack and features to view launch requirements.</li>
             </ul>
           </article>
           <article class="status-box">
-            <h3>Required Services</h3>
+            <h3>Needed Services</h3>
             <ul class="checklist" id="builderRequirementsList">
               <li>Pick features and stack details to see launch requirements.</li>
             </ul>
@@ -315,24 +315,24 @@
       <section class="section-panel builder-advanced hidden">
         <h2>
           <svg class="mini-icon" viewBox="0 0 96 96" aria-hidden="true"><use href="#orbit-icon"></use></svg>
-          Next Step
+          After You Save Project
         </h2>
         <ol class="steps">
-          <li><strong>Finalize your brief</strong> in this App Builder page.</li>
-          <li><strong>Check generated project files</strong> in the Projects dashboard.</li>
-          <li><strong>Confirm plan</strong> on the pricing page.</li>
-          <li><strong>Submit support kickoff</strong> so the team can start implementation.</li>
+          <li><strong>Open Projects</strong> and preview what was generated.</li>
+          <li><strong>Return to Builder</strong> if you want edits.</li>
+          <li><strong>Use Setup + Services</strong> only when you are ready to launch.</li>
+          <li><strong>Open Support</strong> if you get blocked.</li>
         </ol>
         <div class="actions">
-          <a class="btn btn-primary" href="projects.html">Open Projects Dashboard</a>
-          <a class="btn btn-ghost" href="support.html">Submit Support Ticket</a>
-          <a class="btn btn-ghost" href="pricing.html">Go To Pricing</a>
+          <a class="btn btn-primary" href="projects.html">Open Projects</a>
+          <a class="btn btn-ghost" href="support.html">Open Support</a>
+          <a class="btn btn-ghost" href="pricing.html">Open Pricing (Optional)</a>
         </div>
       </section>
     </main>
 
     <footer class="site-footer">
-      <p><span class="brand-inline">islaAPP</span> App Builder gives you a real creation workflow before development starts.</p>
+      <p><span class="brand-inline">islaAPP</span> App Builder helps you go from idea to first draft without technical setup.</p>
       <small>&copy; <span data-year></span> islaAPP. All rights reserved.</small>
     </footer>
 
