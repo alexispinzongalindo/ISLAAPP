@@ -58,25 +58,26 @@
         <span class="brand-name"><span>isla</span><strong>APP</strong></span>
       </a>
       <nav>
+        <a href="start-here.html">Start Here</a>
         <a href="index.html">Home</a>
         <a class="is-current" href="app-builder.html">App Builder</a>
         <a href="templates.html">Templates</a>
         <a href="pricing.html">Pricing</a>
         <a href="support.html">Support</a>
       </nav>
-      <a class="btn btn-small" href="support.html">Need Help</a>
+      <a class="btn btn-small" href="start-here.html">Start Here</a>
     </header>
 
     <main>
       <section class="page-intro">
-        <h1>App Creation Area</h1>
+        <h1>Build Your App In Minutes</h1>
         <p class="lead">
-          Start by describing your idea. islaAPP AI will build the first version, prove the concept, then guide next steps to launch.
+          Describe your idea in plain words. islaAPP will generate your first working version, then guide you through only what is needed to launch.
         </p>
         <ol class="steps">
-          <li><strong>Step 1:</strong> Describe your app.</li>
+          <li><strong>Step 1:</strong> Describe what you want to build.</li>
           <li><strong>Step 2:</strong> Click <strong>Build My First Version</strong>.</li>
-          <li><strong>Step 3:</strong> Review preview, then open advanced options only if needed.</li>
+          <li><strong>Step 3:</strong> Review preview and continue with suggested next steps.</li>
         </ol>
       </section>
 
@@ -105,6 +106,12 @@
                   required
                 ></textarea>
               </label>
+              <div class="quick-example-row" id="builderFastExamples">
+                <button class="toggle-btn" type="button" data-fast-example="Build a booking app for barbers with login, calendar, reminders, and payments.">Barber Booking</button>
+                <button class="toggle-btn" type="button" data-fast-example="Build a client portal for an agency to share files, timelines, and approvals.">Client Portal</button>
+                <button class="toggle-btn" type="button" data-fast-example="Build an ecommerce storefront with products, checkout, and order tracking.">E-commerce Store</button>
+                <button class="toggle-btn" type="button" data-fast-example="Build a community platform with member profiles, posts, and moderation tools.">Community App</button>
+              </div>
               <label class="form-field">
                 Your Name (optional)
                 <input id="builderFastOwner" type="text" placeholder="Owner name" />
@@ -131,6 +138,19 @@
           <a class="btn btn-ghost" href="templates.html">Browse Templates</a>
         </div>
         <p class="muted">Most users only need the AI box above. Advanced options are optional.</p>
+        <article class="status-box builder-quick-guide" id="builderQuickGuide" aria-live="polite">
+          <h3>Do This Next</h3>
+          <p class="muted" id="builderQuickGuideText">Step 1: Type your app idea above.</p>
+          <ol class="steps" id="builderQuickGuideList">
+            <li>[Pending] Step 1: Describe your idea.</li>
+            <li>[Pending] Step 2: Generate your first draft.</li>
+            <li>[Pending] Step 3: Create starter project.</li>
+          </ol>
+          <div class="actions">
+            <button class="btn btn-primary" type="button" id="builderQuickGuidePrimary">Start Step 1</button>
+            <a class="btn btn-ghost" href="start-here.html">View Start Guide</a>
+          </div>
+        </article>
       </section>
 
       <section class="section-panel builder-advanced hidden">
@@ -147,6 +167,16 @@
           <button type="button" class="step-pill" data-step-target="3">3. Stack</button>
           <button type="button" class="step-pill" data-step-target="4">4. Summary</button>
         </div>
+        <article class="status-box builder-live-summary" id="builderLiveSummary" aria-live="polite">
+          <h3>Your Current Plan</h3>
+          <ul class="checklist" id="builderLiveSummaryList">
+            <li>Template: Not selected yet</li>
+            <li>Features: 0 selected</li>
+            <li>Stack: Not selected</li>
+            <li>Launch target: Not selected</li>
+            <li>Ready to generate: No</li>
+          </ul>
+        </article>
 
         <form id="builderForm" novalidate>
           <section class="builder-step is-active" data-step-panel="1">
@@ -159,80 +189,14 @@
               <button class="toggle-btn" type="button" data-template-filter="community">Community</button>
               <button class="toggle-btn" type="button" data-template-filter="service">Service</button>
             </div>
-            <div class="template-grid template-grid-visual">
-              <label class="template-card template-card-visual" data-template-category="business">
-                <input type="radio" name="appTemplate" value="SaaS Dashboard" />
-                <div class="template-thumb template-thumb-saas"></div>
-                <strong>SaaS Dashboard</strong>
-                <span>Admin, analytics, subscriptions.</span>
+            <div class="builder-template-tools">
+              <label class="form-field">
+                Search templates
+                <input id="builderTemplateSearch" type="search" placeholder="Search by name, stack, or use case..." />
               </label>
-              <label class="template-card template-card-visual" data-template-category="business">
-                <input type="radio" name="appTemplate" value="Client Portal" />
-                <div class="template-thumb template-thumb-portal"></div>
-                <strong>Client Portal</strong>
-                <span>Projects, files, progress timeline.</span>
-              </label>
-              <label class="template-card template-card-visual" data-template-category="commerce">
-                <input type="radio" name="appTemplate" value="Marketplace" />
-                <div class="template-thumb template-thumb-market"></div>
-                <strong>Marketplace</strong>
-                <span>Listings, checkout, seller profiles.</span>
-              </label>
-              <label class="template-card template-card-visual" data-template-category="commerce">
-                <input type="radio" name="appTemplate" value="E-commerce Storefront" />
-                <div class="template-thumb template-thumb-store"></div>
-                <strong>E-commerce Storefront</strong>
-                <span>Products, cart, customer accounts.</span>
-              </label>
-              <label class="template-card template-card-visual" data-template-category="service">
-                <input type="radio" name="appTemplate" value="Booking Platform" />
-                <div class="template-thumb template-thumb-booking"></div>
-                <strong>Booking Platform</strong>
-                <span>Calendar, availability, reminders.</span>
-              </label>
-              <label class="template-card template-card-visual" data-template-category="service">
-                <input type="radio" name="appTemplate" value="Support Helpdesk" />
-                <div class="template-thumb template-thumb-helpdesk"></div>
-                <strong>Support Helpdesk</strong>
-                <span>Ticket queues and SLA workflow.</span>
-              </label>
-              <label class="template-card template-card-visual" data-template-category="community">
-                <input type="radio" name="appTemplate" value="Community Platform" />
-                <div class="template-thumb template-thumb-community"></div>
-                <strong>Community Platform</strong>
-                <span>Feeds, groups, moderation.</span>
-              </label>
-              <label class="template-card template-card-visual" data-template-category="community">
-                <input type="radio" name="appTemplate" value="Creator Membership Hub" />
-                <div class="template-thumb template-thumb-membership"></div>
-                <strong>Creator Membership Hub</strong>
-                <span>Paid content and member access.</span>
-              </label>
-              <label class="template-card template-card-visual" data-template-category="business">
-                <input type="radio" name="appTemplate" value="CRM Workspace" />
-                <div class="template-thumb template-thumb-crm"></div>
-                <strong>CRM Workspace</strong>
-                <span>Leads, deals, team pipeline.</span>
-              </label>
-              <label class="template-card template-card-visual" data-template-category="business">
-                <input type="radio" name="appTemplate" value="HR Recruiting Portal" />
-                <div class="template-thumb template-thumb-hr"></div>
-                <strong>HR Recruiting Portal</strong>
-                <span>Candidates, stages, interviews.</span>
-              </label>
-              <label class="template-card template-card-visual" data-template-category="service">
-                <input type="radio" name="appTemplate" value="Real Estate Listings" />
-                <div class="template-thumb template-thumb-realestate"></div>
-                <strong>Real Estate Listings</strong>
-                <span>Properties, tours, lead capture.</span>
-              </label>
-              <label class="template-card template-card-visual" data-template-category="service">
-                <input type="radio" name="appTemplate" value="Restaurant Ordering" />
-                <div class="template-thumb template-thumb-restaurant"></div>
-                <strong>Restaurant Ordering</strong>
-                <span>Menu, orders, kitchen queue.</span>
-              </label>
+              <p class="muted" id="builderTemplateCount">0 templates shown</p>
             </div>
+            <div class="template-grid template-grid-visual" id="builderTemplateGrid" aria-live="polite"></div>
             <article class="status-box template-detail hidden" id="builderTemplateDetail">
               <div class="template-detail-media">
                 <div class="template-detail-preview template-thumb-saas" id="builderTemplatePreview"></div>
@@ -256,6 +220,12 @@
           <section class="builder-step" data-step-panel="2">
             <h3>Select Core Features</h3>
             <p class="muted">Choose at least one feature to include in your build.</p>
+            <div class="actions feature-preset-actions">
+              <button class="btn btn-ghost btn-small" type="button" data-feature-preset="essentials">Use Essentials</button>
+              <button class="btn btn-ghost btn-small" type="button" data-feature-preset="growth">Use Growth Pack</button>
+              <button class="btn btn-ghost btn-small" type="button" data-feature-preset="all">Select All</button>
+              <button class="btn btn-ghost btn-small" type="button" data-feature-preset="clear">Clear</button>
+            </div>
             <div class="feature-picks">
               <label><input type="checkbox" name="appFeature" value="User authentication" /> User authentication</label>
               <label><input type="checkbox" name="appFeature" value="Team collaboration" /> Team collaboration</label>
@@ -304,7 +274,7 @@
             <h3>Generate Project Brief</h3>
             <p class="muted">Create a summary and scaffold a starter app folder in <code>projects/</code>.</p>
             <div class="actions">
-              <button class="btn btn-primary" type="submit">Generate Brief + Create Project</button>
+              <button class="btn btn-primary" type="submit">Create My Starter Project</button>
               <button class="btn btn-ghost" id="saveDraftBtn" type="button">Save Draft</button>
             </div>
             <section class="status-box hidden" id="builderOutput" aria-live="polite"></section>

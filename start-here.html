@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Start Here | islaAPP</title>
+    <meta
+      name="description"
+      content="Simple 3-step beginner guide for islaAPP: describe your app, generate first draft, then open projects."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;700;800&family=Space+Grotesk:wght@600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body class="page-start">
+    <svg class="sprite" aria-hidden="true" focusable="false">
+      <defs>
+        <linearGradient id="brand-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#f02f6f" />
+          <stop offset="45%" stop-color="#7d34de" />
+          <stop offset="100%" stop-color="#244fd4" />
+        </linearGradient>
+        <filter id="logo-shadow" x="-30%" y="-30%" width="160%" height="160%">
+          <feDropShadow dx="0" dy="6" stdDeviation="4" flood-color="#2d43b8" flood-opacity=".3" />
+        </filter>
+        <symbol id="orbit-icon" viewBox="0 0 96 96">
+          <g filter="url(#logo-shadow)">
+            <path
+              d="M16 49c0-18.2 14.8-33 33-33s33 14.8 33 33-14.8 33-33 33-33-14.8-33-33z"
+              fill="none"
+              stroke="url(#brand-gradient)"
+              stroke-width="12"
+              stroke-linecap="round"
+            />
+            <path d="M8 49h80" fill="none" stroke="url(#brand-gradient)" stroke-width="10" stroke-linecap="round" />
+            <path
+              d="M32 30c6-4.5 17-5.2 24.8.4"
+              fill="none"
+              stroke="#efe7dc"
+              stroke-width="4.6"
+              stroke-linecap="round"
+            />
+          </g>
+        </symbol>
+      </defs>
+    </svg>
+
+    <div class="noise" aria-hidden="true"></div>
+    <header class="topbar">
+      <a class="brand" href="index.html">
+        <svg class="brand-icon" viewBox="0 0 96 96" role="img" aria-label="islaAPP logo icon">
+          <use href="#orbit-icon"></use>
+        </svg>
+        <span class="brand-name"><span>isla</span><strong>APP</strong></span>
+      </a>
+      <nav>
+        <a href="index.html">Home</a>
+        <a class="is-current" href="start-here.html">Start Here</a>
+        <a href="app-builder.html">App Builder</a>
+        <a href="templates.html">Templates</a>
+        <a href="projects.html">Projects</a>
+      </nav>
+      <a class="btn btn-small" href="support.html">Need Help</a>
+    </header>
+
+    <main id="startHereRoot">
+      <section class="page-intro">
+        <h1>Simple Start Guide</h1>
+        <p class="lead">If you are new, follow these 3 steps in order. Do not worry about advanced settings yet.</p>
+        <ol class="steps">
+          <li><strong>Step 1:</strong> Describe your app idea in plain language.</li>
+          <li><strong>Step 2:</strong> Let AI generate your first draft.</li>
+          <li><strong>Step 3:</strong> Open Projects and review what was created.</li>
+        </ol>
+      </section>
+
+      <section class="section-panel">
+        <h2>
+          <svg class="mini-icon" viewBox="0 0 96 96" aria-hidden="true"><use href="#orbit-icon"></use></svg>
+          Continue From Where You Left Off
+        </h2>
+        <p class="muted" id="startHereContinueText">Checking your progress...</p>
+        <div class="actions">
+          <a class="btn btn-primary" id="startHereContinueBtn" href="app-builder.html?from=start-here">Continue</a>
+          <button class="btn btn-ghost" type="button" id="startHereRefresh">Refresh Progress</button>
+        </div>
+        <ul class="checklist" id="startHereChecklist">
+          <li>Step 1: Add your idea in AI Builder.</li>
+          <li>Step 2: Generate your first draft app in AI Builder.</li>
+          <li>Step 3: Open Projects to view your generated app files.</li>
+        </ul>
+      </section>
+
+      <section class="section-panel quickstart-grid">
+        <article class="quickstart-card">
+          <p class="eyebrow">STEP 1</p>
+          <h3>Describe Your Idea</h3>
+          <p>Use simple words like: "Build a booking app for barbers with login and payments."</p>
+          <div class="actions">
+            <a class="btn btn-primary" href="app-builder.html?from=start-here">Open AI Builder</a>
+          </div>
+        </article>
+        <article class="quickstart-card">
+          <p class="eyebrow">STEP 2</p>
+          <h3>Pick A Starter (Optional)</h3>
+          <p>If you prefer visuals first, browse templates and use one with one click.</p>
+          <div class="actions">
+            <a class="btn btn-primary" href="templates.html">Browse Templates</a>
+          </div>
+        </article>
+        <article class="quickstart-card">
+          <p class="eyebrow">STEP 3</p>
+          <h3>Review Your Created Project</h3>
+          <p>After generation, open Projects to view your files and preview link.</p>
+          <div class="actions">
+            <a class="btn btn-primary" href="projects.html">Open Projects</a>
+          </div>
+        </article>
+      </section>
+
+      <section class="section-panel">
+        <h2>
+          <svg class="mini-icon" viewBox="0 0 96 96" aria-hidden="true"><use href="#orbit-icon"></use></svg>
+          Need Human Help?
+        </h2>
+        <p class="muted">If you are blocked at any point, send a support request and we will guide you step by step.</p>
+        <div class="actions">
+          <a class="btn btn-primary" href="support.html">Open Support</a>
+          <a class="btn btn-ghost" href="guide.html">Read AI Guide</a>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <p><span class="brand-inline">islaAPP</span> gives beginners a direct path from idea to first app draft.</p>
+      <small>&copy; <span data-year></span> islaAPP. All rights reserved.</small>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.16/dist/lenis.min.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>

@@ -5,7 +5,9 @@ const OPS_SESSION_TOKEN_KEY = "islaapp_session_token";
 
 (function initSite() {
   setYear();
+  initBeginnerExperience();
   initMarketingNav();
+  initStartHerePage();
   initHomeCatalogSections();
   initUseCasesPage();
   initResourcesPage();
@@ -146,6 +148,159 @@ function initGsapMotion(lenis) {
 
   if (ScrollTrigger) {
     window.setTimeout(() => ScrollTrigger.refresh(), 60);
+  }
+}
+
+function initBeginnerExperience() {
+  const topbar = document.querySelector(".topbar");
+  if (!(topbar instanceof HTMLElement)) return;
+
+  const nav = topbar.querySelector("nav");
+  const currentPage = String(window.location.pathname.split("/").pop() || "index.html").toLowerCase();
+  if (nav instanceof HTMLElement && nav.dataset.simpleNav !== "1") {
+    const simpleLinks = [
+      { href: "index.html", label: "Home" },
+      { href: "start-here.html", label: "Start Here" },
+      { href: "app-builder.html", label: "Build" },
+      { href: "templates.html", label: "Templates" },
+      { href: "projects.html", label: "Projects" },
+      { href: "support.html", label: "Help" },
+    ];
+    const navMarkup = simpleLinks
+      .map((item) => {
+        const isCurrent = currentPage === String(item.href || "").toLowerCase();
+        return `<a${isCurrent ? ' class="is-current"' : ""} href="${escapeAttribute(item.href)}">${escapeHtml(item.label)}</a>`;
+      })
+      .join("");
+    nav.innerHTML = navMarkup;
+    nav.dataset.simpleNav = "1";
+  }
+
+  const topbarAction = topbar.querySelector(".btn.btn-small");
+  if (topbarAction instanceof HTMLAnchorElement) {
+    if (currentPage === "start-here.html") {
+      topbarAction.href = "app-builder.html?from=start-here";
+      topbarAction.textContent = "Open Builder";
+    } else {
+      topbarAction.href = "start-here.html";
+      topbarAction.textContent = "Start Here";
+    }
+  }
+
+  const main = document.querySelector("main");
+  if (!(main instanceof HTMLElement) || currentPage === "start-here.html") return;
+  if (document.querySelector("#beginnerBanner")) return;
+
+  const banner = document.createElement("section");
+  banner.id = "beginnerBanner";
+  banner.className = "beginner-banner";
+  banner.innerHTML = `
+    <p><strong>New here?</strong> Use the simple 3-step path first. No technical setup required to start.</p>
+    <div class="actions">
+      <a class="btn btn-primary" href="start-here.html">Open Start Here Guide</a>
+      <a class="btn btn-ghost" href="app-builder.html?from=start-here">Skip to AI Builder</a>
+    </div>
+  `;
+
+  const firstSection = main.querySelector("section");
+  if (firstSection instanceof HTMLElement) {
+    main.insertBefore(banner, firstSection);
+  } else {
+    main.prepend(banner);
+  }
+}
+
+function initStartHerePage() {
+  const root = document.querySelector("#startHereRoot");
+  if (!(root instanceof HTMLElement)) return;
+
+  const checklist = document.querySelector("#startHereChecklist");
+  const continueBtn = document.querySelector("#startHereContinueBtn");
+  const continueText = document.querySelector("#startHereContinueText");
+  const refreshBtn = document.querySelector("#startHereRefresh");
+  if (!(checklist instanceof HTMLElement) || !(continueText instanceof HTMLElement)) return;
+
+  const readFastPrompt = () => {
+    const saved = parseChecklistState(localStorage.getItem("islaapp_builder_fast_prompt"));
+    return typeof saved.prompt === "string" ? saved.prompt.trim() : "";
+  };
+
+  const readBuilderDraft = () => {
+    const saved = parseChecklistState(localStorage.getItem("islaapp_builder_draft"));
+    const stack = typeof saved.stack === "string" ? saved.stack.trim() : "";
+    const target = typeof saved.target === "string" ? saved.target.trim() : "";
+    const projectName = typeof saved.projectName === "string" ? saved.projectName.trim() : "";
+    const hasFeatures = Array.isArray(saved.features) && saved.features.length > 0;
+    return {
+      hasDraft: Boolean(projectName || stack || target || hasFeatures),
+      projectName,
+      stack,
+      target,
+    };
+  };
+
+  const readProjectSummary = async () => {
+    try {
+      const response = await fetch("/api/projects");
+      const payload = await response.json();
+      if (!response.ok || !payload.ok || !Array.isArray(payload.projects)) return { count: null, latest: "" };
+      const projects = payload.projects;
+      const latest = projects.length > 0 ? String(projects[0].projectName || projects[0].slug || "").trim() : "";
+      return { count: projects.length, latest };
+    } catch (_error) {
+      return { count: null, latest: "" };
+    }
+  };
+
+  const renderChecklist = async () => {
+    const prompt = readFastPrompt();
+    const draft = readBuilderDraft();
+    const projects = await readProjectSummary();
+    const ideaReady = Boolean(prompt);
+    const buildReady = draft.hasDraft;
+    const projectReady = typeof projects.count === "number" && projects.count > 0;
+
+    const lines = [
+      ideaReady ? "Step 1 complete: Idea captured in AI Builder prompt." : "Step 1: Add your idea in AI Builder.",
+      buildReady
+        ? `Step 2 complete: Draft detected${draft.projectName ? ` (${draft.projectName})` : ""}.`
+        : "Step 2: Generate your first draft app in AI Builder.",
+      projectReady
+        ? `Step 3 complete: ${projects.count} project${projects.count === 1 ? "" : "s"} found${projects.latest ? ` (latest: ${projects.latest})` : ""}.`
+        : "Step 3: Open Projects to view your generated app files.",
+    ];
+
+    checklist.innerHTML = lines.map((line) => `<li>${escapeHtml(line)}</li>`).join("");
+
+    if (continueBtn instanceof HTMLAnchorElement) {
+      if (!ideaReady) {
+        continueBtn.href = "app-builder.html?from=start-here#builderFastForm";
+        continueBtn.textContent = "Start Step 1";
+        continueText.textContent = "First action: type your app idea in AI Builder.";
+      } else if (!buildReady) {
+        continueBtn.href = "app-builder.html?from=start-here";
+        continueBtn.textContent = "Start Step 2";
+        continueText.textContent = "Your idea is saved. Next action: generate your first draft app.";
+      } else if (!projectReady) {
+        continueBtn.href = "app-builder.html?from=start-here";
+        continueBtn.textContent = "Finish Step 3";
+        continueText.textContent = "Draft detected. Next action: click Create My Starter Project in App Builder.";
+      } else {
+        continueBtn.href = "projects.html";
+        continueBtn.textContent = "Open My Projects";
+        continueText.textContent = "Great. Your project exists. Open Projects to preview and continue.";
+      }
+    }
+  };
+
+  renderChecklist();
+  window.addEventListener("storage", () => {
+    renderChecklist();
+  });
+  if (refreshBtn instanceof HTMLButtonElement) {
+    refreshBtn.addEventListener("click", () => {
+      renderChecklist();
+    });
   }
 }
 
@@ -2167,10 +2322,18 @@ function initAppBuilder() {
   const fastClearButton = document.querySelector("#builderFastClear");
   const chatLog = document.querySelector("#builderChatLog");
   const chatThinking = document.querySelector("#builderChatThinking");
+  const quickGuideText = document.querySelector("#builderQuickGuideText");
+  const quickGuideList = document.querySelector("#builderQuickGuideList");
+  const quickGuidePrimary = document.querySelector("#builderQuickGuidePrimary");
   const fastPreviewFrame = document.querySelector("#builderFastPreviewFrame");
   const growthPanel = document.querySelector("#builderGrowthPanel");
   const growthList = document.querySelector("#builderGrowthList");
   const templateFilterButtons = Array.from(document.querySelectorAll("[data-template-filter]"));
+  const templateSearchInput = document.querySelector("#builderTemplateSearch");
+  const templateCount = document.querySelector("#builderTemplateCount");
+  const featurePresetButtons = Array.from(document.querySelectorAll("[data-feature-preset]"));
+  const liveSummaryList = document.querySelector("#builderLiveSummaryList");
+  const fastExampleButtons = Array.from(document.querySelectorAll("[data-fast-example]"));
   const templateDetail = document.querySelector("#builderTemplateDetail");
   const templatePreview = document.querySelector("#builderTemplatePreview");
   const templateTitle = document.querySelector("#builderTemplateTitle");
@@ -2182,6 +2345,7 @@ function initAppBuilder() {
   const templateDemoFrame = document.querySelector("#templateDemoFrame");
   const templateDemoTitle = document.querySelector("#templateDemoTitle");
   const templateDemoClose = document.querySelector("#templateDemoClose");
+  const templateGrid = document.querySelector("#builderTemplateGrid");
   const advancedSections = Array.from(document.querySelectorAll(".builder-advanced"));
   const advancedToggles = Array.from(document.querySelectorAll("[data-builder-advanced-toggle]"));
 
@@ -2189,12 +2353,15 @@ function initAppBuilder() {
 
   const stepButtons = Array.from(document.querySelectorAll("[data-step-target]"));
   const stepPanels = Array.from(document.querySelectorAll("[data-step-panel]"));
-  const templateInputs = Array.from(form.querySelectorAll("input[name='appTemplate']"));
+  let templateInputs = [];
   const featureInputs = Array.from(form.querySelectorAll("input[name='appFeature']"));
   const storageKey = "islaapp_builder_draft";
   const fastStorageKey = "islaapp_builder_fast_prompt";
+  const latestProjectKey = "islaapp_last_created_project";
   let providerHealthById = {};
   let activeTemplateName = "";
+  let fallbackTemplateName = "";
+  let quickGuideAction = "step1";
   const templateCatalog = getTemplateCatalog();
 
   const templateThumbClassByName = Object.fromEntries(templateCatalog.map((item) => [item.name, item.thumbClass]));
@@ -2208,6 +2375,46 @@ function initAppBuilder() {
       },
     ])
   );
+
+  const renderBuilderTemplateCards = () => {
+    if (templateGrid instanceof HTMLElement) {
+      templateGrid.innerHTML = templateCatalog
+        .map((item) => {
+          const category = String(item.category || "");
+          const name = String(item.name || "");
+          const description = String(item.shortDescription || item.longDescription || "Template starting point.");
+          const thumbClass = String(item.thumbClass || "template-thumb-saas");
+          const searchText = [
+            item.name,
+            item.shortDescription,
+            item.longDescription,
+            item.stack,
+            ...(Array.isArray(item.perfectFor) ? item.perfectFor : []),
+            ...(Array.isArray(item.techTags) ? item.techTags : []),
+          ]
+            .map((value) => String(value || "").trim())
+            .filter(Boolean)
+            .join(" ")
+            .toLowerCase();
+          return `
+            <label class="template-card template-card-visual" data-template-category="${escapeAttribute(category)}" data-search="${escapeAttribute(
+              searchText
+            )}" data-template-id="${escapeAttribute(
+              String(item.id || "")
+            )}">
+              <input type="radio" name="appTemplate" value="${escapeAttribute(name)}" />
+              <div class="template-thumb ${escapeAttribute(thumbClass)}"></div>
+              <strong>${escapeHtml(name)}</strong>
+              <span>${escapeHtml(description)}</span>
+            </label>
+          `;
+        })
+        .join("");
+    }
+    templateInputs = Array.from(form.querySelectorAll("input[name='appTemplate']"));
+  };
+
+  renderBuilderTemplateCards();
 
   let advancedVisible = false;
   const setAdvancedVisible = (visible) => {
@@ -2412,7 +2619,15 @@ function initAppBuilder() {
 
   const applyInferredDraftToWizard = (inferred) => {
     const templateMatch = templateInputs.find((input) => input.value === inferred.template);
-    if (templateMatch) templateMatch.checked = true;
+    if (templateMatch) {
+      templateMatch.checked = true;
+      fallbackTemplateName = "";
+    } else {
+      templateInputs.forEach((input) => {
+        input.checked = false;
+      });
+      fallbackTemplateName = String(inferred.template || "").trim();
+    }
     featureInputs.forEach((input) => {
       input.checked = inferred.features.includes(input.value);
     });
@@ -2529,6 +2744,7 @@ function initAppBuilder() {
     }
     setThinking(false);
     if (growthPanel) growthPanel.classList.add("hidden");
+    renderQuickGuide();
   };
 
   const inferPreviewUrlFromScaffold = (scaffold, stack) => {
@@ -2548,7 +2764,6 @@ function initAppBuilder() {
 
   const renderAiGuide = () => {
     if (!aiSummary || !aiRequirementsList || !aiNextActions) return;
-    const selectedTemplate = form.querySelector("input[name='appTemplate']:checked");
     const selectedFeatures = featureInputs.filter((item) => item.checked).map((item) => item.value);
     const stack = valueOf("#builderStack");
     const target = valueOf("#builderTarget");
@@ -2562,7 +2777,7 @@ function initAppBuilder() {
       rootSummary: aiSummary,
       rootRequirements: aiRequirementsList,
       rootActions: aiNextActions,
-      template: selectedTemplate ? selectedTemplate.value : "",
+      template: getSelectedTemplateName(),
       stack,
       target,
       requirements,
@@ -2599,6 +2814,93 @@ function initAppBuilder() {
     });
   };
 
+  const getSelectedTemplateName = () => {
+    const selected = form.querySelector("input[name='appTemplate']:checked");
+    if (selected instanceof HTMLInputElement) {
+      return String(selected.value || "").trim();
+    }
+    return String(fallbackTemplateName || "").trim();
+  };
+
+  const renderBuilderLiveSummary = () => {
+    if (!(liveSummaryList instanceof HTMLElement)) return;
+    const templateName = getSelectedTemplateName() || "Not selected yet";
+    const selectedFeatures = featureInputs.filter((item) => item.checked).map((item) => item.value);
+    const stack = valueOf("#builderStack") || "Not selected";
+    const target = valueOf("#builderTarget") || "Not selected";
+    const projectName = valueOf("#builderProjectName");
+    const owner = valueOf("#builderOwner");
+    const readyToGenerate = Boolean(projectName && owner && stack !== "Not selected" && target !== "Not selected" && selectedFeatures.length > 0);
+    const featureText = selectedFeatures.length > 0 ? selectedFeatures.join(", ") : "0 selected";
+
+    liveSummaryList.innerHTML = [
+      `Template: ${escapeHtml(templateName)}`,
+      `Features: ${escapeHtml(featureText)}`,
+      `Stack: ${escapeHtml(stack)}`,
+      `Launch target: ${escapeHtml(target)}`,
+      `Ready to generate: ${readyToGenerate ? "Yes" : "No"}`,
+    ]
+      .map((line) => `<li>${line}</li>`)
+      .join("");
+  };
+
+  const readLatestProjectState = () => {
+    const saved = parseChecklistState(localStorage.getItem(latestProjectKey));
+    const projectDir = typeof saved.projectDir === "string" ? saved.projectDir.trim() : "";
+    const source = typeof saved.source === "string" ? saved.source.trim() : "";
+    const createdAt = typeof saved.createdAt === "string" ? saved.createdAt.trim() : "";
+    return { projectDir, source, createdAt, exists: Boolean(projectDir) };
+  };
+
+  const rememberLatestProject = (projectDir, source) => {
+    localStorage.setItem(
+      latestProjectKey,
+      JSON.stringify({
+        projectDir: String(projectDir || ""),
+        source: String(source || ""),
+        createdAt: new Date().toISOString(),
+      })
+    );
+  };
+
+  const renderQuickGuide = () => {
+    if (!(quickGuideText instanceof HTMLElement) || !(quickGuideList instanceof HTMLElement) || !(quickGuidePrimary instanceof HTMLButtonElement)) return;
+
+    const promptValue = fastPromptInput instanceof HTMLTextAreaElement ? String(fastPromptInput.value || "").trim() : "";
+    const selectedFeatures = featureInputs.filter((item) => item.checked).map((item) => item.value);
+    const projectName = valueOf("#builderProjectName");
+    const owner = valueOf("#builderOwner");
+    const stack = valueOf("#builderStack");
+    const target = valueOf("#builderTarget");
+    const hasIdea = Boolean(promptValue || getSelectedTemplateName() || projectName);
+    const hasPlan = Boolean(selectedFeatures.length > 0 && projectName && owner && stack && target);
+    const latestProject = readLatestProjectState();
+    const hasProject = latestProject.exists;
+
+    const step1 = hasIdea ? "[Done] Step 1: Describe your idea." : "[Pending] Step 1: Describe your idea.";
+    const step2 = hasPlan ? "[Done] Step 2: Generate your first draft." : "[Pending] Step 2: Generate your first draft.";
+    const step3 = hasProject ? "[Done] Step 3: Create starter project." : "[Pending] Step 3: Create starter project.";
+    quickGuideList.innerHTML = [step1, step2, step3].map((line) => `<li>${escapeHtml(line)}</li>`).join("");
+
+    if (!hasIdea) {
+      quickGuideAction = "step1";
+      quickGuideText.textContent = "Step 1 now: type your app idea above, then click Build My First Version.";
+      quickGuidePrimary.textContent = "Start Step 1";
+    } else if (!hasPlan) {
+      quickGuideAction = "step2";
+      quickGuideText.textContent = "Step 2 now: generate your first draft app from the AI box.";
+      quickGuidePrimary.textContent = "Start Step 2";
+    } else if (!hasProject) {
+      quickGuideAction = "step3";
+      quickGuideText.textContent = "Step 3 now: create your starter project from Advanced Summary.";
+      quickGuidePrimary.textContent = "Start Step 3";
+    } else {
+      quickGuideAction = "done";
+      quickGuideText.textContent = "Great. Your starter project exists. Open Projects to continue.";
+      quickGuidePrimary.textContent = "Open Projects";
+    }
+  };
+
   const updateTemplateUI = () => {
     const cards = Array.from(form.querySelectorAll(".template-card"));
     cards.forEach((card) => {
@@ -2606,7 +2908,16 @@ function initAppBuilder() {
       card.classList.toggle("is-selected", Boolean(radio && radio.checked));
     });
     const selected = form.querySelector("input[name='appTemplate']:checked");
-    renderTemplateDetail(selected ? selected.value : "");
+    if (selected instanceof HTMLInputElement) {
+      fallbackTemplateName = "";
+      renderTemplateDetail(selected.value);
+      renderBuilderLiveSummary();
+      renderQuickGuide();
+      return;
+    }
+    renderTemplateDetail(fallbackTemplateName);
+    renderBuilderLiveSummary();
+    renderQuickGuide();
   };
 
   const renderTemplateDetail = (templateName) => {
@@ -2674,14 +2985,24 @@ function initAppBuilder() {
     document.body.classList.add("modal-open");
   };
 
-  const applyTemplateFilter = (category) => {
-    const normalized = String(category || "all").toLowerCase();
+  let activeTemplateFilter = "all";
+  const applyTemplateFilter = () => {
+    const normalized = String(activeTemplateFilter || "all").toLowerCase();
+    const query = templateSearchInput instanceof HTMLInputElement ? String(templateSearchInput.value || "").trim().toLowerCase() : "";
     const cards = Array.from(form.querySelectorAll(".template-card[data-template-category]"));
+    let visibleCount = 0;
     cards.forEach((card) => {
       const cardCategory = String(card.getAttribute("data-template-category") || "").toLowerCase();
-      const showCard = normalized === "all" || cardCategory === normalized;
+      const searchBlob = String(card.getAttribute("data-search") || "").toLowerCase();
+      const categoryMatch = normalized === "all" || cardCategory === normalized;
+      const searchMatch = !query || searchBlob.includes(query);
+      const showCard = categoryMatch && searchMatch;
       card.classList.toggle("hidden", !showCard);
+      if (showCard) visibleCount += 1;
     });
+    if (templateCount instanceof HTMLElement) {
+      templateCount.textContent = `${visibleCount} template${visibleCount === 1 ? "" : "s"} shown`;
+    }
   };
 
   stepButtons.forEach((btn) => {
@@ -2698,10 +3019,54 @@ function initAppBuilder() {
   if (templateFilterButtons.length > 0) {
     templateFilterButtons.forEach((button) => {
       button.addEventListener("click", () => {
-        const category = String(button.dataset.templateFilter || "all");
+        activeTemplateFilter = String(button.dataset.templateFilter || "all");
         templateFilterButtons.forEach((item) => item.classList.toggle("is-active", item === button));
-        applyTemplateFilter(category);
+        applyTemplateFilter();
       });
+    });
+  }
+
+  if (templateSearchInput instanceof HTMLInputElement) {
+    templateSearchInput.addEventListener("input", () => {
+      applyTemplateFilter();
+    });
+  }
+
+  if (quickGuidePrimary instanceof HTMLButtonElement) {
+    quickGuidePrimary.addEventListener("click", () => {
+      if (quickGuideAction === "step1") {
+        if (fastPromptInput instanceof HTMLTextAreaElement) {
+          fastPromptInput.focus();
+          fastPromptInput.scrollIntoView({ behavior: "smooth", block: "center" });
+        }
+        return;
+      }
+      if (quickGuideAction === "step2") {
+        if (fastPromptInput instanceof HTMLTextAreaElement && !String(fastPromptInput.value || "").trim()) {
+          fastPromptInput.focus();
+          fastPromptInput.scrollIntoView({ behavior: "smooth", block: "center" });
+          return;
+        }
+        if (fastForm instanceof HTMLFormElement && fastSubmitButton instanceof HTMLButtonElement && !fastSubmitButton.disabled) {
+          fastForm.requestSubmit();
+          return;
+        }
+        if (fastSubmitButton instanceof HTMLButtonElement) {
+          fastSubmitButton.scrollIntoView({ behavior: "smooth", block: "center" });
+          fastSubmitButton.focus();
+        }
+        return;
+      }
+      if (quickGuideAction === "step3") {
+        setAdvancedVisible(true);
+        setActiveStep(4);
+        if (submitBtn instanceof HTMLButtonElement) {
+          submitBtn.scrollIntoView({ behavior: "smooth", block: "center" });
+          submitBtn.focus();
+        }
+        return;
+      }
+      window.location.href = "projects.html";
     });
   }
 
@@ -2713,8 +3078,8 @@ function initAppBuilder() {
 
   if (templateUseBtn instanceof HTMLButtonElement) {
     templateUseBtn.addEventListener("click", () => {
-      const selected = form.querySelector("input[name='appTemplate']:checked");
-      if (!selected) return;
+      const selectedTemplateName = getSelectedTemplateName();
+      if (!selectedTemplateName) return;
       setActiveStep(2);
       const featureSection = form.querySelector("[data-step-panel='2']");
       if (featureSection instanceof HTMLElement) {
@@ -2737,25 +3102,73 @@ function initAppBuilder() {
     if (event.key === "Escape") closeTemplateDemo();
   });
 
+  if (featurePresetButtons.length > 0) {
+    const presetValues = {
+      essentials: ["User authentication", "Admin dashboard"],
+      growth: ["User authentication", "Team collaboration", "Notifications", "Admin dashboard", "Analytics reports"],
+      all: featureInputs.map((input) => String(input.value || "")),
+      clear: [],
+    };
+    featurePresetButtons.forEach((button) => {
+      if (!(button instanceof HTMLButtonElement)) return;
+      button.addEventListener("click", () => {
+        const presetId = String(button.dataset.featurePreset || "essentials");
+        const values = Array.isArray(presetValues[presetId]) ? presetValues[presetId] : presetValues.essentials;
+        const selectedSet = new Set(values);
+        featureInputs.forEach((input) => {
+          input.checked = selectedSet.has(String(input.value || ""));
+        });
+        renderAiGuide();
+        renderBuilderLiveSummary();
+        renderQuickGuide();
+      });
+    });
+  }
+
   featureInputs.forEach((input) => {
-    input.addEventListener("change", renderAiGuide);
+    input.addEventListener("change", () => {
+      renderAiGuide();
+      renderBuilderLiveSummary();
+      renderQuickGuide();
+    });
   });
 
   const stackInput = form.querySelector("#builderStack");
   const targetInput = form.querySelector("#builderTarget");
+  const projectNameInput = form.querySelector("#builderProjectName");
+  const ownerInput = form.querySelector("#builderOwner");
   if (stackInput) {
-    stackInput.addEventListener("change", renderAiGuide);
+    stackInput.addEventListener("change", () => {
+      renderAiGuide();
+      renderBuilderLiveSummary();
+      renderQuickGuide();
+    });
   }
   if (targetInput) {
-    targetInput.addEventListener("change", renderAiGuide);
+    targetInput.addEventListener("change", () => {
+      renderAiGuide();
+      renderBuilderLiveSummary();
+      renderQuickGuide();
+    });
+  }
+  if (projectNameInput) {
+    projectNameInput.addEventListener("input", () => {
+      renderBuilderLiveSummary();
+      renderQuickGuide();
+    });
+  }
+  if (ownerInput) {
+    ownerInput.addEventListener("input", () => {
+      renderBuilderLiveSummary();
+      renderQuickGuide();
+    });
   }
 
   const saveDraft = (showSavedMessage) => {
-    const selectedTemplate = form.querySelector("input[name='appTemplate']:checked");
     const selectedFeatures = featureInputs.filter((item) => item.checked).map((item) => item.value);
 
     const draft = {
-      template: selectedTemplate ? selectedTemplate.value : "",
+      template: getSelectedTemplateName(),
       features: selectedFeatures,
       projectName: valueOf("#builderProjectName"),
       owner: valueOf("#builderOwner"),
@@ -2776,7 +3189,12 @@ function initAppBuilder() {
   const savedDraft = parseChecklistState(localStorage.getItem(storageKey));
   if (savedDraft.template) {
     const match = templateInputs.find((input) => input.value === savedDraft.template);
-    if (match) match.checked = true;
+    if (match) {
+      match.checked = true;
+      fallbackTemplateName = "";
+    } else if (templateByName[savedDraft.template]) {
+      fallbackTemplateName = savedDraft.template;
+    }
   }
   if (Array.isArray(savedDraft.features)) {
     featureInputs.forEach((input) => {
@@ -2789,6 +3207,7 @@ function initAppBuilder() {
   setSelectValue("#builderTarget", savedDraft.target);
 
   const urlParams = new URLSearchParams(window.location.search);
+  const fromStartHere = String(urlParams.get("from") || "").toLowerCase() === "start-here";
   const templateFromUrl =
     findTemplateById(urlParams.get("template_id")) ||
     findTemplateByName(urlParams.get("template")) ||
@@ -2800,17 +3219,27 @@ function initAppBuilder() {
 
   if (templateFromUrl) {
     const templateMatch = templateInputs.find((input) => input.value === templateFromUrl.name);
-    if (templateMatch) templateMatch.checked = true;
-
-    if (urlFeatures.length > 0) {
-      featureInputs.forEach((input) => {
-        input.checked = urlFeatures.includes(input.value);
-      });
+    if (templateMatch) {
+      templateMatch.checked = true;
+      fallbackTemplateName = "";
     } else {
-      featureInputs.forEach((input) => {
-        input.checked = templateFromUrl.features.includes(input.value);
+      templateInputs.forEach((input) => {
+        input.checked = false;
       });
+      fallbackTemplateName = templateFromUrl.name;
     }
+
+    const featureLookup = Object.fromEntries(featureInputs.map((input) => [String(input.value || "").toLowerCase(), String(input.value || "")]));
+    const normalizedUrlFeatures = urlFeatures
+      .map((item) => featureLookup[String(item || "").toLowerCase()] || "")
+      .filter(Boolean);
+    const templateFallbackFeatures = (Array.isArray(templateFromUrl.features) ? templateFromUrl.features : [])
+      .map((item) => featureLookup[String(item || "").toLowerCase()] || "")
+      .filter(Boolean);
+    const featuresToApply = normalizedUrlFeatures.length > 0 ? normalizedUrlFeatures : templateFallbackFeatures;
+    featureInputs.forEach((input) => {
+      input.checked = featuresToApply.includes(input.value);
+    });
 
     setInputValue("#builderProjectName", String(urlParams.get("project") || `${templateFromUrl.name} Build`));
     setInputValue("#builderOwner", String(urlParams.get("owner") || "Founder"));
@@ -2828,11 +3257,23 @@ function initAppBuilder() {
 
   updateTemplateUI();
   hydrateBuilderTemplateThumbs();
-  applyTemplateFilter("all");
+  activeTemplateFilter = "all";
+  applyTemplateFilter();
   setActiveStep(templateFromUrl ? 2 : 1);
   renderAiGuide();
+  renderBuilderLiveSummary();
+  renderQuickGuide();
   loadProviderHealth();
   renderFastIdleState();
+  if (fromStartHere) {
+    appendChatMessage(
+      "assistant",
+      "Start Here mode is active. First, type your idea and click Build My First Version. You only need advanced options if you want manual control."
+    );
+    if (fastPromptInput instanceof HTMLTextAreaElement && !String(fastPromptInput.value || "").trim()) {
+      fastPromptInput.focus();
+    }
+  }
   setAdvancedVisible(Boolean(templateFromUrl));
 
   if (advancedToggles.length > 0) {
@@ -2897,18 +3338,21 @@ function initAppBuilder() {
         }
 
         if (scaffold.ok) {
+          rememberLatestProject(scaffold.projectDir, "template-autoclone");
           showStatus(output, "success", "Template cloned", [
             `Template: ${templateFromUrl.name}`,
             `Project folder created: ${String(scaffold.projectDir || "")}`,
             "Open Projects dashboard to review files and preview.",
           ]);
           setActiveStep(4);
+          renderQuickGuide();
         } else {
           showStatus(output, "error", "Template clone failed", [
             `Template: ${templateFromUrl.name}`,
             `Reason: ${String(scaffold.error || "Unknown error")}`,
             "Run python3 dev_server.py and try clone again.",
           ]);
+          renderQuickGuide();
         }
       })();
     }
@@ -2921,10 +3365,27 @@ function initAppBuilder() {
   }
 
   if (fastPromptInput instanceof HTMLTextAreaElement) {
-    fastPromptInput.addEventListener("input", writeFastPromptState);
+    fastPromptInput.addEventListener("input", () => {
+      writeFastPromptState();
+      renderQuickGuide();
+    });
   }
   if (fastOwnerInput instanceof HTMLInputElement) {
     fastOwnerInput.addEventListener("input", writeFastPromptState);
+  }
+
+  if (fastExampleButtons.length > 0 && fastPromptInput instanceof HTMLTextAreaElement) {
+    fastExampleButtons.forEach((button) => {
+      if (!(button instanceof HTMLButtonElement)) return;
+      button.addEventListener("click", () => {
+        const example = String(button.dataset.fastExample || "").trim();
+        if (!example) return;
+        fastPromptInput.value = example;
+        writeFastPromptState();
+        renderQuickGuide();
+        fastPromptInput.focus();
+      });
+    });
   }
 
   if (fastClearButton instanceof HTMLButtonElement) {
@@ -2933,6 +3394,7 @@ function initAppBuilder() {
       if (fastOwnerInput instanceof HTMLInputElement) fastOwnerInput.value = "";
       localStorage.removeItem(fastStorageKey);
       renderFastIdleState();
+      renderQuickGuide();
     });
   }
 
@@ -3001,6 +3463,7 @@ function initAppBuilder() {
         });
 
         if (scaffold.ok) {
+          rememberLatestProject(scaffold.projectDir, "ai-fast");
           const previewUrl = inferPreviewUrlFromScaffold(scaffold, inferred.stack);
           if (previewUrl && fastPreviewFrame instanceof HTMLIFrameElement) {
             fastPreviewFrame.src = previewUrl;
@@ -3019,6 +3482,7 @@ function initAppBuilder() {
               )}">Setup Wizard</a>.</p>
             `
           );
+          renderQuickGuide();
         } else {
           appendChatMessageHtml(
             "assistant",
@@ -3028,9 +3492,11 @@ function initAppBuilder() {
               <p>Run <code>python3 dev_server.py</code> in this project folder, then try again.</p>
             `
           );
+          renderQuickGuide();
         }
       } catch (error) {
         appendChatMessage("assistant", `I hit an error while building the draft: ${error instanceof Error ? error.message : "Unknown error"}`);
+        renderQuickGuide();
       } finally {
         setThinking(false);
         if (fastSubmitButton instanceof HTMLButtonElement) {
@@ -3044,8 +3510,7 @@ function initAppBuilder() {
   form.addEventListener("submit", async (event) => {
     event.preventDefault();
 
-    const template = form.querySelector("input[name='appTemplate']:checked");
-    const templateValue = template ? template.value : "AI Guided Build";
+    const templateValue = getSelectedTemplateName() || "AI Guided Build";
     const selectedFeatures = featureInputs.filter((item) => item.checked).map((item) => item.value);
     const projectName = valueOf("#builderProjectName");
     const owner = valueOf("#builderOwner");
@@ -3089,6 +3554,7 @@ function initAppBuilder() {
     }
 
     if (scaffold.ok) {
+      rememberLatestProject(scaffold.projectDir, "manual-submit");
       const successLines = briefLines.concat([
         `Project folder created: ${scaffold.projectDir}`,
         `Files: ${(scaffold.files || []).join(", ")}`,
@@ -3096,6 +3562,7 @@ function initAppBuilder() {
         "Next action: Confirm pricing and submit support kickoff ticket.",
       ]);
       showStatus(output, "success", "App project brief generated", successLines);
+      renderQuickGuide();
     } else {
       const errorLines = briefLines.concat([
         "Could not create folder automatically.",
@@ -3103,6 +3570,7 @@ function initAppBuilder() {
         "Run: python3 dev_server.py, then submit again.",
       ]);
       showStatus(output, "error", "Brief generated but project not created", errorLines);
+      renderQuickGuide();
     }
 
     setActiveStep(4);
