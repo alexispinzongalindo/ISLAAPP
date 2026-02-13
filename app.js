@@ -519,6 +519,43 @@ function getUseCaseCatalog() {
   ];
 }
 
+function getUseCaseTitleLabel(rawTitle) {
+  const title = String(rawTitle || "").trim();
+  if (getCurrentLanguage() !== "es") return title;
+  const map = {
+    Productivity: "Productividad",
+    Educational: "Educacion",
+    Financial: "Finanzas",
+    Entertainment: "Entretenimiento",
+    "Health & Wellness": "Salud y bienestar",
+    "Business Intelligence": "Inteligencia de negocio",
+    "Creative Tools": "Herramientas creativas",
+    "Marketing & Sales": "Marketing y ventas",
+    "E-commerce & Retail": "E-commerce y retail",
+    Community: "Comunidad",
+    "HR & Recruitment": "RRHH y reclutamiento",
+    "Travel Planning": "Planificacion de viajes",
+  };
+  return map[title] || title;
+}
+
+function getUseCaseCountLabel(count) {
+  const value = Number(count || 0);
+  return getCopy(`${value} Apps`, `${value} apps`);
+}
+
+function getHomeTemplateSummary(template) {
+  if (getCurrentLanguage() !== "es") {
+    return String(template.shortDescription || template.longDescription || "");
+  }
+  const category = String(template.category || "").toLowerCase();
+  if (category === "business") return "Tableros, gestion y automatizacion para equipos.";
+  if (category === "commerce") return "Catalogo, checkout y flujo de ventas listo.";
+  if (category === "community") return "Miembros, contenido y colaboracion en comunidad.";
+  if (category === "service") return "Reservas, operaciones y seguimiento de clientes.";
+  return "Plantilla visual lista para personalizar con IA.";
+}
+
 function initHomeCatalogSections() {
   const categoryGrid = document.querySelector("#homeCategoryGrid");
   const templateGrid = document.querySelector("#homeTemplateShowcase");
@@ -531,8 +568,8 @@ function initHomeCatalogSections() {
       .map(
         (item) => `
           <article class="category-card">
-            <h3>${escapeHtml(String(item.title || ""))}</h3>
-            <p>${escapeHtml(String(item.count || 0))} Apps</p>
+            <h3>${escapeHtml(getUseCaseTitleLabel(item.title))}</h3>
+            <p>${escapeHtml(getUseCaseCountLabel(item.count))}</p>
           </article>
         `
       )
@@ -551,12 +588,14 @@ function initHomeCatalogSections() {
           <article class="template-showcase-card">
             <div class="template-showcase-thumb ${escapeAttribute(String(item.thumbClass || ""))} has-photo">
               ${renderTemplateImagePicture(item, { className: "template-media-picture", eager: true, sizes: "(max-width: 980px) 100vw, 30vw" })}
-              <span class="template-thumb-status">${escapeHtml(String(item.status || "Customizable"))}</span>
+              <span class="template-thumb-status">${escapeHtml(getTemplateStatusLabel(String(item.status || "Customizable")))}</span>
             </div>
             <h3>${escapeHtml(String(item.name || ""))}</h3>
-            <p>${escapeHtml(String(item.shortDescription || item.longDescription || ""))}</p>
+            <p>${escapeHtml(getHomeTemplateSummary(item))}</p>
             <div class="actions">
-              <a class="btn btn-ghost btn-inline" href="template-view.html?template=${escapeAttribute(String(item.id || ""))}">View Template</a>
+              <a class="btn btn-ghost btn-inline" href="template-view.html?template=${escapeAttribute(String(item.id || ""))}">${escapeHtml(
+                getCopy("View Template", "Ver plantilla")
+              )}</a>
             </div>
           </article>
         `
@@ -598,7 +637,7 @@ function initHomeAIPulse() {
         return `
           <article class="ai-pulse-card">
             <h3>${escapeHtml(String(template.name || ""))}</h3>
-            <p>${escapeHtml(String(template.shortDescription || ""))}</p>
+            <p>${escapeHtml(getHomeTemplateSummary(template))}</p>
             <div class="ai-pulse-meta">
               <span>${escapeHtml(String(template.stack || ""))}</span>
               <strong>${escapeHtml(String(confidence))}% ${escapeHtml(getCopy("ready", "listo"))}</strong>
