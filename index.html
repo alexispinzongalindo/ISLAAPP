@@ -3,12 +3,12 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title data-i18n-en="islaAPP | Build Websites and Apps" data-i18n-es="islaAPP | Construye sitios y apps">islaAPP | Build Websites and Apps</title>
+    <title data-i18n-en="islaAPP | Beginner AI App Builder" data-i18n-es="islaAPP | Constructor IA para principiantes">islaAPP | Beginner AI App Builder</title>
     <meta
       name="description"
-      content="islaAPP helps beginners build a first app draft in 3 clear steps: Start Here, Build, and Projects."
-      data-i18n-content-en="islaAPP helps beginners build a first app draft in 3 clear steps: Start Here, Build, and Projects."
-      data-i18n-content-es="islaAPP ayuda a principiantes a crear su primer borrador de app en 3 pasos: Comenzar, Construir y Proyectos."
+      content="Build your first app in 3 simple steps: choose mode, verify, and generate."
+      data-i18n-content-en="Build your first app in 3 simple steps: choose mode, verify, and generate."
+      data-i18n-content-es="Crea tu primera app en 3 pasos simples: elige modo, verifica y genera."
     />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -52,6 +52,7 @@
     </svg>
 
     <div class="noise" aria-hidden="true"></div>
+
     <header class="topbar">
       <a class="brand" href="index.html">
         <svg class="brand-icon" viewBox="0 0 96 96" role="img" aria-label="islaAPP logo icon" data-i18n-aria-en="islaAPP logo icon" data-i18n-aria-es="icono del logo islaAPP">
@@ -59,231 +60,159 @@
         </svg>
         <span class="brand-name"><span>isla</span><strong>APP</strong></span>
       </a>
-      <nav class="marketing-nav">
-        <div class="nav-item has-menu">
-          <button class="nav-trigger" type="button" data-menu-target="menuProduct" aria-expanded="false" data-i18n-en="Product" data-i18n-es="Producto">Product</button>
-          <div class="mega-menu" id="menuProduct" role="menu">
-            <a class="mega-link" href="app-builder.html">
-              <strong data-i18n-en="AI App Builder" data-i18n-es="Constructor IA">AI App Builder</strong>
-              <span data-i18n-en="Build from prompt and preview instantly." data-i18n-es="Construye desde un prompt y revisa vista previa al instante.">Build from prompt and preview instantly.</span>
-            </a>
-            <a class="mega-link" href="services.html">
-              <strong data-i18n-en="Integrations" data-i18n-es="Integraciones">Integrations</strong>
-              <span data-i18n-en="Optional: connect external tools and custom providers." data-i18n-es="Opcional: conecta herramientas externas y proveedores personalizados.">Optional: connect external tools and custom providers.</span>
-            </a>
-            <a class="mega-link" href="templates.html">
-              <strong data-i18n-en="Template Marketplace" data-i18n-es="Mercado de plantillas">Template Marketplace</strong>
-              <span data-i18n-en="Browse and customize visual template starters." data-i18n-es="Explora y personaliza plantillas visuales de inicio.">Browse and customize visual template starters.</span>
-            </a>
-            <a class="mega-link" href="projects.html">
-              <strong data-i18n-en="Project Workspace" data-i18n-es="Espacio de proyectos">Project Workspace</strong>
-              <span data-i18n-en="Manage generated projects and previews." data-i18n-es="Gestiona proyectos generados y vistas previas.">Manage generated projects and previews.</span>
-            </a>
-            <a class="mega-link" href="ops.html">
-              <strong data-i18n-en="Ops Dashboard" data-i18n-es="Panel de operaciones">Ops Dashboard</strong>
-              <span data-i18n-en="Track publish status, optional integrations, and operations." data-i18n-es="Monitorea estado de publicacion, integraciones opcionales y operaciones.">Track publish status, optional integrations, and operations.</span>
-            </a>
-          </div>
-        </div>
-        <div class="nav-item has-menu">
-          <button class="nav-trigger" type="button" data-menu-target="menuUseCases" aria-expanded="false" data-i18n-en="Use Cases" data-i18n-es="Casos de uso">Use Cases</button>
-          <div class="mega-menu" id="menuUseCases" role="menu">
-            <a class="mega-link" href="use-cases.html?category=business">
-              <strong data-i18n-en="Productivity" data-i18n-es="Productividad">Productivity</strong>
-              <span data-i18n-en="Internal tools, dashboards, workflow automation." data-i18n-es="Herramientas internas, tableros y automatizacion de flujos.">Internal tools, dashboards, workflow automation.</span>
-            </a>
-            <a class="mega-link" href="use-cases.html?category=commerce">
-              <strong data-i18n-en="E-commerce & Retail" data-i18n-es="E-commerce y retail">E-commerce & Retail</strong>
-              <span data-i18n-en="Stores, catalogs, marketplace and ordering flows." data-i18n-es="Tiendas, catalogos, marketplace y flujos de pedidos.">Stores, catalogs, marketplace and ordering flows.</span>
-            </a>
-            <a class="mega-link" href="use-cases.html?category=community">
-              <strong data-i18n-en="Education" data-i18n-es="Educacion">Education</strong>
-              <span data-i18n-en="Portals, LMS platforms, and student tools." data-i18n-es="Portales, plataformas LMS y herramientas estudiantiles.">Portals, LMS platforms, and student tools.</span>
-            </a>
-            <a class="mega-link" href="use-cases.html?category=service">
-              <strong data-i18n-en="Health & Wellness" data-i18n-es="Salud y bienestar">Health & Wellness</strong>
-              <span data-i18n-en="Booking apps, clinics, and coaching systems." data-i18n-es="Apps de reservas, clinicas y sistemas de coaching.">Booking apps, clinics, and coaching systems.</span>
-            </a>
-            <a class="mega-link" href="use-cases.html?category=business">
-              <strong data-i18n-en="Business Intelligence" data-i18n-es="Inteligencia de negocio">Business Intelligence</strong>
-              <span data-i18n-en="Reporting and analytics experiences." data-i18n-es="Experiencias de reportes y analitica.">Reporting and analytics experiences.</span>
-            </a>
-          </div>
-        </div>
-        <div class="nav-item has-menu">
-          <button class="nav-trigger" type="button" data-menu-target="menuResources" aria-expanded="false" data-i18n-en="Resources" data-i18n-es="Recursos">Resources</button>
-          <div class="mega-menu" id="menuResources" role="menu">
-            <a class="mega-link" href="resources.html">
-              <strong data-i18n-en="Docs & FAQs" data-i18n-es="Docs y FAQs">Docs & FAQs</strong>
-              <span data-i18n-en="Step-by-step onboarding and launch guidance." data-i18n-es="Onboarding paso a paso y guia de lanzamiento.">Step-by-step onboarding and launch guidance.</span>
-            </a>
-            <a class="mega-link" href="resources.html">
-              <strong data-i18n-en="Blog & Insights" data-i18n-es="Blog e insights">Blog & Insights</strong>
-              <span data-i18n-en="Best practices for app growth and operations." data-i18n-es="Buenas practicas para crecimiento y operaciones.">Best practices for app growth and operations.</span>
-            </a>
-            <a class="mega-link" href="resources.html">
-              <strong data-i18n-en="Community" data-i18n-es="Comunidad">Community</strong>
-              <span data-i18n-en="Ask questions and exchange ideas with builders." data-i18n-es="Haz preguntas e intercambia ideas con constructores.">Ask questions and exchange ideas with builders.</span>
-            </a>
-            <a class="mega-link" href="resources.html">
-              <strong data-i18n-en="Hire a Partner" data-i18n-es="Contrata un partner">Hire a Partner</strong>
-              <span data-i18n-en="Get expert help for custom implementations." data-i18n-es="Recibe ayuda experta para implementaciones personalizadas.">Get expert help for custom implementations.</span>
-            </a>
-          </div>
-        </div>
-        <a href="start-here.html" data-i18n-en="Start Here" data-i18n-es="Comenzar">Start Here</a>
-        <a href="pricing.html" data-i18n-en="Pricing" data-i18n-es="Precios">Pricing</a>
-        <a href="enterprise.html" data-i18n-en="Enterprise" data-i18n-es="Enterprise">Enterprise</a>
+      <nav>
+        <a class="is-current" href="index.html" data-i18n-en="Home" data-i18n-es="Inicio">Home</a>
+        <a href="start-here.html" data-i18n-en="Start" data-i18n-es="Comenzar">Start</a>
+        <a href="app-builder.html" data-i18n-en="Build" data-i18n-es="Construir">Build</a>
+        <a href="pricing.html" data-i18n-en="Plans" data-i18n-es="Planes">Plans</a>
+        <a href="projects.html" data-i18n-en="Projects" data-i18n-es="Proyectos">Projects</a>
+        <a href="support.html" data-i18n-en="Help" data-i18n-es="Ayuda">Help</a>
       </nav>
-      <a class="btn btn-small" href="start-here.html" data-i18n-en="Start Here" data-i18n-es="Comenzar">Start Here</a>
+      <a class="btn btn-small" href="start-here.html" data-i18n-en="Start" data-i18n-es="Comenzar">Start</a>
     </header>
 
     <main>
-      <section class="hero hero-centered">
-        <p class="eyebrow" data-i18n-en="Beginner-first app creation" data-i18n-es="Creacion de apps para principiantes">Beginner-first app creation</p>
-        <h1 data-i18n-en="Build your first app without confusion" data-i18n-es="Crea tu primera app sin confusion">Build your first app without confusion</h1>
-        <p class="lead" data-i18n-en="Start with the 3-step guide, generate your first draft, then open Projects to review your files." data-i18n-es="Empieza con la guia de 3 pasos, genera tu primer borrador y abre Proyectos para revisar tus archivos.">Start with the 3-step guide, generate your first draft, then open Projects to review your files.</p>
-        <article class="marketing-prompt-box">
-          <p class="prompt-placeholder" data-i18n-en="Build a booking app for barbers with login, payments, and reminders..." data-i18n-es="Crea una app de reservas para barberos con login, pagos y recordatorios...">Build a booking app for barbers with login, payments, and reminders...</p>
-          <a class="btn btn-primary prompt-go" href="start-here.html" data-i18n-en="Start Here" data-i18n-es="Comenzar">Start Here</a>
-        </article>
-        <p class="muted" data-i18n-en="Need an example idea? Try one:" data-i18n-es="Necesitas una idea de ejemplo? Prueba una:">Need an example idea? Try one:</p>
-        <div class="starter-chips">
-          <a href="start-here.html" data-i18n-en="Reporting Dashboard" data-i18n-es="Panel de reportes">Reporting Dashboard</a>
-          <a href="start-here.html" data-i18n-en="Client Portal" data-i18n-es="Portal de clientes">Client Portal</a>
-          <a href="start-here.html" data-i18n-en="Onboarding Portal" data-i18n-es="Portal de onboarding">Onboarding Portal</a>
-          <a href="start-here.html" data-i18n-en="E-commerce Store" data-i18n-es="Tienda e-commerce">E-commerce Store</a>
-          <a href="start-here.html" data-i18n-en="Community App" data-i18n-es="App de comunidad">Community App</a>
-        </div>
-      </section>
-
-      <section class="section-panel ai-pulse-panel" id="homeAiPulseRoot">
-        <h2>
-          <svg class="mini-icon" viewBox="0 0 96 96" aria-hidden="true"><use href="#orbit-icon"></use></svg>
-          <span data-i18n-en="AI In Motion" data-i18n-es="IA en movimiento">AI In Motion</span>
-        </h2>
-        <p class="muted" data-i18n-en="Live signals from ideas users are building right now." data-i18n-es="Senales en vivo de ideas que los usuarios estan construyendo ahora.">Live signals from ideas users are building right now.</p>
-        <div class="ai-pulse-grid" id="homeAiPulseGrid"></div>
-      </section>
-
-      <section class="section-panel">
-        <h2>
-          <svg class="mini-icon" viewBox="0 0 96 96" aria-hidden="true"><use href="#orbit-icon"></use></svg>
-          <span data-i18n-en="New Here? Use This Order" data-i18n-es="Nuevo aqui? Usa este orden">New Here? Use This Order</span>
-        </h2>
-        <div class="quickstart-grid">
-          <article class="quickstart-card">
-            <p class="eyebrow" data-i18n-en="STEP 1" data-i18n-es="PASO 1">STEP 1</p>
-            <h3 data-i18n-en="Open Start Here" data-i18n-es="Abrir Comenzar">Open Start Here</h3>
-            <p data-i18n-en="Follow the simple checklist so you always know the next click." data-i18n-es="Sigue la lista simple para saber siempre el siguiente clic.">Follow the simple checklist so you always know the next click.</p>
-            <div class="actions">
-              <a class="btn btn-primary" href="start-here.html" data-i18n-en="Go To Start Here" data-i18n-es="Ir a Comenzar">Go To Start Here</a>
-            </div>
-          </article>
-          <article class="quickstart-card">
-            <p class="eyebrow" data-i18n-en="STEP 2" data-i18n-es="PASO 2">STEP 2</p>
-            <h3 data-i18n-en="Build First Draft" data-i18n-es="Construir primer borrador">Build First Draft</h3>
-            <p data-i18n-en="Type your idea in AI Builder and click Build My First Draft." data-i18n-es="Escribe tu idea en el constructor IA y haz clic en Crear mi primer borrador.">Type your idea in AI Builder and click Build My First Draft.</p>
-            <div class="actions">
-              <a class="btn btn-primary" href="app-builder.html?from=start-here" data-i18n-en="Open AI Builder" data-i18n-es="Abrir constructor IA">Open AI Builder</a>
-            </div>
-          </article>
-          <article class="quickstart-card">
-            <p class="eyebrow" data-i18n-en="STEP 3" data-i18n-es="PASO 3">STEP 3</p>
-            <h3 data-i18n-en="Open Projects" data-i18n-es="Abrir Proyectos">Open Projects</h3>
-            <p data-i18n-en="Review generated files and preview links in one place." data-i18n-es="Revisa archivos generados y enlaces de vista previa en un solo lugar.">Review generated files and preview links in one place.</p>
-            <div class="actions">
-              <a class="btn btn-primary" href="projects.html" data-i18n-en="Open Projects" data-i18n-es="Abrir Proyectos">Open Projects</a>
-            </div>
-          </article>
-        </div>
-      </section>
-
-      <section class="section-panel">
-        <h2>
-          <svg class="mini-icon" viewBox="0 0 96 96" aria-hidden="true"><use href="#orbit-icon"></use></svg>
-          <span data-i18n-en="Need An Idea? Pick A Category" data-i18n-es="Necesitas una idea? Elige una categoria">Need An Idea? Pick A Category</span>
-        </h2>
-        <div class="category-grid" id="homeCategoryGrid"></div>
-      </section>
-
-      <section class="section-panel">
-        <h2>
-          <svg class="mini-icon" viewBox="0 0 96 96" aria-hidden="true"><use href="#orbit-icon"></use></svg>
-          <span data-i18n-en="Want Visual Starters?" data-i18n-es="Quieres inicios visuales?">Want Visual Starters?</span>
-        </h2>
-        <p class="muted" data-i18n-en="Choose a template first, then customize it with AI." data-i18n-es="Primero elige una plantilla y luego personalizala con IA.">Choose a template first, then customize it with AI.</p>
-        <div class="template-showcase-grid" id="homeTemplateShowcase"></div>
-      </section>
-
-      <section class="section-panel enterprise-hero">
-        <p class="eyebrow" data-i18n-en="Enterprise Solutions" data-i18n-es="Soluciones enterprise">Enterprise Solutions</p>
-        <h2 data-i18n-en="Ideas shouldn't wait for sprints." data-i18n-es="Las ideas no deben esperar sprints.">Ideas shouldn't wait for sprints.</h2>
-        <p class="lead" data-i18n-en="Scale secure, production-ready apps with dedicated support and rollout controls." data-i18n-es="Escala apps seguras y listas para produccion con soporte dedicado y controles de despliegue.">Scale secure, production-ready apps with dedicated support and rollout controls.</p>
+      <section class="hero hero-centered simple-home-hero">
+        <p class="eyebrow" data-i18n-en="Beginner-first mode" data-i18n-es="Modo para principiantes">Beginner-first mode</p>
+        <h1 data-i18n-en="Build your first app in 3 clicks" data-i18n-es="Crea tu primera app en 3 clics">Build your first app in 3 clicks</h1>
+        <p class="lead" data-i18n-en="Choose mode, verify once, then generate your app." data-i18n-es="Elige modo, verifica una vez y luego genera tu app.">
+          Choose mode, verify once, then generate your app.
+        </p>
         <div class="actions">
-          <a class="btn btn-primary" href="enterprise.html" data-i18n-en="Talk To Sales" data-i18n-es="Hablar con ventas">Talk To Sales</a>
+          <a class="btn btn-primary" href="pricing.html" data-i18n-en="Start now" data-i18n-es="Empezar ahora">Start now</a>
+          <a class="btn btn-ghost" href="app-builder.html?from=start-here" data-i18n-en="Open builder" data-i18n-es="Abrir constructor">Open builder</a>
         </div>
-      </section>
-
-      <section class="section-panel">
-        <h2>
-          <svg class="mini-icon" viewBox="0 0 96 96" aria-hidden="true"><use href="#orbit-icon"></use></svg>
-          <span data-i18n-en="More Pages (Optional)" data-i18n-es="Mas paginas (opcional)">More Pages (Optional)</span>
-        </h2>
-        <div class="feature-grid">
-          <article>
-            <h3 data-i18n-en="Help Guide" data-i18n-es="Guia de ayuda">Help Guide</h3>
-            <p data-i18n-en="Read plain-language instructions for the full flow." data-i18n-es="Lee instrucciones simples para el flujo completo.">Read plain-language instructions for the full flow.</p>
-            <a class="btn btn-ghost btn-inline" href="guide.html" data-i18n-en="Open Guide" data-i18n-es="Abrir guia">Open Guide</a>
+        <div class="simple-home-visual" aria-hidden="true">
+          <article class="simple-art-card">
+            <div class="simple-art-head"></div>
+            <div class="simple-art-lines"><span></span><span></span><span></span></div>
           </article>
-          <article>
-            <h3 data-i18n-en="Onboarding" data-i18n-es="Onboarding">Onboarding</h3>
-            <p data-i18n-en="Capture customer details if you are running client projects." data-i18n-es="Captura datos de clientes si manejas proyectos para terceros.">Capture customer details if you are running client projects.</p>
-            <a class="btn btn-ghost btn-inline" href="onboarding.html" data-i18n-en="Open Onboarding" data-i18n-es="Abrir onboarding">Open Onboarding</a>
+          <article class="simple-art-card">
+            <div class="simple-art-head"></div>
+            <div class="simple-art-lines"><span></span><span></span><span></span></div>
           </article>
-          <article>
-            <h3 data-i18n-en="Builder + Templates" data-i18n-es="Constructor + plantillas">Builder + Templates</h3>
-            <p data-i18n-en="Build from prompt or start from a template with preview." data-i18n-es="Construye desde un prompt o empieza con una plantilla con vista previa.">Build from prompt or start from a template with preview.</p>
-            <a class="btn btn-ghost btn-inline" href="app-builder.html" data-i18n-en="Open Builder" data-i18n-es="Abrir constructor">Open Builder</a>
-          </article>
-          <article>
-            <h3 data-i18n-en="Services & Ops" data-i18n-es="Servicios y operaciones">Services & Ops</h3>
-            <p data-i18n-en="Optional pages for custom integrations and advanced operations." data-i18n-es="Paginas opcionales para integraciones personalizadas y operaciones avanzadas.">Optional pages for custom integrations and advanced operations.</p>
-            <a class="btn btn-ghost btn-inline" href="services.html" data-i18n-en="Open Services" data-i18n-es="Abrir servicios">Open Services</a>
-          </article>
-          <article>
-            <h3 data-i18n-en="Pricing" data-i18n-es="Precios">Pricing</h3>
-            <p data-i18n-en="Pick a plan after your first draft is working." data-i18n-es="Elige un plan despues de que tu primer borrador funcione.">Pick a plan after your first draft is working.</p>
-            <a class="btn btn-ghost btn-inline" href="pricing.html" data-i18n-en="Open Pricing" data-i18n-es="Abrir precios">Open Pricing</a>
-          </article>
-          <article>
-            <h3 data-i18n-en="Enterprise Support" data-i18n-es="Soporte enterprise">Enterprise Support</h3>
-            <p data-i18n-en="Submit support tickets and manage higher-touch rollout requests." data-i18n-es="Envia tickets de soporte y gestiona solicitudes avanzadas de despliegue.">Submit support tickets and manage higher-touch rollout requests.</p>
-            <a class="btn btn-ghost btn-inline" href="support.html" data-i18n-en="Open Support" data-i18n-es="Abrir soporte">Open Support</a>
+          <article class="simple-art-card">
+            <div class="simple-art-head"></div>
+            <div class="simple-art-lines"><span></span><span></span><span></span></div>
           </article>
         </div>
       </section>
 
-      <section class="section-panel">
+      <section class="section-panel simple-step-panel">
         <h2>
           <svg class="mini-icon" viewBox="0 0 96 96" aria-hidden="true"><use href="#orbit-icon"></use></svg>
           <span data-i18n-en="Simple Flow" data-i18n-es="Flujo simple">Simple Flow</span>
         </h2>
-        <ol class="steps">
-          <li><strong data-i18n-en="Start Here" data-i18n-es="Comenzar">Start Here</strong> <span data-i18n-en="to follow the beginner checklist." data-i18n-es="para seguir la lista para principiantes.">to follow the beginner checklist.</span></li>
-          <li><strong data-i18n-en="Build first draft" data-i18n-es="Construir primer borrador">Build first draft</strong> <span data-i18n-en="in AI Builder and check preview." data-i18n-es="en el constructor IA y revisa la vista previa.">in AI Builder and check preview.</span></li>
-          <li><strong data-i18n-en="Open Projects" data-i18n-es="Abrir Proyectos">Open Projects</strong> <span data-i18n-en="to review generated files." data-i18n-es="para revisar archivos generados.">to review generated files.</span></li>
-          <li><strong data-i18n-en="Only then" data-i18n-es="Solo despues">Only then</strong> <span data-i18n-en="move to Setup, Services, and Pricing if needed." data-i18n-es="pasa a Setup, Servicios y Precios si hace falta.">move to Setup, Services, and Pricing if needed.</span></li>
-        </ol>
-        <div class="actions">
-          <a class="btn btn-primary" href="start-here.html" data-i18n-en="Open Start Here" data-i18n-es="Abrir Comenzar">Open Start Here</a>
-          <a class="btn btn-ghost" href="app-builder.html?from=start-here" data-i18n-en="Open AI Builder" data-i18n-es="Abrir constructor IA">Open AI Builder</a>
+        <div class="visual-flow-grid">
+          <article class="visual-flow-card">
+            <span class="visual-flow-icon" aria-hidden="true">1</span>
+            <h3 data-i18n-en="Pick mode" data-i18n-es="Elige modo">Pick mode</h3>
+            <p data-i18n-en="Free Trial or a Plan." data-i18n-es="Prueba gratis o plan.">Free Trial or a Plan.</p>
+          </article>
+          <article class="visual-flow-card">
+            <span class="visual-flow-icon" aria-hidden="true">2</span>
+            <h3 data-i18n-en="Verify" data-i18n-es="Verifica">Verify</h3>
+            <p data-i18n-en="Email + code once." data-i18n-es="Email + codigo una vez.">Email + code once.</p>
+          </article>
+          <article class="visual-flow-card">
+            <span class="visual-flow-icon" aria-hidden="true">3</span>
+            <h3 data-i18n-en="Build" data-i18n-es="Construye">Build</h3>
+            <p data-i18n-en="Prompt and generate." data-i18n-es="Prompt y generar.">Prompt and generate.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section-panel">
+        <h2>
+          <svg class="mini-icon" viewBox="0 0 96 96" aria-hidden="true"><use href="#orbit-icon"></use></svg>
+          <span data-i18n-en="Choose Your Start" data-i18n-es="Elige tu inicio">Choose Your Start</span>
+        </h2>
+        <p class="muted verify-inline-status" data-verify-status data-i18n-en="Not verified yet" data-i18n-es="Aun no verificado">Not verified yet</p>
+        <div class="simple-mode-grid">
+          <article class="simple-mode-card featured">
+            <p class="tag" data-i18n-en="Best for first build" data-i18n-es="Mejor para primer build">Best for first build</p>
+            <h3 data-i18n-en="Free Trial" data-i18n-es="Prueba gratis">Free Trial</h3>
+            <p data-i18n-en="Start fast. No commitment." data-i18n-es="Empieza rapido. Sin compromiso.">Start fast. No commitment.</p>
+            <button
+              class="btn btn-primary"
+              type="button"
+              data-verification-start
+              data-plan-id="free-trial"
+              data-plan-kind="trial"
+              data-plan-name-en="Free Trial"
+              data-plan-name-es="Prueba gratis"
+              data-next-href="app-builder.html?from=trial"
+              data-i18n-en="Start Free Trial"
+              data-i18n-es="Iniciar prueba gratis"
+            >
+              Start Free Trial
+            </button>
+          </article>
+
+          <article class="simple-mode-card">
+            <h3 data-i18n-en="Starter Plan" data-i18n-es="Plan Starter">Starter Plan</h3>
+            <p data-i18n-en="For solo users." data-i18n-es="Para usuarios individuales.">For solo users.</p>
+            <button
+              class="btn btn-ghost"
+              type="button"
+              data-verification-start
+              data-plan-id="starter"
+              data-plan-kind="paid"
+              data-plan-name-en="Starter"
+              data-plan-name-es="Starter"
+              data-next-href="app-builder.html?from=starter"
+              data-i18n-en="Choose Starter"
+              data-i18n-es="Elegir Starter"
+            >
+              Choose Starter
+            </button>
+          </article>
+
+          <article class="simple-mode-card">
+            <h3 data-i18n-en="Pro Plan" data-i18n-es="Plan Pro">Pro Plan</h3>
+            <p data-i18n-en="For teams and scale." data-i18n-es="Para equipos y escala.">For teams and scale.</p>
+            <button
+              class="btn btn-ghost"
+              type="button"
+              data-verification-start
+              data-plan-id="pro"
+              data-plan-kind="paid"
+              data-plan-name-en="Pro"
+              data-plan-name-es="Pro"
+              data-next-href="app-builder.html?from=pro"
+              data-i18n-en="Choose Pro"
+              data-i18n-es="Elegir Pro"
+            >
+              Choose Pro
+            </button>
+          </article>
+        </div>
+      </section>
+
+      <section class="section-panel">
+        <h2>
+          <svg class="mini-icon" viewBox="0 0 96 96" aria-hidden="true"><use href="#orbit-icon"></use></svg>
+          <span data-i18n-en="Built-In Essentials" data-i18n-es="Esenciales incluidos">Built-In Essentials</span>
+        </h2>
+        <div class="quickstart-grid">
+          <article class="quickstart-card">
+            <p class="eyebrow" data-i18n-en="INCLUDED" data-i18n-es="INCLUIDO">INCLUDED</p>
+            <h3 data-i18n-en="Database" data-i18n-es="Base de datos">Database</h3>
+          </article>
+          <article class="quickstart-card">
+            <p class="eyebrow" data-i18n-en="INCLUDED" data-i18n-es="INCLUIDO">INCLUDED</p>
+            <h3 data-i18n-en="Hosting" data-i18n-es="Hosting">Hosting</h3>
+          </article>
+          <article class="quickstart-card">
+            <p class="eyebrow" data-i18n-en="OPTIONAL" data-i18n-es="OPCIONAL">OPTIONAL</p>
+            <h3 data-i18n-en="Custom Domain" data-i18n-es="Dominio personalizado">Custom Domain</h3>
+          </article>
         </div>
       </section>
     </main>
 
     <footer class="site-footer">
-      <p><span class="brand-inline">islaAPP</span> <span data-i18n-en="gives beginners a clear path from idea to first working draft." data-i18n-es="le da a principiantes una ruta clara desde la idea hasta el primer borrador funcional.">gives beginners a clear path from idea to first working draft.</span></p>
+      <p><span class="brand-inline">islaAPP</span> <span data-i18n-en="Simple first. Advanced when you are ready." data-i18n-es="Simple primero. Avanzado cuando estes listo.">Simple first. Advanced when you are ready.</span></p>
       <small>&copy; <span data-year></span> islaAPP. <span data-i18n-en="All rights reserved." data-i18n-es="Todos los derechos reservados.">All rights reserved.</span></small>
     </footer>
 

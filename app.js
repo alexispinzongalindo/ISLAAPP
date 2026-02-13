@@ -3,6 +3,9 @@
 const OPS_TOKEN_KEY = "islaapp_ops_token";
 const OPS_SESSION_TOKEN_KEY = "islaapp_session_token";
 const UI_LANGUAGE_KEY = "islaapp_ui_language";
+const USER_VERIFICATION_KEY = "islaapp_user_verification";
+const PLAN_SELECTION_KEY = "islaapp_plan_selection";
+const PLAN_PENDING_KEY = "islaapp_plan_pending_selection";
 
 function getCurrentLanguage() {
   const raw = String(localStorage.getItem(UI_LANGUAGE_KEY) || "en").trim().toLowerCase();
@@ -158,6 +161,7 @@ function localizeAiRuntimeNote(rawNote) {
   initServicesPage();
   initOpsPage();
   initPricing();
+  initPlanVerificationGate();
   initSupportForm();
   initMotionEffects();
 })();
@@ -329,7 +333,7 @@ function initBeginnerExperience() {
       { href: "index.html", label: getCopy("Home", "Inicio") },
       { href: "start-here.html", label: getCopy("Start Here", "Comenzar") },
       { href: "app-builder.html", label: getCopy("Build", "Construir") },
-      { href: "templates.html", label: getCopy("Templates", "Plantillas") },
+      { href: "pricing.html", label: getCopy("Plans", "Planes") },
       { href: "projects.html", label: getCopy("Projects", "Proyectos") },
       { href: "support.html", label: getCopy("Help", "Ayuda") },
     ];
@@ -356,7 +360,7 @@ function initBeginnerExperience() {
   ensureLanguageToggle(topbar);
 
   const main = document.querySelector("main");
-  if (!(main instanceof HTMLElement) || currentPage === "start-here.html") return;
+  if (!(main instanceof HTMLElement) || currentPage !== "index.html") return;
   if (document.querySelector("#beginnerBanner")) return;
 
   const banner = document.createElement("section");
@@ -365,14 +369,14 @@ function initBeginnerExperience() {
   banner.innerHTML = `
     <p><strong>${escapeHtml(getCopy("New here?", "Nuevo por aqui?"))}</strong> ${escapeHtml(
       getCopy(
-        "Use the simple 3-step path first. No technical setup required to start.",
-        "Usa primero la ruta simple de 3 pasos. No se requiere configuracion tecnica para empezar."
+        "Pick Free Trial or a Plan, verify once, then build your app.",
+        "Elige prueba gratis o plan, verifica una vez y luego crea tu app."
       )
     )}</p>
     <div class="actions">
-      <a class="btn btn-primary" href="start-here.html">${escapeHtml(getCopy("Open Start Here Guide", "Abrir guia de inicio"))}</a>
+      <a class="btn btn-primary" href="pricing.html">${escapeHtml(getCopy("Choose Plan", "Elegir plan"))}</a>
       <a class="btn btn-ghost" href="app-builder.html?from=start-here">${escapeHtml(
-        getCopy("Skip to AI Builder", "Ir al constructor IA")
+        getCopy("Open Builder", "Abrir constructor")
       )}</a>
     </div>
   `;
@@ -2769,6 +2773,7 @@ function initAppBuilder() {
   const featurePresetButtons = Array.from(document.querySelectorAll("[data-feature-preset]"));
   const liveSummaryList = document.querySelector("#builderLiveSummaryList");
   const fastExampleButtons = Array.from(document.querySelectorAll("[data-fast-example-en],[data-fast-example-es]"));
+  const oneClickRestaurantButton = document.querySelector("#builderOneClickRestaurant");
   const enhancePromptButton = document.querySelector("#builderEnhancePrompt");
   const ideaBurstButton = document.querySelector("#builderIdeaBurst");
   const featureHintButton = document.querySelector("#builderFeatureHint");
@@ -2997,6 +3002,31 @@ function initAppBuilder() {
   const getCustomizationInstruction = () => {
     if (!(aiCustomizeInput instanceof HTMLTextAreaElement)) return "";
     return String(aiCustomizeInput.value || "").trim();
+  };
+
+  const runOneClickBuild = (button) => {
+    if (!(button instanceof HTMLButtonElement)) return;
+    if (!(fastForm instanceof HTMLFormElement)) return;
+    if (!(fastPromptInput instanceof HTMLTextAreaElement)) return;
+    if (fastSubmitButton instanceof HTMLButtonElement && fastSubmitButton.disabled) return;
+
+    const isSpanish = getCurrentLanguage() === "es";
+    const prompt = String(isSpanish ? button.dataset.oneclickPromptEs || button.dataset.oneclickPromptEn || "" : button.dataset.oneclickPromptEn || button.dataset.oneclickPromptEs || "").trim();
+    const custom = String(isSpanish ? button.dataset.oneclickCustomEs || button.dataset.oneclickCustomEn || "" : button.dataset.oneclickCustomEn || button.dataset.oneclickCustomEs || "").trim();
+    const owner = String(isSpanish ? button.dataset.oneclickOwnerEs || button.dataset.oneclickOwnerEn || "" : button.dataset.oneclickOwnerEn || button.dataset.oneclickOwnerEs || "").trim();
+
+    if (!prompt) return;
+    fastPromptInput.value = prompt;
+    if (aiCustomizeInput instanceof HTMLTextAreaElement) {
+      aiCustomizeInput.value = custom;
+    }
+    if (fastOwnerInput instanceof HTMLInputElement && !String(fastOwnerInput.value || "").trim()) {
+      fastOwnerInput.value = owner;
+    }
+    writeFastPromptState();
+    renderAiLiveSignals(`${prompt} ${custom}`.trim(), latestAiDraft);
+    renderQuickGuide();
+    fastForm.requestSubmit();
   };
 
   const titleWords = (input) =>
@@ -4255,6 +4285,12 @@ function initAppBuilder() {
         renderQuickGuide();
         fastPromptInput.focus();
       });
+    });
+  }
+
+  if (oneClickRestaurantButton instanceof HTMLButtonElement) {
+    oneClickRestaurantButton.addEventListener("click", () => {
+      runOneClickBuild(oneClickRestaurantButton);
     });
   }
 
@@ -6518,6 +6554,245 @@ function initPricing() {
   creditsSelect.addEventListener("change", recalc);
   billingSelect.addEventListener("change", recalc);
   recalc();
+}
+
+function readUserVerificationState() {
+  const saved = parseChecklistState(localStorage.getItem(USER_VERIFICATION_KEY));
+  const email = typeof saved.email === "string" ? saved.email.trim() : "";
+  const verifiedAt = typeof saved.verifiedAt === "string" ? saved.verifiedAt.trim() : "";
+  return {
+    email,
+    verifiedAt,
+    isVerified: Boolean(email && verifiedAt),
+  };
+}
+
+function initPlanVerificationGate() {
+  const launchNodes = Array.from(document.querySelectorAll("[data-verification-start]")).filter(
+    (node) => node instanceof HTMLButtonElement || node instanceof HTMLAnchorElement
+  );
+  const statusNodes = Array.from(document.querySelectorAll("[data-verify-status]")).filter(
+    (node) => node instanceof HTMLElement
+  );
+  if (launchNodes.length === 0 && statusNodes.length === 0) return;
+
+  const renderStatus = () => {
+    const state = readUserVerificationState();
+    const text = state.isVerified
+      ? getCopy(`Verified: ${state.email}`, `Verificado: ${state.email}`)
+      : getCopy("Not verified yet", "Aun no verificado");
+    statusNodes.forEach((node) => {
+      node.textContent = text;
+      node.classList.toggle("is-verified", state.isVerified);
+    });
+  };
+
+  const readSelection = (node) => {
+    const fallbackHref = node instanceof HTMLAnchorElement ? node.getAttribute("href") : "";
+    const nextHref = String(node.dataset.nextHref || fallbackHref || "app-builder.html?from=pricing").trim();
+    return {
+      planId: String(node.dataset.planId || "free-trial").trim(),
+      planKind: String(node.dataset.planKind || "trial").trim(),
+      planNameEn: String(node.dataset.planNameEn || node.dataset.planId || "Plan").trim(),
+      planNameEs: String(node.dataset.planNameEs || node.dataset.planNameEn || node.dataset.planId || "Plan").trim(),
+      nextHref,
+    };
+  };
+
+  const continueWithSelection = (selection, verifiedEmail) => {
+    const payload = {
+      planId: selection.planId,
+      planKind: selection.planKind,
+      planNameEn: selection.planNameEn,
+      planNameEs: selection.planNameEs,
+      email: verifiedEmail || "",
+      selectedAt: new Date().toISOString(),
+    };
+    localStorage.setItem(PLAN_SELECTION_KEY, JSON.stringify(payload));
+    localStorage.removeItem(PLAN_PENDING_KEY);
+    window.location.href = selection.nextHref || "app-builder.html?from=pricing";
+  };
+
+  const ensureModal = () => {
+    const existing = document.querySelector("#verifyGateModal");
+    if (existing instanceof HTMLElement) return existing;
+
+    const modal = document.createElement("div");
+    modal.id = "verifyGateModal";
+    modal.className = "verify-gate-modal hidden";
+    modal.innerHTML = `
+      <div class="verify-gate-backdrop" data-verify-close></div>
+      <article class="verify-gate-card" role="dialog" aria-modal="true" aria-label="${escapeAttribute(
+        getCopy("Verify account", "Verificar cuenta")
+      )}">
+        <button class="verify-gate-close" type="button" data-verify-close aria-label="${escapeAttribute(
+          getCopy("Close", "Cerrar")
+        )}">×</button>
+        <p class="verify-gate-step" id="verifyGateStep">${escapeHtml(getCopy("Step 1 of 2", "Paso 1 de 2"))}</p>
+        <h3 id="verifyGateTitle">${escapeHtml(getCopy("Verify your account", "Verifica tu cuenta"))}</h3>
+        <p class="muted" id="verifyGateLead">${escapeHtml(
+          getCopy("Enter your email to receive a 6-digit code.", "Ingresa tu email para recibir un codigo de 6 digitos.")
+        )}</p>
+        <form id="verifyGateForm" novalidate>
+          <label class="form-field form-field-full">
+            <span>${escapeHtml(getCopy("Email", "Email"))}</span>
+            <input id="verifyGateEmail" type="email" autocomplete="email" placeholder="${escapeAttribute(
+              getCopy("you@example.com", "tu@email.com")
+            )}" required />
+          </label>
+          <div class="verify-gate-code-row hidden" id="verifyGateCodeRow">
+            <label class="form-field form-field-full">
+              <span>${escapeHtml(getCopy("Verification code", "Codigo de verificacion"))}</span>
+              <input id="verifyGateCode" type="text" inputmode="numeric" maxlength="6" placeholder="123456" />
+            </label>
+          </div>
+          <p class="muted verify-gate-status" id="verifyGateStatus">${escapeHtml(
+            getCopy("No code sent yet.", "Aun no se envio codigo.")
+          )}</p>
+          <div class="actions">
+            <button class="btn btn-primary" type="button" id="verifyGateSendCode">${escapeHtml(
+              getCopy("Send code", "Enviar codigo")
+            )}</button>
+            <button class="btn btn-ghost" type="submit" id="verifyGateSubmit" disabled>${escapeHtml(
+              getCopy("Verify and continue", "Verificar y continuar")
+            )}</button>
+          </div>
+        </form>
+      </article>
+    `;
+    document.body.appendChild(modal);
+    return modal;
+  };
+
+  const modal = ensureModal();
+  const emailInput = modal.querySelector("#verifyGateEmail");
+  const codeInput = modal.querySelector("#verifyGateCode");
+  const codeRow = modal.querySelector("#verifyGateCodeRow");
+  const statusText = modal.querySelector("#verifyGateStatus");
+  const sendCodeBtn = modal.querySelector("#verifyGateSendCode");
+  const submitBtn = modal.querySelector("#verifyGateSubmit");
+  const form = modal.querySelector("#verifyGateForm");
+  const titleNode = modal.querySelector("#verifyGateTitle");
+  const stepNode = modal.querySelector("#verifyGateStep");
+  const leadNode = modal.querySelector("#verifyGateLead");
+
+  if (
+    !(emailInput instanceof HTMLInputElement) ||
+    !(codeInput instanceof HTMLInputElement) ||
+    !(codeRow instanceof HTMLElement) ||
+    !(statusText instanceof HTMLElement) ||
+    !(sendCodeBtn instanceof HTMLButtonElement) ||
+    !(submitBtn instanceof HTMLButtonElement) ||
+    !(form instanceof HTMLFormElement)
+  ) {
+    renderStatus();
+    return;
+  }
+
+  let activeSelection = null;
+  let currentCode = "";
+
+  const closeModal = () => {
+    modal.classList.add("hidden");
+    document.body.classList.remove("modal-open");
+    activeSelection = null;
+    currentCode = "";
+    codeInput.value = "";
+    codeRow.classList.add("hidden");
+    submitBtn.disabled = true;
+  };
+
+  const openModal = (selection) => {
+    activeSelection = selection;
+    const lang = getCurrentLanguage();
+    const planLabel = lang === "es" ? selection.planNameEs : selection.planNameEn;
+    const state = readUserVerificationState();
+    emailInput.value = state.email;
+    codeInput.value = "";
+    currentCode = "";
+    codeRow.classList.add("hidden");
+    submitBtn.disabled = true;
+    stepNode.textContent = getCopy("Step 1 of 2", "Paso 1 de 2");
+    titleNode.textContent = getCopy("Verify your account", "Verifica tu cuenta");
+    leadNode.textContent =
+      lang === "es"
+        ? `Seleccionado: ${planLabel}. Primero verifica tu email.`
+        : `Selected: ${planLabel}. First verify your email.`;
+    statusText.textContent = getCopy("No code sent yet.", "Aun no se envio codigo.");
+    modal.classList.remove("hidden");
+    document.body.classList.add("modal-open");
+    window.setTimeout(() => emailInput.focus(), 40);
+  };
+
+  modal.querySelectorAll("[data-verify-close]").forEach((node) => {
+    node.addEventListener("click", () => closeModal());
+  });
+
+  sendCodeBtn.addEventListener("click", () => {
+    const email = String(emailInput.value || "").trim().toLowerCase();
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      statusText.textContent = getCopy("Enter a valid email first.", "Ingresa un email valido primero.");
+      return;
+    }
+    currentCode = String(Math.floor(100000 + Math.random() * 900000));
+    codeRow.classList.remove("hidden");
+    submitBtn.disabled = false;
+    stepNode.textContent = getCopy("Step 2 of 2", "Paso 2 de 2");
+    statusText.textContent = getCopy(
+      `Code sent. Demo code: ${currentCode}`,
+      `Codigo enviado. Codigo demo: ${currentCode}`
+    );
+    codeInput.focus();
+  });
+
+  form.addEventListener("submit", (event) => {
+    event.preventDefault();
+    if (!activeSelection) return;
+
+    const selectionToContinue = activeSelection;
+    const email = String(emailInput.value || "").trim().toLowerCase();
+    const typedCode = String(codeInput.value || "").trim();
+
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      statusText.textContent = getCopy("Enter a valid email first.", "Ingresa un email valido primero.");
+      return;
+    }
+    if (!currentCode) {
+      statusText.textContent = getCopy("Send the code first.", "Primero envia el codigo.");
+      return;
+    }
+    if (typedCode !== currentCode) {
+      statusText.textContent = getCopy("Code mismatch. Try again.", "El codigo no coincide. Intenta otra vez.");
+      return;
+    }
+
+    localStorage.setItem(
+      USER_VERIFICATION_KEY,
+      JSON.stringify({
+        email,
+        verifiedAt: new Date().toISOString(),
+      })
+    );
+    renderStatus();
+    closeModal();
+    continueWithSelection(selectionToContinue, email);
+  });
+
+  launchNodes.forEach((node) => {
+    node.addEventListener("click", (event) => {
+      event.preventDefault();
+      const selection = readSelection(node);
+      localStorage.setItem(PLAN_PENDING_KEY, JSON.stringify(selection));
+      const state = readUserVerificationState();
+      if (state.isVerified) {
+        continueWithSelection(selection, state.email);
+        return;
+      }
+      openModal(selection);
+    });
+  });
+
+  renderStatus();
 }
 
 function updatePlanCardPrices(planCards, billing) {

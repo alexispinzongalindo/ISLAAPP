@@ -3,10 +3,12 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Pricing | islaAPP</title>
+    <title data-i18n-en="Pricing | islaAPP" data-i18n-es="Precios | islaAPP">Pricing | islaAPP</title>
     <meta
       name="description"
-      content="Compare simple pricing plans and estimate costs after your first app draft is ready."
+      content="Pick free trial or a plan, verify your account, then continue to build."
+      data-i18n-content-en="Pick free trial or a plan, verify your account, then continue to build."
+      data-i18n-content-es="Elige prueba gratis o plan, verifica tu cuenta y luego continua a construir."
     />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -16,7 +18,7 @@
     />
     <link rel="stylesheet" href="styles.css" />
   </head>
-  <body>
+  <body class="page-pricing-simple">
     <svg class="sprite" aria-hidden="true" focusable="false">
       <defs>
         <linearGradient id="brand-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -50,113 +52,58 @@
     </svg>
 
     <div class="noise" aria-hidden="true"></div>
+
     <header class="topbar">
       <a class="brand" href="index.html">
-        <svg class="brand-icon" viewBox="0 0 96 96" role="img" aria-label="islaAPP logo icon">
+        <svg class="brand-icon" viewBox="0 0 96 96" role="img" aria-label="islaAPP logo icon" data-i18n-aria-en="islaAPP logo icon" data-i18n-aria-es="icono del logo islaAPP">
           <use href="#orbit-icon"></use>
         </svg>
         <span class="brand-name"><span>isla</span><strong>APP</strong></span>
       </a>
       <nav>
-        <a href="index.html">Home</a>
-        <a href="guide.html">AI Guide</a>
-        <a href="onboarding.html">Onboarding</a>
-        <a href="app-builder.html">App Builder</a>
-        <a href="projects.html">Projects</a>
-        <a href="services.html">Services</a>
-        <a href="ops.html">Ops</a>
-        <a href="setup.html">Setup Wizard</a>
-        <a class="is-current" href="pricing.html">Pricing</a>
-        <a href="support.html">Support</a>
+        <a href="index.html" data-i18n-en="Home" data-i18n-es="Inicio">Home</a>
+        <a href="start-here.html" data-i18n-en="Start" data-i18n-es="Comenzar">Start</a>
+        <a href="app-builder.html" data-i18n-en="Build" data-i18n-es="Construir">Build</a>
+        <a class="is-current" href="pricing.html" data-i18n-en="Plans" data-i18n-es="Planes">Plans</a>
+        <a href="projects.html" data-i18n-en="Projects" data-i18n-es="Proyectos">Projects</a>
+        <a href="support.html" data-i18n-en="Help" data-i18n-es="Ayuda">Help</a>
       </nav>
-      <a class="btn btn-small" href="onboarding.html">Get Started</a>
+      <a class="btn btn-small" href="app-builder.html?from=pricing" data-i18n-en="Open builder" data-i18n-es="Abrir constructor">Open builder</a>
     </header>
 
     <main>
-      <section class="page-intro">
-        <h1>Pricing (Choose When Ready)</h1>
-        <p class="lead">Start free. Upgrade only when you need more usage, features, or support.</p>
-        <ol class="steps">
-          <li><strong>Step 1:</strong> Start on Free or Starter.</li>
-          <li><strong>Step 2:</strong> Use the estimator for your team size.</li>
-          <li><strong>Step 3:</strong> Upgrade later if usage grows.</li>
-        </ol>
+      <section class="page-intro simple-home-hero">
+        <p class="eyebrow" data-i18n-en="Step 1" data-i18n-es="Paso 1">Step 1</p>
+        <h1 data-i18n-en="Pick mode. Verify. Build." data-i18n-es="Elige modo. Verifica. Construye.">Pick mode. Verify. Build.</h1>
+        <p class="lead" data-i18n-en="Select free trial or a paid plan. Verification is required once." data-i18n-es="Selecciona prueba gratis o plan pago. La verificacion se requiere una vez.">
+          Select free trial or a paid plan. Verification is required once.
+        </p>
+        <div class="verify-status-box">
+          <strong data-i18n-en="Verification status" data-i18n-es="Estado de verificacion">Verification status</strong>
+          <p class="muted verify-inline-status" data-verify-status data-i18n-en="Not verified yet" data-i18n-es="Aun no verificado">Not verified yet</p>
+        </div>
       </section>
 
-      <section class="section-panel">
+      <section class="section-panel simple-step-panel">
         <h2>
           <svg class="mini-icon" viewBox="0 0 96 96" aria-hidden="true"><use href="#orbit-icon"></use></svg>
-          Plans
+          <span data-i18n-en="3-Step Launch" data-i18n-es="Lanzamiento en 3 pasos">3-Step Launch</span>
         </h2>
-        <div class="billing-toggle" role="group" aria-label="Choose billing period">
-          <button class="toggle-btn is-active" type="button" data-billing="monthly">Monthly</button>
-          <button class="toggle-btn" type="button" data-billing="yearly">Yearly</button>
-        </div>
-        <p class="muted" id="billingHint">Yearly billing lowers paid plans by about 20%.</p>
-
-        <div class="plan-grid">
-          <article class="plan-card" data-plan data-price-monthly="160" data-price-yearly="128" data-cycle-monthly="/mo" data-cycle-yearly="/mo (yearly)">
-            <h3>Elite</h3>
-            <p class="price"><span data-price>160</span><small data-cycle>/mo</small></p>
-            <ul>
-              <li>1,200 message credits/month</li>
-              <li>50,000 integration credits/month</li>
-              <li>Unlimited apps and in-app code edits</li>
-              <li>Backend functions + advanced AI models</li>
-              <li>Premium support and rollout guidance</li>
-            </ul>
-            <a class="btn btn-ghost" href="support.html">Start Elite</a>
+        <div class="visual-flow-grid">
+          <article class="visual-flow-card">
+            <span class="visual-flow-icon" aria-hidden="true">1</span>
+            <h3 data-i18n-en="Select" data-i18n-es="Selecciona">Select</h3>
+            <p data-i18n-en="Trial or plan." data-i18n-es="Prueba o plan.">Trial or plan.</p>
           </article>
-
-          <article class="plan-card" data-plan data-price-monthly="80" data-price-yearly="64" data-cycle-monthly="/mo" data-cycle-yearly="/mo (yearly)">
-            <h3>Pro</h3>
-            <p class="price"><span data-price>80</span><small data-cycle>/mo</small></p>
-            <ul>
-              <li>500 message credits/month</li>
-              <li>20,000 integration credits/month</li>
-              <li>Unlimited apps + backend functions</li>
-              <li>Domain connect + GitHub integration</li>
-              <li>Priority support</li>
-            </ul>
-            <a class="btn btn-ghost" href="app-builder.html">Start Pro</a>
+          <article class="visual-flow-card">
+            <span class="visual-flow-icon" aria-hidden="true">2</span>
+            <h3 data-i18n-en="Verify" data-i18n-es="Verifica">Verify</h3>
+            <p data-i18n-en="Email + 6-digit code." data-i18n-es="Email + codigo de 6 digitos.">Email + 6-digit code.</p>
           </article>
-
-          <article class="plan-card featured" data-plan data-price-monthly="40" data-price-yearly="32" data-cycle-monthly="/mo" data-cycle-yearly="/mo (yearly)">
-            <p class="tag">Most Popular</p>
-            <h3>Builder</h3>
-            <p class="price"><span data-price>40</span><small data-cycle>/mo</small></p>
-            <ul>
-              <li>250 message credits/month</li>
-              <li>10,000 integration credits/month</li>
-              <li>Unlimited apps + in-app code edits</li>
-              <li>Backend functions and AI model selection</li>
-              <li>Domain connect + GitHub integration</li>
-            </ul>
-            <a class="btn btn-primary" href="app-builder.html">Start Builder</a>
-          </article>
-
-          <article class="plan-card" data-plan data-price-monthly="20" data-price-yearly="16" data-cycle-monthly="/mo" data-cycle-yearly="/mo (yearly)">
-            <h3>Starter</h3>
-            <p class="price"><span data-price>20</span><small data-cycle>/mo</small></p>
-            <ul>
-              <li>100 message credits/month</li>
-              <li>2,000 integration credits/month</li>
-              <li>Unlimited apps + in-app code edits</li>
-              <li>Core backend features</li>
-            </ul>
-            <a class="btn btn-ghost" href="onboarding.html">Start Starter</a>
-          </article>
-
-          <article class="plan-card" data-plan data-price-monthly="0" data-price-yearly="0" data-cycle-monthly="/mo" data-cycle-yearly="/mo (yearly)">
-            <h3>Free</h3>
-            <p class="price"><span data-price>0</span><small data-cycle>/mo</small></p>
-            <ul>
-              <li>25 message credits/month</li>
-              <li>100 integration credits/month</li>
-              <li>Core builder features</li>
-              <li>Authentication + database + analytics</li>
-            </ul>
-            <a class="btn btn-ghost" href="onboarding.html">Start Free</a>
+          <article class="visual-flow-card">
+            <span class="visual-flow-icon" aria-hidden="true">3</span>
+            <h3 data-i18n-en="Continue" data-i18n-es="Continuar">Continue</h3>
+            <p data-i18n-en="Go to AI Builder." data-i18n-es="Ir al constructor IA.">Go to AI Builder.</p>
           </article>
         </div>
       </section>
@@ -164,74 +111,138 @@
       <section class="section-panel">
         <h2>
           <svg class="mini-icon" viewBox="0 0 96 96" aria-hidden="true"><use href="#orbit-icon"></use></svg>
-          Monthly Cost Estimator
+          <span data-i18n-en="Choose Your Mode" data-i18n-es="Elige tu modo">Choose Your Mode</span>
         </h2>
-        <div class="form-grid">
-          <label class="form-field">
-            Plan
-            <select id="calcPlan">
-              <option value="free">Free</option>
-              <option value="starter">Starter</option>
-              <option value="builder" selected>Builder</option>
-              <option value="pro">Pro</option>
-              <option value="elite">Elite</option>
-              <option value="enterprise">Enterprise</option>
-            </select>
-          </label>
-          <label class="form-field">
-            Team Seats: <strong id="seatCountLabel">3</strong>
-            <input id="calcSeats" type="range" min="1" max="100" value="3" />
-          </label>
-          <label class="form-field">
-            Extra Credits / Month
-            <select id="calcCredits">
-              <option value="0" selected>No add-on credits</option>
-              <option value="500">+500 credits ($20)</option>
-              <option value="2000">+2,000 credits ($70)</option>
-              <option value="10000">+10,000 credits ($300)</option>
-            </select>
-          </label>
-          <label class="form-field">
-            Billing Mode
-            <select id="calcBilling">
-              <option value="monthly">Monthly</option>
-              <option value="yearly">Yearly</option>
-            </select>
-          </label>
+
+        <div class="simple-mode-grid">
+          <article class="simple-mode-card featured">
+            <p class="tag" data-i18n-en="Recommended" data-i18n-es="Recomendado">Recommended</p>
+            <h3 data-i18n-en="Free Trial" data-i18n-es="Prueba gratis">Free Trial</h3>
+            <p data-i18n-en="Best for first app." data-i18n-es="Mejor para tu primera app.">Best for first app.</p>
+            <p class="price"><span>0</span><small>/mo</small></p>
+            <ul>
+              <li data-i18n-en="Fast start" data-i18n-es="Inicio rapido">Fast start</li>
+              <li data-i18n-en="Core AI builder" data-i18n-es="Constructor IA base">Core AI builder</li>
+              <li data-i18n-en="Upgrade anytime" data-i18n-es="Mejora cuando quieras">Upgrade anytime</li>
+            </ul>
+            <button
+              class="btn btn-primary"
+              type="button"
+              data-verification-start
+              data-plan-id="free-trial"
+              data-plan-kind="trial"
+              data-plan-name-en="Free Trial"
+              data-plan-name-es="Prueba gratis"
+              data-next-href="app-builder.html?from=trial"
+              data-i18n-en="Start Free Trial"
+              data-i18n-es="Iniciar prueba gratis"
+            >
+              Start Free Trial
+            </button>
+          </article>
+
+          <article class="simple-mode-card">
+            <h3 data-i18n-en="Starter" data-i18n-es="Starter">Starter</h3>
+            <p data-i18n-en="Solo builder." data-i18n-es="Creador individual.">Solo builder.</p>
+            <p class="price"><span>20</span><small>/mo</small></p>
+            <ul>
+              <li data-i18n-en="More credits" data-i18n-es="Mas creditos">More credits</li>
+              <li data-i18n-en="Unlimited apps" data-i18n-es="Apps ilimitadas">Unlimited apps</li>
+              <li data-i18n-en="Core support" data-i18n-es="Soporte base">Core support</li>
+            </ul>
+            <button
+              class="btn btn-ghost"
+              type="button"
+              data-verification-start
+              data-plan-id="starter"
+              data-plan-kind="paid"
+              data-plan-name-en="Starter"
+              data-plan-name-es="Starter"
+              data-next-href="app-builder.html?from=starter"
+              data-i18n-en="Choose Starter"
+              data-i18n-es="Elegir Starter"
+            >
+              Choose Starter
+            </button>
+          </article>
+
+          <article class="simple-mode-card">
+            <h3 data-i18n-en="Pro" data-i18n-es="Pro">Pro</h3>
+            <p data-i18n-en="Growing teams." data-i18n-es="Equipos en crecimiento.">Growing teams.</p>
+            <p class="price"><span>80</span><small>/mo</small></p>
+            <ul>
+              <li data-i18n-en="Priority speed" data-i18n-es="Velocidad prioritaria">Priority speed</li>
+              <li data-i18n-en="Team collaboration" data-i18n-es="Colaboracion en equipo">Team collaboration</li>
+              <li data-i18n-en="Priority support" data-i18n-es="Soporte prioritario">Priority support</li>
+            </ul>
+            <button
+              class="btn btn-ghost"
+              type="button"
+              data-verification-start
+              data-plan-id="pro"
+              data-plan-kind="paid"
+              data-plan-name-en="Pro"
+              data-plan-name-es="Pro"
+              data-next-href="app-builder.html?from=pro"
+              data-i18n-en="Choose Pro"
+              data-i18n-es="Elegir Pro"
+            >
+              Choose Pro
+            </button>
+          </article>
+
+          <article class="simple-mode-card">
+            <h3 data-i18n-en="Elite" data-i18n-es="Elite">Elite</h3>
+            <p data-i18n-en="High-volume teams." data-i18n-es="Equipos de alto volumen.">High-volume teams.</p>
+            <p class="price"><span>160</span><small>/mo</small></p>
+            <ul>
+              <li data-i18n-en="Highest limits" data-i18n-es="Limites mas altos">Highest limits</li>
+              <li data-i18n-en="Premium support" data-i18n-es="Soporte premium">Premium support</li>
+              <li data-i18n-en="Rollout guidance" data-i18n-es="Guia de lanzamiento">Rollout guidance</li>
+            </ul>
+            <button
+              class="btn btn-ghost"
+              type="button"
+              data-verification-start
+              data-plan-id="elite"
+              data-plan-kind="paid"
+              data-plan-name-en="Elite"
+              data-plan-name-es="Elite"
+              data-next-href="app-builder.html?from=elite"
+              data-i18n-en="Choose Elite"
+              data-i18n-es="Elegir Elite"
+            >
+              Choose Elite
+            </button>
+          </article>
         </div>
-        <p class="estimate" id="calcResult">$40/month estimated total</p>
-        <p class="muted">Estimate includes plan cost, seat count, and optional add-ons.</p>
       </section>
 
       <section class="section-panel">
         <h2>
           <svg class="mini-icon" viewBox="0 0 96 96" aria-hidden="true"><use href="#orbit-icon"></use></svg>
-          Optional Add-Ons
+          <span data-i18n-en="What Is In-House" data-i18n-es="Que viene en casa">What Is In-House</span>
         </h2>
-        <div class="feature-grid">
-          <article>
-            <h3>Credit Packs</h3>
-            <p>$20 / 500 credits, $70 / 2,000 credits, and volume bundles for agency usage.</p>
+        <div class="quickstart-grid">
+          <article class="quickstart-card">
+            <p class="eyebrow" data-i18n-en="INCLUDED" data-i18n-es="INCLUIDO">INCLUDED</p>
+            <h3 data-i18n-en="Database" data-i18n-es="Base de datos">Database</h3>
           </article>
-          <article>
-            <h3>Managed Setup</h3>
-            <p>Optional one-time setup for onboarding, integrations, and launch hardening.</p>
+          <article class="quickstart-card">
+            <p class="eyebrow" data-i18n-en="INCLUDED" data-i18n-es="INCLUIDO">INCLUDED</p>
+            <h3 data-i18n-en="Hosting" data-i18n-es="Hosting">Hosting</h3>
           </article>
-          <article>
-            <h3>Service Margins</h3>
-            <p>Resale margin on domain, hosting, and database services with managed support.</p>
-          </article>
-          <article>
-            <h3>Enterprise Contracts</h3>
-            <p>Annual contracts for larger organizations needing controls and dedicated support.</p>
+          <article class="quickstart-card">
+            <p class="eyebrow" data-i18n-en="OPTIONAL" data-i18n-es="OPCIONAL">OPTIONAL</p>
+            <h3 data-i18n-en="Custom Domain" data-i18n-es="Dominio personalizado">Custom Domain</h3>
           </article>
         </div>
       </section>
     </main>
 
     <footer class="site-footer">
-      <p><span class="brand-inline">islaAPP</span> pricing lets you start small and scale only when needed.</p>
-      <small>&copy; <span data-year></span> islaAPP. All rights reserved.</small>
+      <p><span class="brand-inline">islaAPP</span> <span data-i18n-en="Verify once, then keep building." data-i18n-es="Verifica una vez y sigue construyendo.">Verify once, then keep building.</span></p>
+      <small>&copy; <span data-year></span> islaAPP. <span data-i18n-en="All rights reserved." data-i18n-es="Todos los derechos reservados.">All rights reserved.</span></small>
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
