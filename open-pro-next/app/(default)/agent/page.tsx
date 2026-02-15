@@ -1,7 +1,6 @@
 "use client";
 
 import { FormEvent, useEffect, useMemo, useState } from "react";
-import { useSearchParams } from "next/navigation";
 
 type ChatRole = "user" | "assistant";
 
@@ -23,8 +22,7 @@ const EFFORT_OPTIONS = [
 ];
 
 export default function AgentPage() {
-  const searchParams = useSearchParams();
-  const selectedTemplate = String(searchParams.get("template") || "").trim();
+  const [selectedTemplate, setSelectedTemplate] = useState("");
   const [lang, setLang] = useState<"en" | "es">("en");
 
   const initialAssistantMessage = useMemo(() => {
@@ -49,6 +47,10 @@ export default function AgentPage() {
   const [error, setError] = useState("");
 
   useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const template = String(params.get("template") || "").trim();
+    setSelectedTemplate(template);
+
     const saved = String(window.localStorage.getItem("isla_lang") || "en").toLowerCase();
     setLang(saved === "es" ? "es" : "en");
 
