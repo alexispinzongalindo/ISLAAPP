@@ -3,6 +3,7 @@ import Spotlight from "@/components/spotlight";
 import Template01 from "@/public/images/workflow-01.png";
 import Template02 from "@/public/images/workflow-02.png";
 import Template03 from "@/public/images/workflow-03.png";
+import Template04 from "@/public/images/carousel-03.png";
 
 export default function Workflows() {
   return (
@@ -45,7 +46,7 @@ export default function Workflows() {
               {
                 title: "Storefront Lite",
                 body: "Simple catalog and checkout for fast online sales.",
-                img: Template03,
+                img: Template04,
               },
             ].map((card, i) => (
               <a

@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
-import bookflowThumb from "@/public/images/hero-image-01.jpg";
+import bookflowThumb from "@/public/images/workflow-01.png";
 
 const templates = [
   {
