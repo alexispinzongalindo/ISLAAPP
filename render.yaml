@@ -1,22 +1,17 @@
 services:
   - type: web
-    name: islaapp-winsurf-jr
-    runtime: python
+    name: islaapp
+    runtime: node
     plan: free
     region: oregon
     branch: main
     autoDeploy: true
-    buildCommand: echo "No build step required"
-    startCommand: python3 -u dev_server.py
-    healthCheckPath: /healthz
+    rootDir: open-pro-next
+    buildCommand: npm install --legacy-peer-deps && npm run build
+    startCommand: npm run start
+    healthCheckPath: /
     envVars:
-      - key: PYTHON_VERSION
-        value: 3.11.9
-      - key: HOST
-        value: 0.0.0.0
-      - key: DEFAULT_REGION
-        value: us-east-1
-      - key: DYNADOT_AUTO_REGISTER
-        value: "false"
-      - key: DYNADOT_REGISTRATION_YEARS
-        value: "1"
+      - key: NODE_VERSION
+        value: 22.13.0
+      - key: NODE_ENV
+        value: production
