@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import { getTemplateBySlug, templates } from "@/app/templates/template-catalog";
 
 type TemplatePageProps = {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 };
 
 export async function generateStaticParams() {
@@ -12,7 +12,7 @@ export async function generateStaticParams() {
 }
 
 export async function generateMetadata({ params }: TemplatePageProps) {
-  const { slug } = params;
+  const { slug } = await params;
   const template = getTemplateBySlug(slug);
   if (!template) {
     return {
@@ -468,7 +468,7 @@ function getDemoContent(slug: string): DemoContent {
 }
 
 export default async function TemplateDetailPage({ params }: TemplatePageProps) {
-  const { slug } = params;
+  const { slug } = await params;
   const template = getTemplateBySlug(slug);
 
   if (!template) {
