@@ -4,7 +4,15 @@ const withMDX = require("@next/mdx")();
 const nextConfig = {
   // Configure `pageExtensions` to include MDX files
   pageExtensions: ["js", "jsx", "mdx", "ts", "tsx"],
-  // Optionally, add any other Next.js config below
+  // Serve static live demos from /public/live/<slug>/index.html
+  async rewrites() {
+    return [
+      {
+        source: "/live/:slug",
+        destination: "/live/:slug/index.html",
+      },
+    ];
+  },
 };
 
 module.exports = withMDX(nextConfig);
