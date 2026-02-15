@@ -69,13 +69,11 @@ export async function POST(request: Request) {
       body: JSON.stringify({
         model,
         reasoning: { effort },
-        input: [
-          { role: "system", content: [{ type: "input_text", text: systemPrompt }] },
-          ...cleanedMessages.map((m) => ({
-            role: m.role,
-            content: [{ type: "input_text", text: m.content }],
-          })),
-        ],
+        instructions: systemPrompt,
+        input: cleanedMessages.map((m) => ({
+          role: m.role,
+          content: m.content,
+        })),
       }),
     });
 
