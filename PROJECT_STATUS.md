@@ -1,6 +1,6 @@
 # ISLAAPP Project Status
 
-Last updated: 2026-02-15
+Last updated: 2026-02-15 (late night)
 Workspace: /Users/alexispinzon/CascadeProjects/WINSURFJR
 Primary deploy repo: https://github.com/alexispinzongalindo/ISLAAPP.git
 Primary app path: /Users/alexispinzon/CascadeProjects/WINSURFJR/open-pro-next
@@ -31,8 +31,13 @@ Primary app path: /Users/alexispinzon/CascadeProjects/WINSURFJR/open-pro-next
    - "Why"
    - "What we will create next"
    - Auto language behavior: responds in ES or EN based on user message.
+7. Agent continuity and output tools:
+   - Conversation persistence in browser localStorage (per template).
+   - "New chat / Nuevo chat" reset action.
+   - Built-in "Generate brief / Generar resumen" panel with copy action.
 
 ## Recent Important Commits (ISLAAPP/main)
+- `a644b33` Persist agent chat per template and add project status handoff file
 - `373ac47` Make AI agent default to phased product-planning workflow
 - `81dd472` Only send reasoning for GPT-5 models and hide unsupported control
 - `f6d8ffe` Fix agent API message format for Responses endpoint
@@ -52,8 +57,8 @@ Optional/cleanup:
 
 ## Open Items / Next Build Tasks
 1. Expand EN/ES coverage beyond core funnel to all pages/components.
-2. Improve agent prompt memory/session continuity per user (conversation persistence).
-3. Add structured project output generation from agent replies:
+2. Improve long-term agent memory/session continuity across devices (server-side persistence).
+3. Add richer structured project output generation from agent replies:
    - brief
    - MVP scope
    - screen map
