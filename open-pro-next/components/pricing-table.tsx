@@ -55,7 +55,7 @@ export default function PricingTable() {
       {plans.map((plan) => (
         <div
           key={plan.name}
-          className="relative flex h-full flex-col rounded-2xl bg-linear-to-br from-gray-900/60 via-gray-800/30 to-gray-900/60 p-5 backdrop-blur-xs before:pointer-events-none before:absolute before:inset-0 before:rounded-[inherit] before:border before:border-transparent before:[background:linear-gradient(to_right,var(--color-gray-800),var(--color-gray-700),var(--color-gray-800))_border-box] before:[mask-composite:exclude_!important] before:[mask:linear-gradient(white_0_0)_padding-box,_linear-gradient(white_0_0)]"
+          className="relative flex h-full flex-col rounded-2xl border border-gray-800 bg-gray-900/70 p-5 backdrop-blur-xs"
         >
           <div className="relative mb-4 border-b pb-5 [border-image:linear-gradient(to_right,transparent,--theme(--color-slate-400/.25),transparent)1]">
             <div className="mb-2 font-nacelle text-[1rem] text-gray-200">
@@ -72,7 +72,7 @@ export default function PricingTable() {
               {plan.blurb}
             </div>
             <a
-              className="btn-sm relative w-full bg-linear-to-b from-gray-800 to-gray-800/60 bg-[length:100%_100%] bg-[bottom] text-gray-100 before:pointer-events-none before:absolute before:inset-0 before:rounded-[inherit] before:border before:border-transparent before:[background:linear-gradient(to_right,var(--color-gray-800),var(--color-gray-700),var(--color-gray-800))_border-box] before:[mask-composite:exclude_!important] before:[mask:linear-gradient(white_0_0)_padding-box,_linear-gradient(white_0_0)] hover:bg-[length:100%_150%]"
+              className="btn-sm w-full border border-gray-700 bg-gray-800 text-white hover:bg-gray-700"
               href={plan.href}
             >
               {plan.cta}
