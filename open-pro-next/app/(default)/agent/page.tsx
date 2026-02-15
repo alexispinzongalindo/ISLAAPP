@@ -37,14 +37,13 @@ export default function AgentPage() {
       : "Hi, I am your islaAPP AI agent. How can I help you today?";
   }, [selectedTemplate, lang]);
 
-  const [messages, setMessages] = useState<ChatMessage[]>([
-    { role: "assistant", content: initialAssistantMessage },
-  ]);
+  const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [draft, setDraft] = useState("");
   const [model, setModel] = useState("gpt-5.3-codex");
   const [effort, setEffort] = useState("medium");
   const [isSending, setIsSending] = useState(false);
   const [error, setError] = useState("");
+  const [hasHydratedChat, setHasHydratedChat] = useState(false);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -63,16 +62,65 @@ export default function AgentPage() {
     return () => window.removeEventListener("isla-lang-change", onLang as EventListener);
   }, []);
 
+  const conversationKey = useMemo(
+    () => `isla_agent_chat_${(selectedTemplate || "default").toLowerCase()}`,
+    [selectedTemplate],
+  );
+
   useEffect(() => {
-    setMessages([{ role: "assistant", content: initialAssistantMessage }]);
-    setError("");
-  }, [initialAssistantMessage]);
+    const raw = window.localStorage.getItem(conversationKey);
+    if (!raw) {
+      setMessages([{ role: "assistant", content: initialAssistantMessage }]);
+      setError("");
+      setHasHydratedChat(true);
+      return;
+    }
+
+    try {
+      const parsed = JSON.parse(raw);
+      const normalized = Array.isArray(parsed)
+        ? parsed
+            .map((item) => ({
+              role: item?.role === "assistant" ? "assistant" : "user",
+              content: String(item?.content || "").trim(),
+            }))
+            .filter((item) => item.content.length > 0)
+        : [];
+
+      setMessages(
+        normalized.length > 0
+          ? (normalized as ChatMessage[])
+          : [{ role: "assistant", content: initialAssistantMessage }],
+      );
+      setError("");
+    } catch {
+      setMessages([{ role: "assistant", content: initialAssistantMessage }]);
+      setError("");
+    } finally {
+      setHasHydratedChat(true);
+    }
+  }, [conversationKey, initialAssistantMessage]);
+
+  useEffect(() => {
+    if (!hasHydratedChat || messages.length === 0) return;
+    window.localStorage.setItem(conversationKey, JSON.stringify(messages));
+  }, [hasHydratedChat, messages, conversationKey]);
 
   const canSend = useMemo(
     () => !isSending && draft.trim().length > 0,
     [isSending, draft],
   );
   const supportsReasoning = useMemo(() => model.startsWith("gpt-5"), [model]);
+  const hasUserMessages = useMemo(
+    () => messages.some((message) => message.role === "user"),
+    [messages],
+  );
+
+  const onResetChat = () => {
+    window.localStorage.removeItem(conversationKey);
+    setMessages([{ role: "assistant", content: initialAssistantMessage }]);
+    setError("");
+  };
 
   const onSubmit = async (event: FormEvent) => {
     event.preventDefault();
@@ -115,8 +163,19 @@ export default function AgentPage() {
     <section className="mx-auto max-w-6xl px-4 py-10 sm:px-6 md:py-14">
       <div className="mx-auto max-w-5xl rounded-4xl border border-gray-800 bg-gray-950/80 p-4 shadow-xl md:p-6">
         {selectedTemplate ? (
-          <div className="mb-3 inline-flex items-center rounded-full border border-indigo-500/40 bg-indigo-500/10 px-3 py-1 text-xs text-indigo-200">
-            Template: {selectedTemplate}
+          <div className="mb-3 flex items-center gap-2">
+            <div className="inline-flex items-center rounded-full border border-indigo-500/40 bg-indigo-500/10 px-3 py-1 text-xs text-indigo-200">
+              Template: {selectedTemplate}
+            </div>
+            {hasUserMessages ? (
+              <button
+                type="button"
+                onClick={onResetChat}
+                className="inline-flex items-center rounded-full border border-gray-700 px-3 py-1 text-xs text-gray-200 transition hover:border-gray-500 hover:text-white"
+              >
+                {lang === "es" ? "Nuevo chat" : "New chat"}
+              </button>
+            ) : null}
           </div>
         ) : null}
         <div className="mb-4 max-h-[48vh] min-h-[260px] overflow-y-auto rounded-2xl border border-gray-800 bg-gray-900/60 p-4">
