@@ -89,6 +89,42 @@ export default function MobileMenu() {
           <ul className="p-2 text-sm">
             <li>
               <Link
+                href="/"
+                className="flex rounded-lg px-2 py-1.5 text-white hover:text-indigo-500"
+                onClick={() => setMobileNavOpen(false)}
+              >
+                Home
+              </Link>
+            </li>
+            <li>
+              <Link
+                href="https://app.islaapp.tech/?plan=trial&lang=en"
+                className="flex rounded-lg px-2 py-1.5 text-white hover:text-indigo-500"
+                onClick={() => setMobileNavOpen(false)}
+              >
+                Start
+              </Link>
+            </li>
+            <li>
+              <Link
+                href="https://app.islaapp.tech/?lang=en"
+                className="flex rounded-lg px-2 py-1.5 text-white hover:text-indigo-500"
+                onClick={() => setMobileNavOpen(false)}
+              >
+                Build
+              </Link>
+            </li>
+            <li>
+              <Link
+                href="/templates"
+                className="flex rounded-lg px-2 py-1.5 text-white hover:text-indigo-500"
+                onClick={() => setMobileNavOpen(false)}
+              >
+                Templates
+              </Link>
+            </li>
+            <li>
+              <Link
                 href="/pricing"
                 className="flex rounded-lg px-2 py-1.5 text-white hover:text-indigo-500"
                 onClick={() => setMobileNavOpen(false)}
@@ -98,56 +134,11 @@ export default function MobileMenu() {
             </li>
             <li>
               <Link
-                href="/about"
-                className="flex rounded-lg px-2 py-1.5 text-white hover:text-indigo-500"
-                onClick={() => setMobileNavOpen(false)}
-              >
-                About Us
-              </Link>
-            </li>
-            <li>
-              <Link
-                href="/blog"
-                className="flex rounded-lg px-2 py-1.5 text-white hover:text-indigo-500"
-                onClick={() => setMobileNavOpen(false)}
-              >
-                Blog
-              </Link>
-            </li>
-            <li>
-              <Link
                 href="/help/frequently-asked-questions"
                 className="flex rounded-lg px-2 py-1.5 text-white hover:text-indigo-500"
                 onClick={() => setMobileNavOpen(false)}
               >
-                Help Centre
-              </Link>
-            </li>
-            <li>
-              <Link
-                href="/newsletter"
-                className="flex rounded-lg px-2 py-1.5 text-white hover:text-indigo-500"
-                onClick={() => setMobileNavOpen(false)}
-              >
-                Newsletter
-              </Link>
-            </li>
-            <li>
-              <Link
-                href="/contact"
-                className="flex rounded-lg px-2 py-1.5 text-white hover:text-indigo-500"
-                onClick={() => setMobileNavOpen(false)}
-              >
-                Contact
-              </Link>
-            </li>
-            <li>
-              <Link
-                href="/404"
-                className="flex rounded-lg px-2 py-1.5 text-white hover:text-indigo-500"
-                onClick={() => setMobileNavOpen(false)}
-              >
-                404
+                Support
               </Link>
             </li>
           </ul>

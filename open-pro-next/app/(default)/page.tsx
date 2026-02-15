@@ -1,6 +1,6 @@
 export const metadata = {
-  title: "Home - Open PRO",
-  description: "Page description",
+  title: "Home - islaAPP",
+  description: "Build your app in 3 clicks with islaAPP.",
 };
 
 import PageIllustration from "@/components/page-illustration";
