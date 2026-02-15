@@ -1,6 +1,9 @@
 # islaAPP Site
 
-This workspace contains the islaAPP multi-page site with onboarding, app builder, pricing, support, and project dashboard flows.
+This workspace hosts the islaAPP marketing + funnel experience:
+- Next.js 16 + TypeScript + Tailwind for the template-first funnel (home → templates → agent).
+- Static HTML/Tailwind demo exports (Shuffle) for live previews; each links into the AI agent for customization.
+- Multi-page legacy HTML flows (app builder, ops, setup) still runnable via the dev server.
 
 ## Run After Reboot
 
