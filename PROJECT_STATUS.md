@@ -36,7 +36,7 @@ Primary app path: /Users/alexispinzon/CascadeProjects/WINSURFJR/open-pro-next
    - "New chat / Nuevo chat" reset action.
    - Built-in "Generate brief / Generar resumen" panel with copy action.
 8. Multi-template catalog enabled:
-   - Gallery expanded from 1 to 6 templates.
+   - Gallery expanded from 1 to 12 templates.
    - Dynamic detail route: `/templates/[slug]`.
    - Every template now routes to AI agent with template context.
 
@@ -68,7 +68,7 @@ Optional/cleanup:
    - screen map
    - data schema
 4. Add admin/history view for captured client requirements.
-5. Add more templates (target: 12+) and category filters.
+5. Add category filters/search for template gallery and improve template localization.
 6. Polish UI spacing/typography consistency in header/agent composer.
 
 ## Immediate Next Step When Resuming

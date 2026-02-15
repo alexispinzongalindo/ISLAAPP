@@ -9,7 +9,14 @@ import heroImage01 from "@/public/images/hero-image-01.jpg";
 import featuresImage from "@/public/images/features.png";
 import worldmapImage from "@/public/images/worldmap.png";
 import teamMosaic01 from "@/public/images/team-mosaic-01.jpg";
+import teamMosaic02 from "@/public/images/team-mosaic-02.jpg";
 import postThumb04 from "@/public/images/post-thumb-04.jpg";
+import postThumb02 from "@/public/images/post-thumb-02.jpg";
+import postThumb01 from "@/public/images/post-thumb-01.jpg";
+import postThumb07 from "@/public/images/post-thumb-07.jpg";
+import postThumb10 from "@/public/images/post-thumb-10.jpg";
+import postThumb11 from "@/public/images/post-thumb-11.jpg";
+import postThumb13 from "@/public/images/post-thumb-13.jpg";
 import postThumb15 from "@/public/images/post-thumb-15.jpg";
 
 export type TemplateDefinition = {
@@ -88,6 +95,72 @@ export const templates: TemplateDefinition[] = [
     descEs:
       "Configuracion de comercio simple para catalogos de productos, captura de pedidos y notificaciones de estado.",
     thumb: carousel03,
+    hero: postThumb15,
+  },
+  {
+    slug: "autocare",
+    title: "AutoCare (Workshop Booking)",
+    titleEs: "AutoCare (Reservas de Taller)",
+    tags: ["Automotive", "Scheduling", "CRM"],
+    desc: "Manage vehicle appointments, service packages, and customer follow-ups in one flow.",
+    descEs:
+      "Gestiona citas de vehiculos, paquetes de servicio y seguimientos de clientes en un solo flujo.",
+    thumb: postThumb02,
+    hero: teamMosaic02,
+  },
+  {
+    slug: "dentapro",
+    title: "DentaPro (Clinic Operations)",
+    titleEs: "DentaPro (Operaciones de Clinica)",
+    tags: ["Healthcare", "Appointments", "Operations"],
+    desc: "Coordinate patient bookings, treatment tracking, and front-desk workflows.",
+    descEs:
+      "Coordina citas de pacientes, seguimiento de tratamientos y flujos operativos de recepcion.",
+    thumb: postThumb07,
+    hero: featuresImage,
+  },
+  {
+    slug: "propflow",
+    title: "PropFlow (Real Estate Leads)",
+    titleEs: "PropFlow (Prospectos Inmobiliarios)",
+    tags: ["Real Estate", "Leads", "Pipelines"],
+    desc: "Capture property leads, track visits, and automate follow-up for closing faster.",
+    descEs:
+      "Captura prospectos inmobiliarios, gestiona visitas y automatiza seguimientos para cerrar mas rapido.",
+    thumb: postThumb10,
+    hero: worldmapImage,
+  },
+  {
+    slug: "eventspark",
+    title: "EventSpark (Event Planning)",
+    titleEs: "EventSpark (Planificacion de Eventos)",
+    tags: ["Events", "Tickets", "Automation"],
+    desc: "Handle registrations, ticket flows, reminders, and attendee communication.",
+    descEs:
+      "Gestiona registros, venta de entradas, recordatorios y comunicacion con asistentes.",
+    thumb: postThumb13,
+    hero: heroImage01,
+  },
+  {
+    slug: "restotable",
+    title: "RestoTable (Restaurant Reservations)",
+    titleEs: "RestoTable (Reservas de Restaurante)",
+    tags: ["Hospitality", "Bookings", "Guest CRM"],
+    desc: "Optimize table bookings, shift demand, and VIP guest tracking in one dashboard.",
+    descEs:
+      "Optimiza reservas de mesas, demanda por turnos y seguimiento de clientes VIP en un panel.",
+    thumb: postThumb01,
+    hero: postThumb04,
+  },
+  {
+    slug: "staffpulse",
+    title: "StaffPulse (HR Requests)",
+    titleEs: "StaffPulse (Solicitudes de RRHH)",
+    tags: ["HR", "Approvals", "Internal Tools"],
+    desc: "Launch an internal portal for employee requests, approvals, and HR operations.",
+    descEs:
+      "Lanza un portal interno para solicitudes de empleados, aprobaciones y operaciones de RRHH.",
+    thumb: postThumb11,
     hero: postThumb15,
   },
 ];
