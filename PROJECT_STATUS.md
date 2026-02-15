@@ -39,6 +39,9 @@ Primary app path: /Users/alexispinzon/CascadeProjects/WINSURFJR/open-pro-next
    - Gallery expanded from 1 to 12 templates.
    - Dynamic detail route: `/templates/[slug]`.
    - Every template now routes to AI agent with template context.
+9. Live demo pages upgraded:
+   - Template detail now includes demo summary, module cards, and step-by-step live flow.
+   - Demos are differentiated by template slug (not one generic preview).
 
 ## Recent Important Commits (ISLAAPP/main)
 - `a644b33` Persist agent chat per template and add project status handoff file
