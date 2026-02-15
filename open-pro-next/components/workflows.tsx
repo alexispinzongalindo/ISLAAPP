@@ -13,38 +13,38 @@ export default function Workflows() {
           <div className="mx-auto max-w-3xl pb-12 text-center md:pb-20">
             <div className="inline-flex items-center gap-3 pb-3 before:h-px before:w-8 before:bg-linear-to-r before:from-transparent before:to-indigo-200/50 after:h-px after:w-8 after:bg-linear-to-l after:from-transparent after:to-indigo-200/50">
               <span className="inline-flex bg-linear-to-r from-indigo-500 to-indigo-200 bg-clip-text text-transparent">
-                Start with a ready flow
+                Template-first workflow
               </span>
             </div>
             <h2 className="animate-[gradient_6s_linear_infinite] bg-[linear-gradient(to_right,var(--color-gray-200),var(--color-indigo-200),var(--color-gray-50),var(--color-indigo-300),var(--color-gray-200))] bg-[length:200%_auto] bg-clip-text pb-4 font-nacelle text-3xl font-semibold text-transparent md:text-4xl">
-              Pick a template and test it in 3 steps
+              Pick your path and ship in days, not months
             </h2>
             <p className="text-lg text-indigo-200/65">
-              Choose a starter, verify once, and see a live preview you can use
-              in your office, barbershop, or any service business.
+              Every starter includes a guided flow for setup, live preview, and
+              handoff so clients can launch without confusion.
             </p>
           </div>
           {/* Spotlight items */}
           <Spotlight className="group mx-auto grid max-w-sm items-start gap-6 lg:max-w-none lg:grid-cols-4">
             {[
               {
-                title: "Barbershop Bookings",
-                body: "Appointments, reminders, and payments ready to test.",
+                title: "Booking & Appointments",
+                body: "Calendar, reminders, and payment links ready for launch.",
                 img: Template01,
               },
               {
                 title: "Client Portal",
-                body: "Files, approvals, and timelines for office teams.",
+                body: "Approvals, docs, and milestones in one client workspace.",
                 img: Template02,
               },
               {
-                title: "Service Scheduler",
-                body: "Calendar + deposits for any service business.",
+                title: "Service Operations",
+                body: "Requests, status updates, and ops tracking in one board.",
                 img: Template03,
               },
               {
                 title: "Storefront Lite",
-                body: "Catalog and checkout to sell fast.",
+                body: "Simple catalog and checkout for fast online sales.",
                 img: Template03,
               },
             ].map((card, i) => (

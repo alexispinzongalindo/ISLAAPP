@@ -11,23 +11,23 @@ import SmallTestimonialImg from "@/public/images/small-testimonial.jpg";
 
 const tabs = [
   {
-    title: "Strategic Sync",
+    title: "Guided Setup",
     description:
-      "Remove corners from the avatars and transform the way your team work.",
+      "Start with role-aware onboarding and recommended defaults.",
     img: CarouselImg01,
     imgAlt: "Carousel image 01",
   },
   {
-    title: "Feedback Loop",
+    title: "Live Preview",
     description:
-      "Best-in-class design practices to keep your work safe and secure.",
+      "Share a live URL quickly so clients can review before delivery.",
     img: CarouselImg02,
     imgAlt: "Carousel image 02",
   },
   {
-    title: "Enterprise-Ready",
+    title: "Ops Control",
     description:
-      "Built for teams of all sizes. From early-stage startups to global enterprises.",
+      "Track requests, updates, and delivery milestones from one place.",
     img: CarouselImg03,
     imgAlt: "Carousel image 03",
   },
@@ -46,18 +46,18 @@ export default function SplitCarousel() {
               <div className="shrink-0 md:w-[500px] *:pl-7">
                 <div className="inline-flex items-center gap-3 pb-3 before:h-px before:w-8 before:bg-linear-to-r before:from-transparent before:to-indigo-200/50 after:h-px after:w-8 after:bg-linear-to-l after:from-transparent after:to-indigo-200/50">
                   <span className="inline-flex bg-linear-to-r from-indigo-500 to-indigo-200 bg-clip-text text-transparent">
-                    Software Standard
+                    Why teams pick islaAPP
                   </span>
                 </div>
                 <div className="relative mb-6 border-l [border-image:linear-gradient(to_bottom,transparent,--theme(--color-slate-400/.25),transparent)1] after:absolute after:left-0 after:top-0 after:h-4 after:w-px after:origin-bottom after:-translate-y-full after:animate-shine after:bg-[linear-gradient(180deg,transparent,--theme(--color-indigo-500/.5)_25%,--theme(--color-indigo-500)_50%,--theme(--color-indigo-500/.5)_75%,transparent)] after:opacity-0">
                   <div className="mb-4">
                     <h2 className="animate-[gradient_6s_linear_infinite] bg-[linear-gradient(to_right,var(--color-gray-200),var(--color-indigo-200),var(--color-gray-50),var(--color-indigo-300),var(--color-gray-200))] bg-[length:200%_auto] bg-clip-text pb-4 font-nacelle text-3xl font-semibold text-transparent md:text-4xl">
-                      Improve efficiency & global coverage
+                      From first idea to client handoff in one flow
                     </h2>
                     <p className="text-indigo-200/65">
-                      Open is so simple to use, it's easy to overlook the wealth
-                      of complex technologies packed under the hood that keep
-                      Open robust, safe, and blazing fast.
+                      islaAPP combines templates, AI-assisted build steps, and
+                      operations visibility so non-technical teams can launch
+                      with confidence.
                     </p>
                   </div>
 
@@ -92,9 +92,8 @@ export default function SplitCarousel() {
                 </div>
                 <div>
                   <p className="mb-4 font-nacelle text-gray-200">
-                    “I was blown away by how easy it was to create my content
-                    using this tool! Within a few hours, I had a
-                    professional-looking flow up and running.”
+                    “We went from idea to a client-ready workflow in one day.
+                    The 3-click process removed all the guesswork.”
                   </p>
                   <div className="flex items-center gap-3">
                     <Image
@@ -105,13 +104,13 @@ export default function SplitCarousel() {
                       alt="Small testimonial"
                     />
                     <div className="text-sm font-medium text-gray-200">
-                      <span>Chris Pick</span>
+                      <span>Operations Team</span>
                       <span className="text-gray-700"> - </span>
                       <a
                         className="text-indigo-200/65 transition-colors hover:text-indigo-500"
                         href="#0"
                       >
-                        Notion Circle
+                        islaAPP customer
                       </a>
                     </div>
                   </div>
