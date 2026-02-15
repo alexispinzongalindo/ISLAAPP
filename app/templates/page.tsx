@@ -40,15 +40,9 @@ export default function TemplatesPage() {
             <h3 className="text-lg font-semibold text-gray-100">{t.title}</h3>
             <p className="text-indigo-200/70 mb-4">{t.desc}</p>
             <div className="flex gap-3 flex-wrap">
-              <Link
-                href={`/templates/${t.slug}`}
-                className="btn-sm bg-indigo-600 text-white hover:bg-indigo-500"
-              >
-                Live demo
-              </Link>
               <a
                 href={t.useHref}
-                className="btn-sm bg-gray-800 text-gray-100 hover:bg-gray-700"
+                className="btn-sm bg-indigo-600 text-white hover:bg-indigo-500"
               >
                 Use this template
               </a>
