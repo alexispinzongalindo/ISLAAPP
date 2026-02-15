@@ -48,6 +48,14 @@ export default function TemplatesPage() {
                   Live demo
                 </Link>
               )}
+              {t.slug === "medtrack" && (
+                <Link
+                  href="/live/medtrack"
+                  className="btn-sm bg-gray-800 text-gray-100 hover:bg-gray-700"
+                >
+                  Live demo
+                </Link>
+              )}
               <a
                 href={t.useHref}
                 className="btn-sm bg-indigo-600 text-white hover:bg-indigo-500"

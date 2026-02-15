@@ -49,6 +49,16 @@ export default function TemplatesPage() {
                   Live demo
                 </a>
               )}
+              {t.slug === "medtrack" && (
+                <a
+                  href="/live/medtrack"
+                  className="btn-sm bg-gray-800 text-gray-100 hover:bg-gray-700"
+                  data-i18n-en="Live demo"
+                  data-i18n-es="Demo en vivo"
+                >
+                  Live demo
+                </a>
+              )}
               <a
                 href={`/agent?template=${t.slug}&source=template_gallery`}
                 className="btn-sm bg-indigo-600 text-white hover:bg-indigo-500"
