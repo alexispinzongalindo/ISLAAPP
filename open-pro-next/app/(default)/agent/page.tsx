@@ -65,10 +65,10 @@ export default function AgentPage() {
 
   const initialAssistantMessage = useMemo(() => {
     const isSpanish = lang === "es";
-    if (selectedTemplate.toLowerCase() === "bookflow") {
+    if (selectedTemplate) {
       return isSpanish
-        ? "Excelente eleccion. Seleccionaste la plantilla BookFlow. Soy tu agente IA de islaAPP. Dime que quieres cambiar primero."
-        : "Great choice. You selected the BookFlow template. I am your islaAPP AI agent. Tell me what you want to change first.";
+        ? `Excelente eleccion. Seleccionaste la plantilla ${selectedTemplate}. Soy tu agente IA de islaAPP. Dime que quieres cambiar primero.`
+        : `Great choice. You selected the ${selectedTemplate} template. I am your islaAPP AI agent. Tell me what you want to change first.`;
     }
     return isSpanish
       ? "Hola, soy tu agente IA de islaAPP. Como te puedo ayudar hoy?"

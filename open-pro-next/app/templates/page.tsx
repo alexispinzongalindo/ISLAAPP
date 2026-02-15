@@ -1,18 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
-import bookflowThumb from "@/public/images/workflow-01.png";
-
-const templates = [
-  {
-    slug: "bookflow",
-    title: "BookFlow (Service Booking)",
-    tags: ["Bookings", "Payments", "Client-ready"],
-    href: "/templates/bookflow",
-    useHref: "/agent?template=bookflow&source=template_gallery",
-    thumb: bookflowThumb,
-    desc: "Ready starter for appointments, reminders, and checkout. Built for salons, clinics, and service teams.",
-  },
-];
+import { templates } from "@/app/templates/template-catalog";
 
 export default function TemplatesPage() {
   return (
@@ -23,14 +11,14 @@ export default function TemplatesPage() {
           Pick a starter, preview it, then launch directly in islaAPP Builder.
         </p>
       </div>
-      <div className="grid gap-6 md:grid-cols-2">
+      <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
         {templates.map((t) => (
           <div
             key={t.slug}
             className="rounded-2xl border border-gray-800/70 bg-gray-900/60 p-4 shadow-sm"
           >
             <div className="mb-3 overflow-hidden rounded-xl border border-gray-800">
-              <Link href={t.href}>
+              <Link href={`/templates/${t.slug}`}>
                 <Image
                   src={t.thumb}
                   alt={t.title}
@@ -52,7 +40,7 @@ export default function TemplatesPage() {
             <p className="text-indigo-200/70 mb-4">{t.desc}</p>
             <div className="flex gap-3">
               <Link
-                href={t.href}
+                href={`/templates/${t.slug}`}
                 className="btn-sm bg-indigo-600 text-white hover:bg-indigo-500"
                 data-i18n-en="Live demo"
                 data-i18n-es="Demo en vivo"
@@ -60,7 +48,7 @@ export default function TemplatesPage() {
                 Live demo
               </Link>
               <a
-                href={t.useHref}
+                href={`/agent?template=${t.slug}&source=template_gallery`}
                 className="btn-sm bg-gray-800 text-gray-100 hover:bg-gray-700"
                 data-i18n-en="Use template in AI agent"
                 data-i18n-es="Usar plantilla con agente IA"

@@ -1,15 +1,41 @@
 import Image from "next/image";
 import Link from "next/link";
-import heroImage from "@/public/images/hero-image-01.jpg";
+import { notFound } from "next/navigation";
+import { getTemplateBySlug, templates } from "@/app/templates/template-catalog";
 
-export const metadata = {
-  title: "BookFlow Template - islaAPP",
-  description: "Preview the BookFlow template and launch it in islaAPP Builder.",
+type TemplatePageProps = {
+  params: { slug: string };
 };
 
-export default function BookflowTemplatePage() {
-  const openBuilderHref = "/agent?template=bookflow&source=template_detail";
-  const startTrialHref = "/agent?template=bookflow&source=template_detail";
+export async function generateStaticParams() {
+  return templates.map((template) => ({ slug: template.slug }));
+}
+
+export async function generateMetadata({ params }: TemplatePageProps) {
+  const { slug } = params;
+  const template = getTemplateBySlug(slug);
+  if (!template) {
+    return {
+      title: "Template Not Found - islaAPP",
+      description: "The selected template could not be found.",
+    };
+  }
+
+  return {
+    title: `${template.title} - islaAPP`,
+    description: template.desc,
+  };
+}
+
+export default async function TemplateDetailPage({ params }: TemplatePageProps) {
+  const { slug } = params;
+  const template = getTemplateBySlug(slug);
+
+  if (!template) {
+    notFound();
+  }
+
+  const agentHref = `/agent?template=${template.slug}&source=template_detail`;
 
   return (
     <section className="mx-auto max-w-6xl px-4 py-12 sm:px-6 md:py-16">
@@ -17,19 +43,26 @@ export default function BookflowTemplatePage() {
         <p className="mb-2 text-sm uppercase tracking-[0.2em] text-indigo-300/80">
           <span data-i18n-en="islaAPP Template" data-i18n-es="Plantilla islaAPP">islaAPP Template</span>
         </p>
-        <h1 className="text-3xl font-semibold text-gray-100 md:text-4xl" data-i18n-en="BookFlow Service Booking Starter" data-i18n-es="Base BookFlow para Reservas de Servicios">
-          BookFlow Service Booking Starter
+        <h1
+          className="text-3xl font-semibold text-gray-100 md:text-4xl"
+          data-i18n-en={template.title}
+          data-i18n-es={template.titleEs}
+        >
+          {template.title}
         </h1>
-        <p className="mx-auto mt-3 max-w-2xl text-indigo-200/70" data-i18n-en="A fast-launch template for appointments, reminders, and checkout. Start with this structure, then customize pages and flows in Builder." data-i18n-es="Una plantilla de lanzamiento rapido para citas, recordatorios y pagos. Empieza con esta estructura y luego personaliza paginas y flujos en el constructor.">
-          A fast-launch template for appointments, reminders, and checkout. Start
-          with this structure, then customize pages and flows in Builder.
+        <p
+          className="mx-auto mt-3 max-w-2xl text-indigo-200/70"
+          data-i18n-en={template.desc}
+          data-i18n-es={template.descEs}
+        >
+          {template.desc}
         </p>
       </div>
 
       <div className="overflow-hidden rounded-2xl border border-gray-800 bg-gray-900/70">
         <Image
-          src={heroImage}
-          alt="BookFlow template preview"
+          src={template.hero}
+          alt={`${template.title} template preview`}
           className="h-[340px] w-full object-cover md:h-[460px]"
           priority
         />
@@ -37,7 +70,7 @@ export default function BookflowTemplatePage() {
 
       <div className="mt-8 grid gap-4 sm:grid-cols-2">
         <a
-          href={startTrialHref}
+          href={agentHref}
           className="btn-sm bg-indigo-600 text-center text-white hover:bg-indigo-500"
           data-i18n-en="Start With This Template"
           data-i18n-es="Comenzar con esta plantilla"
@@ -45,7 +78,7 @@ export default function BookflowTemplatePage() {
           Start With This Template
         </a>
         <a
-          href={openBuilderHref}
+          href={agentHref}
           className="btn-sm border border-gray-700 bg-gray-800 text-center text-white hover:bg-gray-700"
           data-i18n-en="Open AI Agent"
           data-i18n-es="Abrir agente IA"

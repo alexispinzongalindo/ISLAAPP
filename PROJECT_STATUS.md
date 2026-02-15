@@ -35,6 +35,10 @@ Primary app path: /Users/alexispinzon/CascadeProjects/WINSURFJR/open-pro-next
    - Conversation persistence in browser localStorage (per template).
    - "New chat / Nuevo chat" reset action.
    - Built-in "Generate brief / Generar resumen" panel with copy action.
+8. Multi-template catalog enabled:
+   - Gallery expanded from 1 to 6 templates.
+   - Dynamic detail route: `/templates/[slug]`.
+   - Every template now routes to AI agent with template context.
 
 ## Recent Important Commits (ISLAAPP/main)
 - `a644b33` Persist agent chat per template and add project status handoff file
@@ -64,7 +68,8 @@ Optional/cleanup:
    - screen map
    - data schema
 4. Add admin/history view for captured client requirements.
-5. Polish UI spacing/typography consistency in header/agent composer.
+5. Add more templates (target: 12+) and category filters.
+6. Polish UI spacing/typography consistency in header/agent composer.
 
 ## Immediate Next Step When Resuming
 1. Redeploy latest `main` on Render.
