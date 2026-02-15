@@ -72,6 +72,7 @@ export default function AgentPage() {
     () => !isSending && draft.trim().length > 0,
     [isSending, draft],
   );
+  const supportsReasoning = useMemo(() => model.startsWith("gpt-5"), [model]);
 
   const onSubmit = async (event: FormEvent) => {
     event.preventDefault();
@@ -90,7 +91,7 @@ export default function AgentPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           model,
-          effort,
+          ...(supportsReasoning ? { effort } : {}),
           messages: nextMessages,
         }),
       });
@@ -163,20 +164,22 @@ export default function AgentPage() {
                 </select>
               </label>
 
-              <label className="flex items-center gap-2 text-sm text-gray-300">
-                <span>{lang === "es" ? "Razonamiento" : "Reasoning"}</span>
-                <select
-                  value={effort}
-                  onChange={(e) => setEffort(e.target.value)}
-                  className="rounded-lg border border-gray-700 bg-gray-900 px-2 py-1 text-gray-100"
-                >
-                  {EFFORT_OPTIONS.map((option) => (
-                    <option key={option.value} value={option.value}>
-                      {option.label}
-                    </option>
-                  ))}
-                </select>
-              </label>
+              {supportsReasoning ? (
+                <label className="flex items-center gap-2 text-sm text-gray-300">
+                  <span>{lang === "es" ? "Razonamiento" : "Reasoning"}</span>
+                  <select
+                    value={effort}
+                    onChange={(e) => setEffort(e.target.value)}
+                    className="rounded-lg border border-gray-700 bg-gray-900 px-2 py-1 text-gray-100"
+                  >
+                    {EFFORT_OPTIONS.map((option) => (
+                      <option key={option.value} value={option.value}>
+                        {option.label}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+              ) : null}
             </div>
 
             <button

@@ -40,6 +40,7 @@ export async function POST(request: Request) {
     const body = (await request.json()) as AgentRequestBody;
     const model = String(body.model || process.env.OPENAI_MODEL || "gpt-4.1-mini");
     const effort = body.effort || "medium";
+    const supportsReasoning = model.startsWith("gpt-5");
     const incoming = Array.isArray(body.messages) ? body.messages : [];
 
     const cleanedMessages = incoming
@@ -68,12 +69,12 @@ export async function POST(request: Request) {
       },
       body: JSON.stringify({
         model,
-        reasoning: { effort },
         instructions: systemPrompt,
         input: cleanedMessages.map((m) => ({
           role: m.role,
           content: m.content,
         })),
+        ...(supportsReasoning ? { reasoning: { effort } } : {}),
       }),
     });
 
