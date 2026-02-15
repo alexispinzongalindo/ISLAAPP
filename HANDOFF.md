@@ -1,43 +1,31 @@
-# Handoff (2026-02-12, latest)
+# Handoff (2026-02-15, latest)
 
 ## Branch + Commit
 - Branch: `main`
-- Base commit before this pass: `c0633c0`
-- Current worktree: multiple uncommitted UX changes
+- Base commit before this pass: `dd4bc26`
+- Current HEAD: `4f6f681` (pushed to origin)
+- Worktree state: clean (build artifacts removed)
 
-## What was done in this session
-- Fixed template prefill/autoclone regression in App Builder when template comes from URL but is not in static radio list.
-- Switched App Builder template gallery from hardcoded 12 cards to data-driven rendering from shared catalog (50 templates).
-- Added major App Builder usability upgrades:
-  - template search + visible count
-  - feature presets (essentials/growth/all/clear)
-  - quick prompt examples
-  - live "Your Current Plan" summary
-  - clearer beginner copy and CTA labels
-- Added beginner-first experience:
-  - new page: `start-here.html`
-  - global "Start Here" nav simplification and beginner banner injection in `app.js`
-  - adaptive "Continue" logic on Start Here page based on saved prompt/draft/project state
-  - Home CTAs now funnel to Start Here first
-  - App Builder "Do This Next" panel with adaptive primary action (step 1 -> step 2 -> step 3 -> open projects)
-  - App Builder now remembers latest created project in localStorage for clearer guidance
+## What was done today
+- Rebased onto latest `origin/main`, resolved merge conflict in `components/hero-home.tsx`, and pushed successfully.
+- Added the new 40-template gallery for IslaAPP (Next.js) with preview cards and detail page routing: `app/templates/page.tsx`, `app/templates/[slug]/page.tsx`, `app/templates/data.ts`.
+- Hero copy kept the “real client-ready app” wording after conflict resolution; trial CTA still points to `https://app.islaapp.tech/?plan=trial&lang=en`.
+- Cleaned local-only artifacts before push: removed `.next/`, `node_modules/`, `pnpm-lock.yaml`, `.vscode/`, `shuffle-2/`, and `templates/` exports.
 
-## Files changed
-- `app.js`
-- `app-builder.html`
-- `index.html`
-- `styles.css`
-- `start-here.html` (new)
+## Files changed in HEAD
+- `app/templates/page.tsx`
+- `app/templates/[slug]/page.tsx`
+- `app/templates/data.ts`
+- `components/hero-home.tsx`
+- `package-lock.json`
+- `public/images/hero-image-01.jpg`
 
-## Next task (priority)
-1. Manual UX QA pass in browser (desktop + mobile width):
-   - `index.html` -> `start-here.html` -> `app-builder.html` fast flow
-   - verify "Do This Next" primary button transitions correctly across all 4 guide states
-   - `templates.html` -> `template-live.html` -> `app-builder.html` prefill/autoclone
-   - verify nav simplification on non-home pages
-2. Triage any regressions found in QA.
-3. Commit with clear message once QA is complete.
+## Next tasks (priority)
+1) Run `npm install` then `npm run dev` to verify the gallery pages and hero CTA on desktop + mobile widths.
+2) Decide whether the template detail page should include a direct “Use this template” link (`useHref`) or stay as preview-only; wire and style if needed.
+3) If Shuffle export or `templates/` assets are needed, re-add them and commit separately so they don’t get cleaned on pushes.
+4) If deploying, rebuild after reinstalling dependencies since `node_modules` and `.next` were removed.
 
 ## Notes
-- `node --check app.js` passes.
-- Browser E2E automation was not executed in this environment.
+- Repo is clean and in sync with GitHub (`main` -> `origin/main`).
+- No automated tests were run in this pass.
