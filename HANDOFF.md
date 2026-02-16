@@ -1,14 +1,15 @@
-# Handoff (2026-02-15, night)
+# Handoff (2026-02-16, early AM)
 
 ## Branch + Commit
 - Branch: `main`
-- Current HEAD: `b457f8d` (pushed)
-- Worktree: clean
+- Current HEAD: _pending push after moves_ (see git status for final hash)
+- Worktree: clean once you commit/push the live-page moves below
 
 ## What was done
-- Removed all static `/public/live/*` template exports and disabled the `/live/:slug` rewrite in `next.config.js` to avoid mixed assets.
-- Rebuilt **MedTrack** as a standalone React page at `app/live/medtrack/page.tsx` (medication manager with schedule, adherence, refill tracker, personas). No static assets required.
-- BookFlow SPA remains at `app/live/bookflow/page.tsx` (unchanged).
+- Removed static `/public/live/*` templates and the `/live/:slug` rewrite so only app routes are used.
+- Rebuilt **MedTrack** as a standalone React page (meds list, schedule, adherence, refills, personas).
+- Added **FitCoach** SPA (theme switcher, coaching dashboard, check-ins, progress, billing).
+- **Moved MedTrack and FitCoach into the actual Next app** at `open-pro-next/app/live/{medtrack,fitcoach}` so Render builds pick them up. BookFlow stays at `open-pro-next/app/live/bookflow`.
 
 ## How to run / verify
 1) `cd /Users/alexispinzon/CascadeProjects/islaapp-site/open-pro-next/open-pro-next`
@@ -17,12 +18,14 @@
 4) Open:
    - BookFlow: `http://localhost:3000/live/bookflow`
    - MedTrack: `http://localhost:3000/live/medtrack`
+   - FitCoach: `http://localhost:3000/live/fitcoach`
 
 ## Next tasks (priority)
-- Redeploy on your host so the rewritten /live removal and new MedTrack page are live.
-- Keep BookFlow and MedTrack separate; ensure CTAs point to the correct routes and not to removed static pages.
-- Optional: remove the unused `experimental.turbo` warning in `next.config.js` if desired.
+- Commit & push the live-page moves (fitcoach + medtrack into `open-pro-next/app/live`) then redeploy; 404s should disappear because routes will be part of the built app.
+- Keep BookFlow, MedTrack, FitCoach separate; point CTAs only to their `/live/*` routes.
+- Optional: remove the invalid `experimental.turbo` key in `next.config.js` (warning only).
 
 ## Notes
-- Lockfile is the nested `open-pro-next/package-lock.json` (root lockfile was previously removed). Ensure your deploy uses this one.
-- No tests were run in this pass. Deploy to verify. 
+- Lockfile for the Next app is `open-pro-next/open-pro-next/package-lock.json`; Render uses `rootDir: open-pro-next` so it should pick it up.
+- Local `npm run build` failed only because Google Fonts download was blocked; Render should succeed with network access.
+- No tests were run in this pass. Deploy to verify.
