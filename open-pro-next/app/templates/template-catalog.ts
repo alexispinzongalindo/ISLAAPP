@@ -14,6 +14,7 @@ import bookflowThumb from "@/public/templates/bookflow-thumb.png";
 import medtrackThumb from "@/public/templates/medtrack-thumb.png";
 import fitcoachThumb from "@/public/templates/fitcoach-thumb.png";
 import restaurantThumb from "@/public/templates/restaurant-thumb.png";
+import calmspaThumb from "@/public/templates/calmspa-thumb.png";
 import postThumb01 from "@/public/images/post-thumb-01.jpg";
 import postThumb02 from "@/public/images/post-thumb-02.jpg";
 import postThumb04 from "@/public/images/post-thumb-04.jpg";
@@ -84,8 +85,8 @@ export const templates: TemplateDefinition[] = [
   tags: ["Wellness", "Bookings", "Gift Cards"],
   desc: "Service menu + upsells + gift cards. Swap accent color and CTA copy for promos in under a minute.",
   descEs: "Service menu + upsells + gift cards. Swap accent color and CTA copy for promos in under a minute.",
-  thumb: carousel01,
-  hero: carousel01,
+  thumb: calmspaThumb,
+  hero: calmspaThumb,
 },
 {
   slug: "clinic",
