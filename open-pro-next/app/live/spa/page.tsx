@@ -98,8 +98,8 @@ export default function CalmSpaDemo() {
           </div>
         </header>
 
-        <div className="grid gap-6 lg:grid-cols-[420px,1fr]">
-          <PhonePreview
+        <div className="grid gap-6 lg:grid-cols-[minmax(540px,1fr),1fr]">
+          <DesktopPreview
             accent={accent}
             promoOn={promoOn}
             promoText={promoText}
@@ -167,7 +167,7 @@ export default function CalmSpaDemo() {
   );
 }
 
-function PhonePreview({
+function DesktopPreview({
   accent,
   promoOn,
   promoText,
@@ -198,81 +198,72 @@ function PhonePreview({
   }, [selectedService, selectedAddOns]);
 
   return (
-    <div className="mx-auto w-full max-w-[420px]">
-      <div
-        className="rounded-[32px] border border-slate-200 bg-white shadow-2xl"
-        style={{ boxShadow: "0 20px 60px rgba(22,101,92,0.18)" }}
-      >
-        <div
-          className="rounded-t-[32px] px-6 py-3 text-center text-xs font-semibold tracking-wide text-white"
-          style={{ background: accent }}
-        >
-          CalmSpa • Live Preview
-        </div>
-        <div className="relative overflow-hidden rounded-b-[32px]" style={{ background: "#f7fbf9" }}>
-          <div className="h-[680px] space-y-0">
-            {promoOn && (
-              <div
-                className="flex items-center gap-2 px-4 py-2 text-xs font-semibold text-white"
-                style={{ background: accent }}
-              >
-                🌿 {promoText}
-              </div>
-            )}
-
-            <div className="p-5 pb-3">
-              <div className="rounded-2xl bg-white p-4 shadow-sm">
-                <div className="text-sm text-slate-600">Welcome</div>
-                <div className="text-lg font-semibold text-slate-900">Unwind with CalmSpa</div>
-                <div className="mt-2 text-xs text-slate-500">Smart upsells and theme changes apply instantly.</div>
-                <button
-                  className="mt-3 w-full rounded-xl px-4 py-3 text-sm font-semibold text-white transition active:scale-95"
-                  style={{ background: accent }}
-                >
-                  {ctaText}
-                </button>
-              </div>
+    <div className="w-full overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-2xl">
+      <div className="flex items-center justify-between border-b border-slate-100 px-5 py-3 text-xs font-semibold uppercase tracking-wide text-slate-600">
+        <span>CalmSpa Desktop Preview</span>
+        <span style={{ color: accent }}>Desktop</span>
+      </div>
+      <div className="relative" style={{ background: "#f7fbf9" }}>
+        <div className="space-y-0 p-6">
+          {promoOn && (
+            <div
+              className="mb-3 flex items-center gap-2 rounded-xl px-4 py-3 text-xs font-semibold text-white"
+              style={{ background: accent }}
+            >
+              🌿 {promoText}
             </div>
+          )}
 
-            <div className="px-5">
-              <div className="mb-2 text-sm font-semibold text-slate-700">Selected service</div>
-              <div className="space-y-2">
-                {selectedService ? (
-                  <div className="rounded-2xl border border-slate-200 bg-white p-3 shadow-sm">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <div className="text-sm font-semibold text-slate-900">{selectedService.name}</div>
-                        <div className="text-xs text-slate-500">{selectedService.duration}</div>
-                      </div>
-                      <div className="text-sm font-semibold" style={{ color: accent }}>
-                        {selectedService.price}
-                      </div>
+          <div className="rounded-2xl bg-white p-5 shadow-sm">
+            <div className="text-sm text-slate-600">Welcome</div>
+            <div className="text-xl font-semibold text-slate-900">Unwind with CalmSpa</div>
+            <div className="mt-2 text-sm text-slate-500">Smart upsells and theme changes apply instantly.</div>
+            <button
+              className="mt-4 w-full rounded-xl px-4 py-3 text-sm font-semibold text-white transition active:scale-95"
+              style={{ background: accent }}
+            >
+              {ctaText}
+            </button>
+          </div>
+
+          <div className="mt-5">
+            <div className="mb-2 text-sm font-semibold text-slate-700">Selected service</div>
+            <div className="space-y-3">
+              {selectedService ? (
+                <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <div className="text-base font-semibold text-slate-900">{selectedService.name}</div>
+                      <div className="text-xs text-slate-500">{selectedService.duration}</div>
                     </div>
-                    {selectedAddOns.size > 0 && (
-                      <div className="mt-2 text-xs text-slate-600">
-                        Add-ons: {Array.from(selectedAddOns).join(", ")}
-                      </div>
-                    )}
-                    {total && (
-                      <div className="mt-2 text-sm font-semibold" style={{ color: accent }}>
-                        Est. total {total}
-                      </div>
-                    )}
+                    <div className="text-sm font-semibold" style={{ color: accent }}>
+                      {selectedService.price}
+                    </div>
                   </div>
-                ) : (
-                  <div className="rounded-2xl border border-dashed border-slate-200 bg-white p-3 text-xs text-slate-500">
-                    Select a service to preview upsells and pricing.
-                  </div>
-                )}
-              </div>
+                  {selectedAddOns.size > 0 && (
+                    <div className="mt-2 text-xs text-slate-600">
+                      Add-ons: {Array.from(selectedAddOns).join(", ")}
+                    </div>
+                  )}
+                  {total && (
+                    <div className="mt-2 text-sm font-semibold" style={{ color: accent }}>
+                      Est. total {total}
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <div className="rounded-2xl border border-dashed border-slate-200 bg-white p-4 text-sm text-slate-500">
+                  Select a service to preview upsells and pricing.
+                </div>
+              )}
             </div>
+          </div>
 
-            <div className="mt-4 space-y-1 px-5 pb-5 text-xs text-slate-500">
-              <div className="font-semibold text-slate-700">Gift cards</div>
-              <div>Preset amounts: {giftAmounts.join(", ")}</div>
-              <div>Digital delivery • Personalized message</div>
-              <div className="rounded-xl bg-white/80 px-3 py-2 text-slate-600">“{giftMessage}”</div>
-            </div>
+          <div className="mt-5 space-y-2 text-sm text-slate-600">
+            <div className="font-semibold text-slate-700">Gift cards</div>
+            <div>Preset amounts: {giftAmounts.join(", ")}</div>
+            <div>Digital delivery • Personalized message</div>
+            <div className="rounded-xl bg-white/80 px-3 py-2 text-slate-600">“{giftMessage}”</div>
           </div>
         </div>
       </div>

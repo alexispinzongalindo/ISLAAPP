@@ -140,7 +140,7 @@ export default function TableReadyPage() {
           </span>
         </div>
 
-        <div className="grid gap-6 lg:grid-cols-[420px,1fr]">
+        <div className="grid gap-6 lg:grid-cols-[minmax(520px,1fr),1fr]">
           <MockDevice activeScreen={activeScreen} palette={palette} />
 
           <div className="space-y-6">
@@ -198,24 +198,17 @@ function MockDevice({
   palette: Palette;
 }) {
   return (
-    <div className="mx-auto w-full max-w-[420px]">
-      <div
-        className="rounded-[32px] border border-gray-200/70 bg-white shadow-2xl"
-        style={{
-          boxShadow:
-            "0 20px 60px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.6)",
-        }}
-      >
-        <div className="rounded-t-[32px] bg-black/70 px-6 py-3 text-center text-xs font-semibold tracking-wide text-white">
-          TableReady • iPhone 15 Pro Mock
-        </div>
-        <div className="relative overflow-hidden rounded-b-[32px]" style={{ background: palette.cream }}>
-          {activeScreen === "home" && <HomeScreen palette={palette} />}
-          {activeScreen === "reserve" && <ReserveScreen palette={palette} />}
-          {activeScreen === "menu" && <MenuScreen palette={palette} />}
-          {activeScreen === "deposits" && <DepositScreen palette={palette} />}
-          {activeScreen === "profile" && <ProfileScreen palette={palette} />}
-        </div>
+    <div className="w-full overflow-hidden rounded-3xl border border-gray-200 bg-white shadow-2xl">
+      <div className="flex items-center justify-between border-b border-gray-100 px-5 py-3 text-xs font-semibold uppercase tracking-wide text-gray-500">
+        <span>TableReady Desktop Preview</span>
+        <span style={{ color: palette.burgundy }}>Desktop</span>
+      </div>
+      <div className="relative" style={{ background: palette.cream }}>
+        {activeScreen === "home" && <HomeScreen palette={palette} />}
+        {activeScreen === "reserve" && <ReserveScreen palette={palette} />}
+        {activeScreen === "menu" && <MenuScreen palette={palette} />}
+        {activeScreen === "deposits" && <DepositScreen palette={palette} />}
+        {activeScreen === "profile" && <ProfileScreen palette={palette} />}
       </div>
     </div>
   );
