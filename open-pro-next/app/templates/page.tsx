@@ -35,6 +35,9 @@ export default function TemplatesPage() {
                   {tag}
                 </span>
               ))}
+              <span className="ml-auto rounded-full bg-indigo-600/90 px-2.5 py-1 text-[11px] font-semibold text-white">
+                Customized with AI
+              </span>
             </div>
             <h3 className="text-lg font-semibold text-gray-100">{t.title}</h3>
             <p className="text-indigo-200/70 mb-4">{t.desc}</p>
