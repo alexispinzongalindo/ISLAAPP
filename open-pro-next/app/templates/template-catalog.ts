@@ -11,6 +11,7 @@ import worldmapImage from "@/public/images/worldmap.png";
 import teamMosaic01 from "@/public/images/team-mosaic-01.jpg";
 import teamMosaic02 from "@/public/images/team-mosaic-02.jpg";
 import bookflowThumb from "@/public/templates/bookflow-thumb.png";
+import medtrackThumb from "@/public/templates/medtrack-thumb.png";
 import postThumb01 from "@/public/images/post-thumb-01.jpg";
 import postThumb02 from "@/public/images/post-thumb-02.jpg";
 import postThumb04 from "@/public/images/post-thumb-04.jpg";
@@ -51,8 +52,8 @@ export const templates: TemplateDefinition[] = [
   tags: ["Health", "Reminders", "Tracking"],
   desc: "Medication schedules, refill prompts, and adherence logs. Customizable colors and pill schedules per persona.",
   descEs: "Medication schedules, refill prompts, and adherence logs. Customizable colors and pill schedules per persona.",
-  thumb: workflow01,
-  hero: workflow01,
+  thumb: medtrackThumb,
+  hero: medtrackThumb,
 },
 {
   slug: "fitcoach",
