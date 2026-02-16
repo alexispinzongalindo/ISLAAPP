@@ -106,8 +106,8 @@ export const templates: TemplateDefinition[] = [
   tags: ["Dental", "Bookings", "Financing"],
   desc: "Treatment highlights, financing CTAs, and hygienist scheduling. Update accent to match your practice colors.",
   descEs: "Treatment highlights, financing CTAs, and hygienist scheduling. Update accent to match your practice colors.",
-  thumb: carousel03,
-  hero: carousel03,
+  thumb: clinicThumb,
+  hero: clinicThumb,
 },
 {
   slug: "law",
