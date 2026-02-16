@@ -16,6 +16,7 @@ import fitcoachThumb from "@/public/templates/fitcoach-thumb.png";
 import restaurantThumb from "@/public/templates/restaurant-thumb.png";
 import calmspaThumb from "@/public/templates/calmspa-thumb.png";
 import clinicThumb from "@/public/templates/clinic-thumb.png";
+import dentalThumb from "@/public/templates/dental-chair.jpg";
 import postThumb01 from "@/public/images/post-thumb-01.jpg";
 import postThumb02 from "@/public/images/post-thumb-02.jpg";
 import postThumb04 from "@/public/images/post-thumb-04.jpg";
@@ -106,8 +107,8 @@ export const templates: TemplateDefinition[] = [
   tags: ["Dental", "Bookings", "Financing"],
   desc: "Treatment highlights, financing CTAs, and hygienist scheduling. Update accent to match your practice colors.",
   descEs: "Treatment highlights, financing CTAs, and hygienist scheduling. Update accent to match your practice colors.",
-  thumb: clinicThumb,
-  hero: clinicThumb,
+  thumb: dentalThumb,
+  hero: dentalThumb,
 },
 {
   slug: "law",
