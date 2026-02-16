@@ -114,6 +114,41 @@ function getDemoContent(slug: string): DemoContent {
           "Ejecutar revision semanal con acciones de retencion.",
         ],
       };
+    case "clinic":
+      return {
+        summaryEn: "HIPAA-friendly patient intake, provider scheduling, and SMS reminders in one clinic flow.",
+        summaryEs: "Intake HIPAA, agenda de proveedores y recordatorios SMS en un solo flujo de clinica.",
+        modules: [
+          {
+            titleEn: "Patient intake",
+            titleEs: "Ingreso de pacientes",
+            descEn: "Insurance, history, medications, allergies, HIPAA consent with e-sign.",
+            descEs: "Seguro, historial, medicamentos, alergias, consentimiento HIPAA con firma.",
+          },
+          {
+            titleEn: "Appointment booking",
+            titleEs: "Agenda de citas",
+            descEn: "Departments, providers with credentials, real-time slots, visit type.",
+            descEs: "Departamentos, doctores con credenciales, horarios en tiempo real, tipo de cita.",
+          },
+          {
+            titleEn: "Reminders & compliance",
+            titleEs: "Recordatorios y cumplimiento",
+            descEn: "SMS/email opt-in, HIPAA badges, encrypted submission messaging.",
+            descEs: "Opt-in SMS/email, insignias HIPAA, mensajeria de envio cifrado.",
+          },
+        ],
+        stepsEn: [
+          "Start new patient registration and collect HIPAA consent.",
+          "Pick department, provider, and slot; choose visit type.",
+          "Enable SMS reminders and confirm secure submission.",
+        ],
+        stepsEs: [
+          "Iniciar alta de paciente y recolectar consentimiento HIPAA.",
+          "Elegir departamento, doctor y horario; seleccionar tipo de cita.",
+          "Activar recordatorios SMS y confirmar envio seguro.",
+        ],
+      };
     case "legaldesk":
       return {
         summaryEn: "Legal intake workflow from lead qualification to case onboarding.",
