@@ -15,6 +15,7 @@ import medtrackThumb from "@/public/templates/medtrack-thumb.png";
 import fitcoachThumb from "@/public/templates/fitcoach-thumb.png";
 import restaurantThumb from "@/public/templates/restaurant-thumb.png";
 import calmspaThumb from "@/public/templates/calmspa-thumb.png";
+import clinicThumb from "@/public/templates/clinic-thumb.png";
 import postThumb01 from "@/public/images/post-thumb-01.jpg";
 import postThumb02 from "@/public/images/post-thumb-02.jpg";
 import postThumb04 from "@/public/images/post-thumb-04.jpg";
@@ -95,8 +96,8 @@ export const templates: TemplateDefinition[] = [
   tags: ["Healthcare", "Intake", "Scheduling"],
   desc: "Patient intake with HIPAA-friendly forms, appointment slots, and SMS reminders. Swap hero image and logo fast.",
   descEs: "Patient intake with HIPAA-friendly forms, appointment slots, and SMS reminders. Swap hero image and logo fast.",
-  thumb: carousel02,
-  hero: carousel02,
+  thumb: clinicThumb,
+  hero: clinicThumb,
 },
 {
   slug: "dental",
