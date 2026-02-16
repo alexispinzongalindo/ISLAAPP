@@ -17,6 +17,7 @@ import restaurantThumb from "@/public/templates/restaurant-thumb.png";
 import calmspaThumb from "@/public/templates/calmspa-thumb.png";
 import clinicThumb from "@/public/templates/clinic-thumb.png";
 import dentalThumb from "@/public/templates/dental-chair.jpg";
+import lawThumb from "@/public/templates/law-thumb.svg";
 import postThumb01 from "@/public/images/post-thumb-01.jpg";
 import postThumb02 from "@/public/images/post-thumb-02.jpg";
 import postThumb04 from "@/public/images/post-thumb-04.jpg";
@@ -117,8 +118,8 @@ export const templates: TemplateDefinition[] = [
   tags: ["Professional", "Leads", "Appointments"],
   desc: "Case types, attorney bios, and consult booking. Swap sections for practice areas; keep intake flow intact.",
   descEs: "Case types, attorney bios, and consult booking. Swap sections for practice areas; keep intake flow intact.",
-  thumb: featuresImage,
-  hero: featuresImage,
+  thumb: lawThumb,
+  hero: lawThumb,
 },
 {
   slug: "real-estate",
