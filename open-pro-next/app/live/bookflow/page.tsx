@@ -98,6 +98,13 @@ export default function BookFlowDemo() {
   const [filter, setFilter] = useState<string>("All");
   const [search, setSearch] = useState("");
 
+  const daySlots = useMemo(() => {
+    const base = selectedDate
+      ? slots.find((d) => isSameDay(d.date, selectedDate))?.slots
+      : slots[0]?.slots;
+    return base ?? [];
+  }, [selectedDate, slots]);
+
   const filteredServices = useMemo(() => {
     return services.filter((s) =>
       (filter === "All" || s.category === filter) &&
