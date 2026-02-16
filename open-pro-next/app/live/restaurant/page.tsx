@@ -15,6 +15,8 @@ const palette = {
   white: "#FFFFFF",
 };
 
+type Palette = typeof palette;
+
 const timeSlots: TimeSlot[] = [
   { time: "5:00 PM", status: "available" },
   { time: "5:30 PM", status: "available" },
@@ -142,7 +144,7 @@ export default function TableReadyPage() {
           <MockDevice activeScreen={activeScreen} palette={palette} />
 
           <div className="space-y-6">
-            {activeScreen === "home" && <HeroInfo palette={palette} />}
+            {activeScreen === "home" && <HomeScreen palette={palette} />}
             {activeScreen === "reserve" && (
               <ReservationPanel
                 palette={palette}
@@ -193,7 +195,7 @@ function MockDevice({
   palette,
 }: {
   activeScreen: "home" | "reserve" | "menu" | "deposits" | "profile";
-  palette: typeof palette;
+  palette: Palette;
 }) {
   return (
     <div className="mx-auto w-full max-w-[420px]">
@@ -219,7 +221,7 @@ function MockDevice({
   );
 }
 
-function HomeScreen({ palette }: { palette: typeof palette }) {
+function HomeScreen({ palette }: { palette: Palette }) {
   return (
     <div className="h-[680px] w-full">
       <div
@@ -272,7 +274,7 @@ function HomeScreen({ palette }: { palette: typeof palette }) {
   );
 }
 
-function ReserveScreen({ palette }: { palette: typeof palette }) {
+function ReserveScreen({ palette }: { palette: Palette }) {
   return (
     <div className="h-[680px] space-y-4 bg-white p-5">
       <div className="rounded-2xl overflow-hidden border border-gray-200 shadow-sm">
@@ -393,7 +395,7 @@ function ReserveScreen({ palette }: { palette: typeof palette }) {
   );
 }
 
-function MenuScreen({ palette }: { palette: typeof palette }) {
+function MenuScreen({ palette }: { palette: Palette }) {
   return (
     <div className="h-[680px] bg-white">
       <div className="flex items-center justify-between px-5 py-4">
@@ -478,7 +480,7 @@ function MenuScreen({ palette }: { palette: typeof palette }) {
   );
 }
 
-function DepositScreen({ palette }: { palette: typeof palette }) {
+function DepositScreen({ palette }: { palette: Palette }) {
   return (
     <div className="h-[680px] space-y-4 bg-white p-5">
       <div className="space-y-3">
@@ -553,7 +555,7 @@ function DepositScreen({ palette }: { palette: typeof palette }) {
   );
 }
 
-function ProfileScreen({ palette }: { palette: typeof palette }) {
+function ProfileScreen({ palette }: { palette: Palette }) {
   return (
     <div className="h-[680px] space-y-4 bg-white p-5">
       <div className="flex items-center gap-3">
@@ -599,7 +601,7 @@ function MenuPanel({
   activeTab,
   setActiveTab,
 }: {
-  palette: typeof palette;
+  palette: Palette;
   activeTab: string;
   setActiveTab: (tab: string) => void;
 }) {
@@ -664,7 +666,7 @@ function ReservationPanel({
   partySize,
   setPartySize,
 }: {
-  palette: typeof palette;
+  palette: Palette;
   timeSlots: TimeSlot[];
   selectedTime: string;
   setSelectedTime: (t: string) => void;
@@ -786,7 +788,7 @@ function ReservationPanel({
   );
 }
 
-function DepositsPanel({ palette }: { palette: typeof palette }) {
+function DepositsPanel({ palette }: { palette: Palette }) {
   return (
     <div className="rounded-3xl border border-gray-200 bg-white p-6 shadow-xl text-sm text-gray-800">
       <div className="flex items-center justify-between">
@@ -839,7 +841,7 @@ function DepositsPanel({ palette }: { palette: typeof palette }) {
   );
 }
 
-function ProfilePanel({ palette }: { palette: typeof palette }) {
+function ProfilePanel({ palette }: { palette: Palette }) {
   return (
     <div className="rounded-3xl border border-gray-200 bg-white p-6 shadow-xl">
       <div className="flex items-center justify-between">
