@@ -46,15 +46,16 @@ const defaultTheme = {
 };
 
 export default function CalmSpaDemo() {
-  const [accent, setAccent] = useState(defaultTheme.accent);
-  const [ctaText, setCtaText] = useState(defaultTheme.cta);
-  const [promoOn, setPromoOn] = useState(defaultTheme.promo);
-  const [promoText, setPromoText] = useState(defaultTheme.promoText);
+  const [accent] = useState(defaultTheme.accent);
+  const [ctaText] = useState(defaultTheme.cta);
+  const [promoOn] = useState(defaultTheme.promo);
+  const [promoText] = useState(defaultTheme.promoText);
   const [filter, setFilter] = useState<string | null>(null);
   const [selectedService, setSelectedService] = useState<Service | null>(null);
   const [selectedAddOns, setSelectedAddOns] = useState<Set<string>>(new Set());
   const [giftAmount, setGiftAmount] = useState("$100");
   const [giftMessage, setGiftMessage] = useState("For your next escape – enjoy! ");
+  const [confirmMsg, setConfirmMsg] = useState<string | null>(null);
 
   const filtered = useMemo(
     () => services.filter((s) => !filter || s.category === filter),
@@ -107,19 +108,15 @@ export default function CalmSpaDemo() {
             selectedService={selectedService}
             selectedAddOns={selectedAddOns}
             giftMessage={giftMessage}
+            onConfirm={() => setConfirmMsg("Reservation saved (demo)")}
           />
 
           <div className="space-y-6">
-            <ThemePanel
-              accent={accent}
-              setAccent={setAccent}
-              ctaText={ctaText}
-              setCtaText={setCtaText}
-              promoOn={promoOn}
-              setPromoOn={setPromoOn}
-              promoText={promoText}
-              setPromoText={setPromoText}
-            />
+            {confirmMsg && (
+              <div className="rounded-xl border border-emerald-100 bg-emerald-50 px-4 py-3 text-sm font-semibold text-emerald-800">
+                {confirmMsg}
+              </div>
+            )}
 
             <ServicePanel
               accent={accent}
@@ -175,6 +172,7 @@ function DesktopPreview({
   selectedService,
   selectedAddOns,
   giftMessage,
+  onConfirm,
 }: {
   accent: string;
   promoOn: boolean;
@@ -183,6 +181,7 @@ function DesktopPreview({
   selectedService: Service | null;
   selectedAddOns: Set<string>;
   giftMessage: string;
+  onConfirm?: () => void;
 }) {
   const total = useMemo(() => {
     if (!selectedService) return null;
@@ -221,6 +220,7 @@ function DesktopPreview({
             <button
               className="mt-4 w-full rounded-xl px-4 py-3 text-sm font-semibold text-white transition active:scale-95"
               style={{ background: accent }}
+              onClick={() => onConfirm?.()}
             >
               {ctaText}
             </button>
@@ -271,102 +271,7 @@ function DesktopPreview({
   );
 }
 
-function ThemePanel({
-  accent,
-  setAccent,
-  ctaText,
-  setCtaText,
-  promoOn,
-  setPromoOn,
-  promoText,
-  setPromoText,
-}: {
-  accent: string;
-  setAccent: (v: string) => void;
-  ctaText: string;
-  setCtaText: (v: string) => void;
-  promoOn: boolean;
-  setPromoOn: (v: boolean) => void;
-  promoText: string;
-  setPromoText: (v: string) => void;
-}) {
-  return (
-    <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-xl">
-      <div className="flex items-center justify-between">
-        <h3 className="text-xl font-semibold text-slate-900">Theme customization</h3>
-        <div className="text-xs text-slate-500">Live preview updates instantly</div>
-      </div>
-      <div className="mt-4 grid gap-4 md:grid-cols-2">
-        <div className="space-y-3 text-sm text-slate-700">
-          <label className="flex items-center justify-between gap-3">
-            <span>Accent color</span>
-            <input
-              type="color"
-              value={accent}
-              onChange={(e) => setAccent(e.target.value)}
-              className="h-9 w-16 cursor-pointer rounded border border-slate-200"
-            />
-          </label>
-          <label className="flex items-center justify-between gap-3">
-            <span>CTA text</span>
-            <input
-              type="text"
-              value={ctaText}
-              onChange={(e) => setCtaText(e.target.value)}
-              className="w-48 rounded border border-slate-200 px-2 py-1 text-sm"
-            />
-          </label>
-          <label className="flex items-center gap-2 text-sm">
-            <input
-              type="checkbox"
-              checked={promoOn}
-              onChange={(e) => setPromoOn(e.target.checked)}
-              className="h-4 w-4"
-            />
-            <span>Show promo banner</span>
-          </label>
-          <textarea
-            value={promoText}
-            onChange={(e) => setPromoText(e.target.value)}
-            className="w-full rounded border border-slate-200 px-2 py-2 text-sm"
-            rows={2}
-            placeholder="Seasonal offer copy"
-          />
-          <div className="rounded-2xl border border-slate-100 bg-gradient-to-r from-white to-slate-50 p-3 text-xs text-slate-600">
-            Try changing to lavender (#8D7CBF) and CTA “Reserve Your Escape”.
-          </div>
-        </div>
-        <div className="rounded-2xl border border-slate-100 bg-slate-50 p-4 text-sm text-slate-700">
-          <div className="font-semibold text-slate-900">Before / After</div>
-          <div className="mt-3 grid grid-cols-2 gap-3 text-xs">
-            <div className="rounded-xl border border-slate-200 bg-white p-3 shadow-sm">
-              <div className="text-[11px] uppercase text-slate-500">Default</div>
-              <div className="mt-1 rounded-lg bg-[#4A9B8E] px-2 py-2 text-center font-semibold text-white">
-                Book Now
-              </div>
-              <div className="mt-2 rounded-lg bg-[#4A9B8E]/10 px-2 py-1 text-slate-600">Promo on</div>
-            </div>
-            <div className="rounded-xl border border-slate-200 bg-white p-3 shadow-sm">
-              <div className="text-[11px] uppercase text-slate-500">Live</div>
-              <div
-                className="mt-1 rounded-lg px-2 py-2 text-center font-semibold text-white"
-                style={{ background: accent }}
-              >
-                {ctaText || "CTA"}
-              </div>
-              <div
-                className="mt-2 rounded-lg px-2 py-1 text-slate-600"
-                style={{ background: `${accent}20` }}
-              >
-                Promo {promoOn ? "On" : "Off"}
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
+// ThemePanel removed for “functional without customization”
 
 function ServicePanel({
   accent,

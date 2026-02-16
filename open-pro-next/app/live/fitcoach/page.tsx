@@ -72,20 +72,14 @@ const billingHistory = [
 ];
 
 export default function FitCoachPage() {
-  const [theme, setTheme] = useState<ThemeKey>("energetic");
+  const [theme] = useState<ThemeKey>("energetic");
   const [checkins, setCheckins] = useState<CheckIn[]>(initialCheckins);
   const [form, setForm] = useState({ mood: 4, wins: "", challenges: "", weight: "" });
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const currentWeek = 8;
 
-  useEffect(() => {
-    const saved = localStorage.getItem("fitcoach-theme");
-    if (saved && themes[saved as ThemeKey]) setTheme(saved as ThemeKey);
-  }, []);
-  useEffect(() => {
-    localStorage.setItem("fitcoach-theme", theme);
-  }, [theme]);
+  // Theme customization disabled for functional demo; theme locked to default
 
   const coachMessage = useMemo(() => {
     const messages = [
@@ -136,7 +130,7 @@ export default function FitCoachPage() {
             </p>
           </div>
           <div className="flex items-center gap-3 flex-wrap">
-            <ThemeSwitcher value={theme} onChange={setTheme} />
+            {/* Theme switcher hidden for locked desktop demo */}
             <button
               className="rounded-full px-4 py-2 text-sm font-semibold shadow-lg transition"
               style={{ background: palette.primary, color: "#fff" }}
@@ -244,26 +238,7 @@ export default function FitCoachPage() {
 
 function ThemeSwitcher({ value, onChange }: { value: ThemeKey; onChange: (v: ThemeKey) => void }) {
   return (
-    <div className="flex items-center gap-2">
-      <span className="text-xs font-semibold opacity-70">Theme</span>
-      <div className="flex flex-wrap gap-2">
-        {(Object.keys(themes) as ThemeKey[]).map((k) => (
-          <button
-            key={k}
-            onClick={() => onChange(k)}
-            className="rounded-full px-3 py-2 text-xs font-semibold shadow transition"
-            style={{
-              background: themes[k].primary,
-              color: "#fff",
-              opacity: value === k ? 1 : 0.8,
-              border: value === k ? "2px solid #fff" : "1px solid rgba(0,0,0,0.08)",
-            }}
-          >
-            {themes[k].name}
-          </button>
-        ))}
-      </div>
-    </div>
+    <div className="hidden" />
   );
 }
 
