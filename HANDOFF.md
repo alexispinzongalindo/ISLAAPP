@@ -1,8 +1,8 @@
-# Handoff (2026-02-16, early AM)
+# Handoff (2026-02-16, afternoon)
 
 ## Branch + Commit
 - Branch: `main`
-- Current HEAD: _pending push after moves_ (see git status for final hash)
+- Current HEAD: latest pushed commit after adding live pages (see git log)
 - Worktree: clean once you commit/push the live-page moves below
 
 ## What was done
@@ -10,6 +10,7 @@
 - Rebuilt **MedTrack** as a standalone React page (meds list, schedule, adherence, refills, personas).
 - Added **FitCoach** SPA (theme switcher, coaching dashboard, check-ins, progress, billing).
 - **Moved MedTrack and FitCoach into the actual Next app** at `open-pro-next/app/live/{medtrack,fitcoach}` so Render builds pick them up. BookFlow stays at `open-pro-next/app/live/bookflow`.
+- Added **TableReady** live page (`/live/restaurant`), **CalmSpa** live page (`/live/spa`), **CareLine Clinic** live page (`/live/clinic`), and **SmileSet Dental** live page (`/live/dental`).
 
 ## How to run / verify
 1) `cd /Users/alexispinzon/CascadeProjects/islaapp-site/open-pro-next/open-pro-next`
@@ -19,9 +20,13 @@
    - BookFlow: `http://localhost:3000/live/bookflow`
    - MedTrack: `http://localhost:3000/live/medtrack`
    - FitCoach: `http://localhost:3000/live/fitcoach`
+   - TableReady: `http://localhost:3000/live/restaurant`
+   - CalmSpa: `http://localhost:3000/live/spa`
+   - CareLine: `http://localhost:3000/live/clinic`
+   - SmileSet (Dental): `http://localhost:3000/live/dental`
 
 ## Next tasks (priority)
-- Commit & push the live-page moves (fitcoach + medtrack into `open-pro-next/app/live`) then redeploy; 404s should disappear because routes will be part of the built app.
+- Commit & push the live-page moves (fitcoach + medtrack into `open-pro-next/app/live`) then redeploy; 404s should disappear because routes will be part of the built app. (Already pushed: tableReady, CalmSpa, CareLine, Dental.)
 - Keep BookFlow, MedTrack, FitCoach separate; point CTAs only to their `/live/*` routes.
 - Optional: remove the invalid `experimental.turbo` key in `next.config.js` (warning only).
 
