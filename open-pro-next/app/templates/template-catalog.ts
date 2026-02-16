@@ -10,6 +10,7 @@ import featuresImage from "@/public/images/features.png";
 import worldmapImage from "@/public/images/worldmap.png";
 import teamMosaic01 from "@/public/images/team-mosaic-01.jpg";
 import teamMosaic02 from "@/public/images/team-mosaic-02.jpg";
+import bookflowThumb from "@/public/templates/bookflow-thumb.png";
 import postThumb01 from "@/public/images/post-thumb-01.jpg";
 import postThumb02 from "@/public/images/post-thumb-02.jpg";
 import postThumb04 from "@/public/images/post-thumb-04.jpg";
@@ -40,8 +41,8 @@ export const templates: TemplateDefinition[] = [
   tags: ["Bookings", "POS-ready", "Client-ready"],
   desc: "Service bookings with POS handoff, receipts, and quick brand swap. Ideal for salons, clinics, wellness.",
   descEs: "Service bookings with POS handoff, receipts, and quick brand swap. Ideal for salons, clinics, wellness.",
-  thumb: heroImage01,
-  hero: heroImage01,
+  thumb: bookflowThumb,
+  hero: bookflowThumb,
 },
 {
   slug: "medtrack",
