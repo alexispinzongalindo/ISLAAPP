@@ -13,6 +13,7 @@ import teamMosaic02 from "@/public/images/team-mosaic-02.jpg";
 import bookflowThumb from "@/public/templates/bookflow-thumb.png";
 import medtrackThumb from "@/public/templates/medtrack-thumb.png";
 import fitcoachThumb from "@/public/templates/fitcoach-thumb.png";
+import restaurantThumb from "@/public/templates/restaurant-thumb.png";
 import postThumb01 from "@/public/images/post-thumb-01.jpg";
 import postThumb02 from "@/public/images/post-thumb-02.jpg";
 import postThumb04 from "@/public/images/post-thumb-04.jpg";
@@ -73,8 +74,8 @@ export const templates: TemplateDefinition[] = [
   tags: ["Bookings", "Menus", "Payments"],
   desc: "Reservations, QR menus, and deposits. Replace hero with your dining shot; auto-adapts typography to brand.",
   descEs: "Reservations, QR menus, and deposits. Replace hero with your dining shot; auto-adapts typography to brand.",
-  thumb: workflow03,
-  hero: workflow03,
+  thumb: restaurantThumb,
+  hero: restaurantThumb,
 },
 {
   slug: "spa",
