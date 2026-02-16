@@ -1,7 +1,11 @@
-import { redirect } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
+
+const livePages = ["bookflow", "medtrack", "fitcoach", "restaurant"];
 
 export default function LiveDemoRedirect({ params }: { params: { slug: string } }) {
   const { slug } = params;
-  // Redirect to the static demo asset under /public/live/<slug>/index.html
-  redirect(`/live/${slug}/index.html`);
+  if (!livePages.includes(slug)) {
+    notFound();
+  }
+  redirect(`/live/${slug}`);
 }
