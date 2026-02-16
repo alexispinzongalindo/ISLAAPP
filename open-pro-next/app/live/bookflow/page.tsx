@@ -298,7 +298,7 @@ export default function BookFlowDemo() {
                   <div className="md:col-span-2">
                     <p className="text-sm text-emerald-100/70 mb-2">Select a time</p>
                     <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2">
-                      {(selectedDate ? slots.find((d) => isSameDay(d.date, selectedDate))?.slots : slots[0].slots).map((s) => (
+                      {daySlots.map((s) => (
                         <button
                           key={s.time}
                           disabled={!s.available}
