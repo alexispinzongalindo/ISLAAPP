@@ -81,6 +81,15 @@ export const templates: TemplateCard[] = [
     desc: "Coaching plans with weekly check-ins, progress cards, and recurring billing. Swap brand palette in minutes.",
   },
   {
+    slug: "spa",
+    title: "CalmSpa (Salon & Spa)",
+    tags: ["Wellness", "Bookings", "Gift Cards"],
+    href: `${baseUse}spa&view=preview`,
+    useHref: `${baseUse}spa`,
+    thumb: imgLearn3,
+    desc: "Service menu, smart upsells, theme customizer, and gift cards with live preview.",
+  },
+  {
     slug: "restaurant",
     title: "TableReady (Restaurant)",
     tags: ["Bookings", "Menus", "Payments"],
