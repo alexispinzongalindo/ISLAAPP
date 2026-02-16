@@ -59,7 +59,7 @@ export const templates: TemplateCard[] = [
     tags: ["Bookings", "POS-ready", "Client-ready"],
     href: `${baseUse}bookflow&view=preview`,
     useHref: `${baseUse}bookflow`,
-    thumb: imgMacbook2,
+    thumb: imgAppMacbook,
     desc: "Service bookings with POS handoff, receipts, and quick brand swap. Ideal for salons, clinics, wellness.",
   },
   {
