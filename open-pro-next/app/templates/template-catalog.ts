@@ -12,6 +12,7 @@ import teamMosaic01 from "@/public/images/team-mosaic-01.jpg";
 import teamMosaic02 from "@/public/images/team-mosaic-02.jpg";
 import bookflowThumb from "@/public/templates/bookflow-thumb.png";
 import medtrackThumb from "@/public/templates/medtrack-thumb.png";
+import fitcoachThumb from "@/public/templates/fitcoach-thumb.png";
 import postThumb01 from "@/public/images/post-thumb-01.jpg";
 import postThumb02 from "@/public/images/post-thumb-02.jpg";
 import postThumb04 from "@/public/images/post-thumb-04.jpg";
@@ -62,8 +63,8 @@ export const templates: TemplateDefinition[] = [
   tags: ["Fitness", "Coaching", "Subscriptions"],
   desc: "Coaching plans with weekly check-ins, progress cards, and recurring billing. Swap brand palette in minutes.",
   descEs: "Coaching plans with weekly check-ins, progress cards, and recurring billing. Swap brand palette in minutes.",
-  thumb: workflow02,
-  hero: workflow02,
+  thumb: fitcoachThumb,
+  hero: fitcoachThumb,
 },
 {
   slug: "restaurant",
