@@ -181,7 +181,9 @@ export default function LawDemoPage() {
                     <h4 className="text-lg font-semibold text-amber-100">{area.title}</h4>
                     <p className="text-sm text-slate-200/75">{area.desc}</p>
                   </div>
-                  <span className="rounded-full bg-amber-300/20 px-3 py-1 text-xs font-semibold text-amber-100">{area.duration}</span>
+                  <span className="rounded-full bg-amber-300/20 px-3 py-1 text-center text-xs font-semibold leading-tight text-amber-100">
+                    {area.duration}
+                  </span>
                 </div>
                 <div className="mt-3 flex items-center gap-3 text-xs text-amber-100/90">
                   <span className="rounded-full bg-amber-300/15 px-2 py-1">{area.cost}</span>
