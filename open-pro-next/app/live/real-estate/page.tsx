@@ -68,15 +68,13 @@ export default function RealEstateLive() {
         <section className="overflow-hidden rounded-2xl border border-white/5 bg-gradient-to-br from-[#102742] via-[#0d1f35] to-[#0b1628] shadow-2xl">
           <div className="grid gap-6 md:grid-cols-2">
             <div className="relative">
-              <div className="aspect-[4/3] w-full rounded-r-xl border-r border-white/10 bg-slate-900/40 p-5">
-                <div className="flex h-full items-center justify-center rounded-xl border-2 border-dashed border-teal-300/40 bg-[#0b1b30]/70 text-center">
-                  <div>
-                    <p className="text-sm font-semibold text-teal-100">House Photo Placeholder</p>
-                    <p className="mt-1 text-xs text-slate-300/80">Upload campaign-specific property hero image</p>
-                    <p className="mt-2 text-[11px] text-slate-400">Recommended: 1600x1200 JPG/PNG/WebP</p>
-                  </div>
-                </div>
-              </div>
+              <div
+                className="aspect-[4/3] w-full rounded-r-xl border-r border-white/10 bg-cover bg-center"
+                style={{
+                  backgroundImage:
+                    "url('https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=1600&q=80')",
+                }}
+              />
               <div className="absolute left-4 top-4 space-y-2">
                 <p className="rounded-full bg-black/60 px-3 py-1 text-xs font-semibold text-white">Campaign cover</p>
                 <p className="rounded-full bg-teal-500/90 px-3 py-1 text-xs font-semibold text-slate-900">Lead form persists</p>
@@ -124,20 +122,20 @@ export default function RealEstateLive() {
           </div>
           <div className="mt-4 grid gap-4 md:grid-cols-3">
             <div className="md:col-span-2 rounded-xl border border-white/10 bg-gradient-to-br from-[#0f253e] to-[#0b1b30] p-6">
-              <div className="h-64 rounded-lg border-2 border-dashed border-teal-300/35 bg-slate-900/60 p-4">
-                <div className="flex h-full items-center justify-center rounded-md border border-white/10 bg-[#0b1b30]/70 text-center">
-                  <div>
-                    <p className="text-sm font-semibold text-teal-100">Map Placeholder</p>
-                    <p className="mt-1 text-xs text-slate-300/80">Embed Google Maps or Mapbox with property pin + amenity layers</p>
-                    <p className="mt-2 text-[11px] text-slate-400">Schools, Transit, Shopping, Healthcare, Parks</p>
-                  </div>
-                </div>
+              <div className="h-64 overflow-hidden rounded-lg border border-white/10 bg-slate-900/60">
+                <iframe
+                  title="1200 Market St map"
+                  src="https://www.openstreetmap.org/export/embed.html?bbox=-122.4245%2C37.7745%2C-122.4045%2C37.7895&layer=mapnik&marker=37.7815%2C-122.4145"
+                  className="h-full w-full"
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                />
               </div>
             </div>
             <div className="space-y-3 text-sm text-slate-200">
               <div className="rounded-xl border border-white/10 bg-slate-900/40 p-4">
                 <p className="text-sm font-semibold text-teal-100">Commute time</p>
-                <p className="text-xs text-slate-300/80">Add calculator + overlays here.</p>
+                <p className="text-xs text-slate-300/80">Downtown SF: 14 min drive · 21 min transit</p>
               </div>
               <div className="rounded-xl border border-white/10 bg-slate-900/40 p-4">
                 <p className="text-sm font-semibold text-teal-100">Nearby</p>

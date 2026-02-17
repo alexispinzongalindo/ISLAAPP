@@ -1,6 +1,6 @@
 # ISLAAPP Project Status
 
-Last updated: 2026-02-16 (evening)
+Last updated: 2026-02-17 (afternoon)
 Workspace: /Users/alexispinzon/CascadeProjects/islaapp-site/open-pro-next
 Primary deploy repo: https://github.com/alexispinzongalindo/ISLAAPP.git
 Primary app path: /Users/alexispinzon/CascadeProjects/islaapp-site/open-pro-next/open-pro-next
@@ -12,6 +12,16 @@ Primary app path: /Users/alexispinzon/CascadeProjects/islaapp-site/open-pro-next
   2. Template selection
   3. AI Agent chat (real AI) to collect requirements and guide build phases
 - Bilingual EN/ES experience with language toggle on core funnel screens.
+
+## Session Handoff (Latest)
+- User requested EstateGo live page to stop showing placeholder text and show real visuals.
+- EstateGo live page now uses:
+  - Real house hero image (Unsplash URL) in the campaign cover section.
+  - Real embedded OpenStreetMap iframe in the map section.
+  - Commute panel text updated to realistic values (no placeholder wording).
+- File changed:
+  - `/Users/alexispinzon/CascadeProjects/islaapp-site/open-pro-next/open-pro-next/app/live/real-estate/page.tsx`
+- Current task in progress: commit + push this real photo/map update so Render auto-deploys.
 
 ## What Is Already Implemented
 1. Render deployment configured to run `open-pro-next` (rootDir deployment).
@@ -44,8 +54,17 @@ Primary app path: /Users/alexispinzon/CascadeProjects/islaapp-site/open-pro-next
    - Demos are differentiated by template slug (not one generic preview).
 
 ## Recent Important Commits (ISLAAPP/main)
+- `360b39f` Add explicit house and map placeholders in EstateGo live view
+- `36cb43c` Update FlexSpace template thumbnail from DEMO SHOOT
+- `397abbc` Update PriorityOS template thumbnail from DEMO SHOOT
+- `2525ebc` Update NovaHabit template thumbnail from DEMO SHOOT
+- `1936b56` Add functional FlexSpace live app and wire template routing/buttons
+- `2d36a1e` Fix TableReady confirm click handler scoping (still needs a clean redeploy)
+- `48b6a7e` Wire TableReady confirm button to show mock email/SMS receipt (build failed; needs follow-up)
+- `7413e97` Revert FitCoach mock output (to stabilize)
+- `aa2fbfb` Revert MedTrack mock output (to stabilize)
+- `42e7476` Revert initial FitCoach/TableReady mock output attempt (to stabilize)
 - `b9e6fe2` Re-add EstateGo real-estate live demo with build-safe implementation
-- `728d96f` Revert previous EstateGo attempt after Render build failure
 - `0358953` Add Briefly law live demo and wire live buttons
 - `3b028ca` Show Live demo button for SmileSet (dental)
 
