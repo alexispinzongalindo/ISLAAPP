@@ -94,6 +94,9 @@ export default function BookFlowDemo() {
   const [form, setForm] = useState({ name: "", email: "", phone: "", notes: "" });
   const [loading, setLoading] = useState(false);
   const [done, setDone] = useState(false);
+  const [transactionRef, setTransactionRef] = useState<string | null>(null);
+  const [emailPreview, setEmailPreview] = useState<string>("");
+  const [smsPreview, setSmsPreview] = useState<string>("");
   const [slots] = useState(generateSlots());
   const [filter, setFilter] = useState<string>("All");
   const [search, setSearch] = useState("");
@@ -118,6 +121,16 @@ export default function BookFlowDemo() {
     setTimeout(() => {
       setLoading(false);
       setDone(true);
+      const ref = `BF-${Math.random().toString(36).slice(2, 8).toUpperCase()}`;
+      setTransactionRef(ref);
+      const dateTxt = selectedDate ? format(selectedDate, "PPP") : "";
+      const summary = `${service?.name} with ${provider?.name} on ${dateTxt} at ${selectedTime}`;
+      setEmailPreview(
+        `Hi ${form.name || "Guest"},\\n\\nYour booking is confirmed.\\nRef: ${ref}\\n${summary}\\nTotal: $${service?.price}\\nNotes: ${form.notes || "—"}\\n\\nAdd to calendar and reply to reschedule.`
+      );
+      setSmsPreview(
+        `Booking ${ref}: ${service?.name} on ${dateTxt} at ${selectedTime}. Reply C to confirm or R to reschedule.`
+      );
       setStep(4);
     }, 900);
   };
@@ -377,9 +390,32 @@ export default function BookFlowDemo() {
                       {loading ? "Booking..." : "Confirm booking"}
                     </Button>
                     {done && (
-                      <div className="rounded-2xl border border-emerald-400/40 bg-emerald-500/10 p-4 text-emerald-50">
+                      <div className="space-y-3 rounded-2xl border border-emerald-400/40 bg-emerald-500/10 p-4 text-emerald-50">
                         <p className="text-sm font-semibold">Booking confirmed!</p>
-                        <p className="text-sm text-emerald-100/80">A mock receipt has been sent. Add to calendar and prep your space.</p>
+                        <p className="text-sm text-emerald-100/80">Below is the on-screen “printout” of what would be sent via email/SMS.</p>
+                        <div className="grid gap-3 md:grid-cols-3">
+                          <div className="rounded-xl border border-white/10 bg-white/5 p-3 text-sm">
+                            <p className="text-xs uppercase tracking-[0.2em] text-emerald-200/90">Reference</p>
+                            <p className="text-base font-semibold text-white">{transactionRef}</p>
+                            <p className="text-xs text-emerald-100/80 mt-1">Status: Authorized · Paid on arrival</p>
+                          </div>
+                          <div className="rounded-xl border border-white/10 bg-white/5 p-3 text-sm md:col-span-2">
+                            <p className="text-xs uppercase tracking-[0.2em] text-emerald-200/90">Email preview</p>
+                            <pre className="mt-2 whitespace-pre-wrap text-emerald-50 text-xs">{emailPreview}</pre>
+                          </div>
+                          <div className="rounded-xl border border-white/10 bg-white/5 p-3 text-sm">
+                            <p className="text-xs uppercase tracking-[0.2em] text-emerald-200/90">SMS preview</p>
+                            <p className="mt-2 text-xs text-emerald-50">{smsPreview}</p>
+                          </div>
+                          <div className="rounded-xl border border-white/10 bg-white/5 p-3 text-sm md:col-span-2">
+                            <p className="text-xs uppercase tracking-[0.2em] text-emerald-200/90">Receipt</p>
+                            <p className="text-xs text-emerald-50 mt-1">Service: {service?.name}</p>
+                            <p className="text-xs text-emerald-50">Provider: {provider?.name}</p>
+                            <p className="text-xs text-emerald-50">When: {selectedDate ? format(selectedDate, "PPP") : ""} @ {selectedTime}</p>
+                            <p className="text-xs text-emerald-50">Total: ${service?.price}</p>
+                            <p className="text-xs text-emerald-100/80 mt-2">Print/Email buttons would trigger actual send in production.</p>
+                          </div>
+                        </div>
                       </div>
                     )}
                   </div>
