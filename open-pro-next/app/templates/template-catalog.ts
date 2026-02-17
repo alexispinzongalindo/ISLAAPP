@@ -156,6 +156,16 @@ export const templates: TemplateDefinition[] = [
   hero: flexspaceThumb,
 },
 {
+  slug: "service-crm",
+  title: "Service Provider CRM",
+  titleEs: "Service Provider CRM",
+  tags: ["Routing", "Loyalty", "Mobile Services"],
+  desc: "CRM for dog walkers, personal chefs, and mobile teams with route planning and loyalty tracking.",
+  descEs: "CRM para paseadores, chefs personales y equipos moviles con planeacion de rutas y lealtad.",
+  thumb: postThumb15,
+  hero: postThumb15,
+},
+{
   slug: "real-estate",
   title: "EstateGo (Real Estate)",
   titleEs: "EstateGo (Real Estate)",

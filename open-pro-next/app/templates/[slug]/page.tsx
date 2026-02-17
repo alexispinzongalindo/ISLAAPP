@@ -464,6 +464,41 @@ function getDemoContent(slug: string): DemoContent {
           "Cerrar solicitud con confirmacion del empleado.",
         ],
       };
+    case "service-crm":
+      return {
+        summaryEn: "Operational CRM for mobile service businesses with route sequencing and loyalty insights.",
+        summaryEs: "CRM operativo para servicios moviles con secuencia de rutas e insights de lealtad.",
+        modules: [
+          {
+            titleEn: "Route planning",
+            titleEs: "Planeacion de rutas",
+            descEn: "Build daily stops by time and area to reduce travel gaps.",
+            descEs: "Arma paradas diarias por horario y zona para reducir tiempos muertos.",
+          },
+          {
+            titleEn: "Booking board",
+            titleEs: "Panel de reservas",
+            descEn: "Capture customer requests and assign service windows quickly.",
+            descEs: "Captura solicitudes y asigna ventanas de servicio rapidamente.",
+          },
+          {
+            titleEn: "Loyalty ledger",
+            titleEs: "Libro de lealtad",
+            descEn: "Track points, tier movement, and repeat-booking triggers.",
+            descEs: "Monitorea puntos, nivel y disparadores de recompra.",
+          },
+        ],
+        stepsEn: [
+          "Create booking and assign service specialist.",
+          "Sequence route for the selected day and monitor travel minutes.",
+          "Complete service and update loyalty points with confirmation output.",
+        ],
+        stepsEs: [
+          "Crear reserva y asignar especialista de servicio.",
+          "Secuenciar ruta del dia y monitorear minutos de traslado.",
+          "Completar servicio y actualizar puntos de lealtad con confirmacion.",
+        ],
+      };
     default:
       return {
         summaryEn: "Service-first template flow for lead capture, operations, and client communication.",
@@ -593,7 +628,7 @@ export default async function TemplateDetailPage({ params }: TemplatePageProps) 
       </div>
 
       <div className="mt-8 grid gap-4 sm:grid-cols-3">
-        {["bookflow", "medtrack", "fitcoach", "restaurant", "spa", "clinic", "dental", "law", "real-estate", "habits", "priorityos", "flexspace"].includes(template.slug) && (
+        {["bookflow", "medtrack", "fitcoach", "restaurant", "spa", "clinic", "dental", "law", "real-estate", "habits", "priorityos", "flexspace", "service-crm"].includes(template.slug) && (
           <Link
             href={`/live/${template.slug}`}
             className="btn-sm bg-gray-800 text-center text-white hover:bg-gray-700"
