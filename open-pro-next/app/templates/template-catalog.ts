@@ -18,6 +18,7 @@ import calmspaThumb from "@/public/templates/calmspa-thumb.png";
 import clinicThumb from "@/public/templates/clinic-thumb.png";
 import dentalThumb from "@/public/templates/dental-chair.jpg";
 import lawThumb from "@/public/templates/law-thumb.svg";
+import novahabitThumb from "@/public/templates/novahabit-thumb.png";
 import postThumb01 from "@/public/images/post-thumb-01.jpg";
 import postThumb02 from "@/public/images/post-thumb-02.jpg";
 import postThumb04 from "@/public/images/post-thumb-04.jpg";
@@ -128,8 +129,8 @@ export const templates: TemplateDefinition[] = [
   tags: ["AI", "Habits", "Gamification"],
   desc: "AI insights, streaks, and XP-driven habit tracking with challenges and badges.",
   descEs: "Insights de IA, rachas y XP para habitos con retos y medallas.",
-  thumb: featuresImage,
-  hero: featuresImage,
+  thumb: novahabitThumb,
+  hero: novahabitThumb,
 },
 {
   slug: "priorityos",
