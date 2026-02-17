@@ -250,8 +250,8 @@ export default function InvoicePilotLive() {
   return (
     <div className="min-h-screen bg-[#0a1226] text-slate-100">
       <main className="mx-auto max-w-7xl px-4 py-8 md:px-6">
-        <section className="rounded-2xl border border-indigo-400/25 bg-gradient-to-br from-[#111f43] via-[#111b38] to-[#0d1630] p-6">
-          <p className="text-xs uppercase tracking-[0.2em] text-indigo-200/80">InvoicePilot · Freelancer Billing</p>
+        <section className="rounded-2xl border border-emerald-400/25 bg-gradient-to-br from-[#102a2b] via-[#102225] to-[#0c171c] p-6">
+          <p className="text-xs uppercase tracking-[0.2em] text-emerald-200/80">InvoicePilot · Freelancer Billing</p>
           <h1 className="mt-1 text-3xl font-semibold">Invoicing + Client Portal</h1>
           <p className="mt-2 text-slate-300/80">Create clients, accept proposals, generate invoices, and collect payments faster.</p>
         </section>
@@ -263,7 +263,7 @@ export default function InvoicePilotLive() {
                 <Input label="Client name" value={clientForm.name} onChange={(v) => setClientForm((f) => ({ ...f, name: v }))} />
                 <Input label="Email" value={clientForm.email} onChange={(v) => setClientForm((f) => ({ ...f, email: v }))} />
                 {clientError && <p className="text-sm text-rose-300">{clientError}</p>}
-                <button onClick={addClient} className="rounded-lg bg-indigo-500 px-3 py-2 font-semibold text-white hover:bg-indigo-400">
+                <button onClick={addClient} className="rounded-lg bg-emerald-500 px-3 py-2 font-semibold text-slate-900 hover:bg-emerald-400">
                   Save client
                 </button>
               </div>
@@ -355,7 +355,7 @@ export default function InvoicePilotLive() {
                 <span>Total</span>
                 <span className="font-semibold">{money(invoiceDraft.currency, totalDraft)}</span>
               </div>
-              <button onClick={createInvoice} className="mt-3 rounded-lg bg-indigo-500 px-3 py-2 font-semibold text-white hover:bg-indigo-400">
+              <button onClick={createInvoice} className="mt-3 rounded-lg bg-emerald-500 px-3 py-2 font-semibold text-slate-900 hover:bg-emerald-400">
                 Generate invoice
               </button>
             </Panel>
@@ -406,7 +406,7 @@ export default function InvoicePilotLive() {
                 {portalInvoices.length === 0 && <p className="text-sm text-slate-300/80">No portal invoices yet.</p>}
               </div>
               <div className="mt-3 rounded-lg border border-white/10 bg-[#101b37] p-3">
-                <p className="text-xs uppercase tracking-[0.18em] text-indigo-200/80">Payment history</p>
+                <p className="text-xs uppercase tracking-[0.18em] text-emerald-200/80">Payment history</p>
                 <div className="mt-2 space-y-1">
                   {portalPayments.map((p) => (
                     <p key={p.id} className="text-xs text-slate-200/90">{money("USD", p.amount)} · {p.method}</p>
@@ -427,7 +427,7 @@ export default function InvoicePilotLive() {
               <div className="max-h-72 space-y-2 overflow-auto pr-1">
                 {outbox.map((o) => (
                   <div key={o.id} className="rounded-lg border border-white/10 bg-[#0f1a35] p-2.5 text-xs">
-                    <p className="text-indigo-200/80">{o.at} · {o.to}</p>
+                    <p className="text-emerald-200/80">{o.at} · {o.to}</p>
                     <p className="font-semibold">{o.subject}</p>
                     <p className="text-slate-200/90">{o.body}</p>
                   </div>
@@ -445,7 +445,7 @@ export default function InvoicePilotLive() {
 function Panel({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <section className="rounded-2xl border border-white/10 bg-[#111a30] p-4">
-      <h2 className="text-sm font-semibold uppercase tracking-[0.18em] text-indigo-200/85">{title}</h2>
+      <h2 className="text-sm font-semibold uppercase tracking-[0.18em] text-emerald-200/85">{title}</h2>
       <div className="mt-3">{children}</div>
     </section>
   );
@@ -468,7 +468,7 @@ function Input({
     <label className="block">
       <span className="mb-1 block text-xs text-slate-300/90">{label}</span>
       <input
-        className="w-full rounded-lg border border-white/15 bg-white/5 px-3 py-2 text-sm outline-none focus:border-indigo-300"
+        className="w-full rounded-lg border border-white/15 bg-white/5 px-3 py-2 text-sm outline-none focus:border-emerald-300"
         type={type}
         min={min}
         value={value}
@@ -493,7 +493,7 @@ function Select({
     <label className="block">
       <span className="mb-1 block text-xs text-slate-300/90">{label}</span>
       <select
-        className="w-full rounded-lg border border-white/15 bg-white/5 px-3 py-2 text-sm outline-none focus:border-indigo-300"
+        className="w-full rounded-lg border border-white/15 bg-white/5 px-3 py-2 text-sm outline-none focus:border-emerald-300"
         value={value}
         onChange={(e) => onChange(e.target.value)}
       >
