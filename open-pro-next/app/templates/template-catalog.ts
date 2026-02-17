@@ -122,6 +122,16 @@ export const templates: TemplateDefinition[] = [
   hero: lawThumb,
 },
 {
+  slug: "habits",
+  title: "NovaHabit (AI Habits)",
+  titleEs: "NovaHabit (Habitos AI)",
+  tags: ["AI", "Habits", "Gamification"],
+  desc: "AI insights, streaks, and XP-driven habit tracking with challenges and badges.",
+  descEs: "Insights de IA, rachas y XP para habitos con retos y medallas.",
+  thumb: featuresImage,
+  hero: featuresImage,
+},
+{
   slug: "real-estate",
   title: "EstateGo (Real Estate)",
   titleEs: "EstateGo (Real Estate)",
