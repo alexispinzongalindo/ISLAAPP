@@ -132,6 +132,16 @@ export const templates: TemplateDefinition[] = [
   hero: featuresImage,
 },
 {
+  slug: "priorityos",
+  title: "PriorityOS (Behavioral AI)",
+  titleEs: "PriorityOS (Behavioral AI)",
+  tags: ["AI", "Behavior", "Gamification"],
+  desc: "Behavioral insights OS with prediction panels, habit streaks, levels, and reward mechanics.",
+  descEs: "Sistema de insights conductuales con paneles predictivos, rachas, niveles y recompensas.",
+  thumb: featuresImage,
+  hero: featuresImage,
+},
+{
   slug: "real-estate",
   title: "EstateGo (Real Estate)",
   titleEs: "EstateGo (Real Estate)",

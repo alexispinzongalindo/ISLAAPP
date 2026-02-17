@@ -169,6 +169,10 @@ export default function TableReadyPage() {
                 setSelectedTime={setSelectedTime}
                 partySize={partySize}
                 setPartySize={setPartySize}
+                onConfirm={confirmReservation}
+                reservationRef={reservationRef}
+                emailPreview={emailPreview}
+                smsPreview={smsPreview}
               />
             )}
             {activeScreen === "menu" && (
@@ -394,40 +398,14 @@ function ReserveScreen({ palette }: { palette: Palette }) {
         </div>
 
         <button
-          onClick={() => {
-            const newRef = `TR-${Math.random().toString(36).slice(2, 7).toUpperCase()}`;
-            setReservationRef(newRef);
-            const date = "Today · Feb 15";
-            const summary = `${partySize} guests · ${date} at ${selectedTime} · Osteria Luna`;
-            setEmailPreview(
-              `Thanks for reserving!\nRef: ${newRef}\n${summary}\nDeposit: $50 holds your table. Fully refundable up to 24h before.\n(Mock email preview; would send via SendGrid.)`
-            );
-            setSmsPreview(
-              `TableReady ${newRef}: ${summary}. Reply C to confirm or R to adjust. (Mock SMS preview; Twilio in prod)`
-            );
-          }}
           className="w-full rounded-xl py-3 text-center text-base font-semibold text-white shadow-md transition active:scale-95"
           style={{ backgroundColor: palette.burgundy, boxShadow: "0 10px 30px rgba(139,38,53,0.25)" }}
         >
           Confirm Reservation — $50 Deposit
         </button>
-        {reservationRef && (
-          <div className="space-y-2 rounded-2xl border border-green-200 bg-green-50 p-3 text-sm text-green-800">
-            <p className="font-semibold">Reservation confirmed</p>
-            <p>Ref: {reservationRef}</p>
-            <div className="grid gap-2 md:grid-cols-2">
-              <div className="rounded-xl border border-green-200 bg-white p-2 text-xs text-green-900">
-                <p className="font-semibold text-green-800">Email preview</p>
-                <pre className="whitespace-pre-wrap">{emailPreview}</pre>
-              </div>
-              <div className="rounded-xl border border-green-200 bg-white p-2 text-xs text-green-900">
-                <p className="font-semibold text-green-800">SMS preview</p>
-                <p>{smsPreview}</p>
-              </div>
-            </div>
-            <p className="text-xs text-green-700">On-screen only for demo. In production this would send via email/SMS/webhook.</p>
-          </div>
-        )}
+        <p className="text-xs text-gray-500">
+          Full confirmation + mock email/SMS preview is available in the live reservation panel on the right.
+        </p>
       </div>
     </div>
   );
@@ -703,6 +681,10 @@ function ReservationPanel({
   setSelectedTime,
   partySize,
   setPartySize,
+  onConfirm,
+  reservationRef,
+  emailPreview,
+  smsPreview,
 }: {
   palette: Palette;
   timeSlots: TimeSlot[];
@@ -710,6 +692,10 @@ function ReservationPanel({
   setSelectedTime: (t: string) => void;
   partySize: number;
   setPartySize: (n: number) => void;
+  onConfirm: () => void;
+  reservationRef: string | null;
+  emailPreview: string | null;
+  smsPreview: string | null;
 }) {
   return (
     <div className="rounded-3xl border border-gray-200 bg-white p-6 shadow-xl">
@@ -815,11 +801,29 @@ function ReservationPanel({
             </div>
           </div>
           <button
+            onClick={onConfirm}
             className="w-full rounded-xl py-3 text-center text-sm font-semibold text-white shadow-md"
             style={{ backgroundColor: palette.burgundy }}
           >
             Confirm reservation — {selectedTime}
           </button>
+          {reservationRef && (
+            <div className="space-y-2 rounded-2xl border border-green-200 bg-green-50 p-3 text-xs text-green-800">
+              <p className="font-semibold text-sm">Mock confirmation</p>
+              <p>Ref: {reservationRef}</p>
+              <div className="grid gap-2 md:grid-cols-2">
+                <div className="rounded-lg border border-green-200 bg-white p-2">
+                  <p className="font-semibold text-green-800">Email preview</p>
+                  <pre className="whitespace-pre-wrap">{emailPreview}</pre>
+                </div>
+                <div className="rounded-lg border border-green-200 bg-white p-2">
+                  <p className="font-semibold text-green-800">SMS preview</p>
+                  <p>{smsPreview}</p>
+                </div>
+              </div>
+              <p className="text-[11px] text-green-700">On-screen only; send via SendGrid/Twilio/webhook in production.</p>
+            </div>
+          )}
         </div>
       </div>
     </div>

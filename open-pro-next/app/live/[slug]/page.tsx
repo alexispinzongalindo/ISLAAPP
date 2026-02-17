@@ -1,6 +1,6 @@
 import { notFound, redirect } from "next/navigation";
 
-const livePages = ["bookflow", "medtrack", "fitcoach", "restaurant", "spa", "clinic", "dental", "law", "real-estate", "habits"];
+const livePages = ["bookflow", "medtrack", "fitcoach", "restaurant", "spa", "clinic", "dental", "law", "real-estate", "habits", "priorityos"];
 
 export default async function LiveDemoRedirect({
   params,

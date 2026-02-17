@@ -42,7 +42,7 @@ export default function TemplatesPage() {
             <h3 className="text-lg font-semibold text-gray-100">{t.title}</h3>
             <p className="text-indigo-200/70 mb-4">{t.desc}</p>
             <div className="flex gap-3">
-              {(t.slug === "bookflow" || t.slug === "medtrack" || t.slug === "fitcoach" || t.slug === "restaurant" || t.slug === "spa" || t.slug === "clinic" || t.slug === "dental" || t.slug === "law" || t.slug === "real-estate" || t.slug === "habits") && (
+              {(t.slug === "bookflow" || t.slug === "medtrack" || t.slug === "fitcoach" || t.slug === "restaurant" || t.slug === "spa" || t.slug === "clinic" || t.slug === "dental" || t.slug === "law" || t.slug === "real-estate" || t.slug === "habits" || t.slug === "priorityos") && (
                 <a
                   href={`/live/${t.slug}`}
                   className="btn-sm bg-gray-800 text-gray-100 hover:bg-gray-700"
