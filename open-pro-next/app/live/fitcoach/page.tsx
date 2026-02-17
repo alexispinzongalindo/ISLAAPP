@@ -362,6 +362,19 @@ function CheckInForm({
           )}
         </AnimatePresence>
       </div>
+      {submitted && (
+        <div className="rounded-xl border border-white/10 bg-white/5 p-3 text-sm" style={{ color: palette.text }}>
+          <p className="font-semibold">Mock confirmation</p>
+          <p className="text-xs opacity-80">What would be sent via email/SMS/webhook in production.</p>
+          <div className="mt-2 text-xs space-y-1">
+            <p>Ref: FIT-{Math.random().toString(36).slice(2, 7).toUpperCase()}</p>
+            <p>Mood/Energy: {form.mood || 0} / 5</p>
+            <p>Wins: {form.wins || "—"}</p>
+            <p>Challenges: {form.challenges || "—"}</p>
+            <p>Weight change: {form.weight || "—"}</p>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
