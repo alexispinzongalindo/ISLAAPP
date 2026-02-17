@@ -534,6 +534,41 @@ function getDemoContent(slug: string): DemoContent {
           "Marcar pagada y permitir descarga de recibo en portal.",
         ],
       };
+    case "memberdock":
+      return {
+        summaryEn: "Creator membership engine with tiered access, drip content, and upgrade-driven unlocks.",
+        summaryEs: "Motor de membresias para creadores con acceso por niveles, drip content y desbloqueos por upgrade.",
+        modules: [
+          {
+            titleEn: "Tier management",
+            titleEs: "Gestion de niveles",
+            descEn: "Configure Free, Silver, and Gold plans with pricing and trial windows.",
+            descEs: "Configura planes Free, Silver y Gold con precio y periodos de prueba.",
+          },
+          {
+            titleEn: "Gated post editor",
+            titleEs: "Editor de posts restringidos",
+            descEn: "Publish text/video posts with visibility rules by membership tier.",
+            descEs: "Publica posts de texto/video con reglas de visibilidad por nivel.",
+          },
+          {
+            titleEn: "Member area",
+            titleEs: "Area de miembros",
+            descEn: "Members upgrade plans, unlock posts, and view payment history.",
+            descEs: "Miembros suben de plan, desbloquean posts y ven historial de pagos.",
+          },
+        ],
+        stepsEn: [
+          "Create pricing tiers and apply coupon/trial settings.",
+          "Publish gated posts with drip release schedule.",
+          "Sign up as member, upgrade tier, and access unlocked content.",
+        ],
+        stepsEs: [
+          "Crear niveles de precio y aplicar cupones/pruebas.",
+          "Publicar posts restringidos con calendario drip.",
+          "Registrarse como miembro, subir de nivel y acceder contenido desbloqueado.",
+        ],
+      };
     default:
       return {
         summaryEn: "Service-first template flow for lead capture, operations, and client communication.",
@@ -663,7 +698,7 @@ export default async function TemplateDetailPage({ params }: TemplatePageProps) 
       </div>
 
       <div className="mt-8 grid gap-4 sm:grid-cols-3">
-        {["bookflow", "medtrack", "fitcoach", "restaurant", "spa", "clinic", "dental", "law", "real-estate", "habits", "priorityos", "flexspace", "service-crm", "invoice-pilot"].includes(template.slug) && (
+        {["bookflow", "medtrack", "fitcoach", "restaurant", "spa", "clinic", "dental", "law", "real-estate", "habits", "priorityos", "flexspace", "service-crm", "invoice-pilot", "memberdock"].includes(template.slug) && (
           <Link
             href={`/live/${template.slug}`}
             className="btn-sm bg-gray-800 text-center text-white hover:bg-gray-700"

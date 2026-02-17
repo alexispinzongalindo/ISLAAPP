@@ -178,6 +178,16 @@ export const templates: TemplateDefinition[] = [
   hero: invoicepilotThumb,
 },
 {
+  slug: "memberdock",
+  title: "MemberDock (Creators)",
+  titleEs: "MemberDock (Creators)",
+  tags: ["Memberships", "Gated Content", "Subscriptions"],
+  desc: "Creator membership hub with tiers, gated posts, drip scheduling, coupons, and member upgrades.",
+  descEs: "Hub de membresias para creadores con niveles, posts restringidos, drip schedule, cupones y upgrades.",
+  thumb: postThumb10,
+  hero: postThumb10,
+},
+{
   slug: "real-estate",
   title: "EstateGo (Real Estate)",
   titleEs: "EstateGo (Real Estate)",
