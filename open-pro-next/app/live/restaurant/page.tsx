@@ -77,6 +77,9 @@ export default function TableReadyPage() {
   const [activeTab, setActiveTab] = useState("Mains");
   const [selectedTime, setSelectedTime] = useState("7:00 PM");
   const [partySize, setPartySize] = useState(2);
+  const [reservationRef, setReservationRef] = useState<string | null>(null);
+  const [emailPreview, setEmailPreview] = useState<string | null>(null);
+  const [smsPreview, setSmsPreview] = useState<string | null>(null);
 
   const screenTitle = useMemo(() => {
     switch (activeScreen) {
@@ -94,6 +97,19 @@ export default function TableReadyPage() {
         return "Home";
     }
   }, [activeScreen]);
+
+  const confirmReservation = () => {
+    const newRef = `TR-${Math.random().toString(36).slice(2, 7).toUpperCase()}`;
+    setReservationRef(newRef);
+    const date = "Today · Feb 15";
+    const summary = `${partySize} guests · ${date} at ${selectedTime} · Osteria Luna`;
+    setEmailPreview(
+      `Thanks for reserving!\nRef: ${newRef}\n${summary}\nDeposit: $50 holds your table. Fully refundable up to 24h before.\n(Mock email preview; would send via SendGrid.)`
+    );
+    setSmsPreview(
+      `TableReady ${newRef}: ${summary}. Reply C to confirm or R to adjust. (Mock SMS preview; Twilio in prod)`
+    );
+  };
 
   return (
     <div
@@ -378,11 +394,29 @@ function ReserveScreen({ palette }: { palette: Palette }) {
         </div>
 
         <button
+          onClick={confirmReservation}
           className="w-full rounded-xl py-3 text-center text-base font-semibold text-white shadow-md transition active:scale-95"
           style={{ backgroundColor: palette.burgundy, boxShadow: "0 10px 30px rgba(139,38,53,0.25)" }}
-        >
-          Confirm Reservation — $50 Deposit
-        </button>
+          >
+            Confirm Reservation — $50 Deposit
+          </button>
+        {reservationRef && (
+          <div className="space-y-2 rounded-2xl border border-green-200 bg-green-50 p-3 text-sm text-green-800">
+            <p className="font-semibold">Reservation confirmed</p>
+            <p>Ref: {reservationRef}</p>
+            <div className="grid gap-2 md:grid-cols-2">
+              <div className="rounded-xl border border-green-200 bg-white p-2 text-xs text-green-900">
+                <p className="font-semibold text-green-800">Email preview</p>
+                <pre className="whitespace-pre-wrap">{emailPreview}</pre>
+              </div>
+              <div className="rounded-xl border border-green-200 bg-white p-2 text-xs text-green-900">
+                <p className="font-semibold text-green-800">SMS preview</p>
+                <p>{smsPreview}</p>
+              </div>
+            </div>
+            <p className="text-xs text-green-700">On-screen only for demo. In production this would send via email/SMS/webhook.</p>
+          </div>
+        )}
       </div>
     </div>
   );
