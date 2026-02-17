@@ -22,6 +22,7 @@ import novahabitThumb from "@/public/templates/novahabit-thumb.png";
 import priorityosThumb from "@/public/templates/priorityos-thumb.png";
 import flexspaceThumb from "@/public/templates/flexspace-thumb.png";
 import estategoThumb from "@/public/templates/estatego-thumb.png";
+import servicecrmThumb from "@/public/templates/servicecrm-thumb.png";
 import postThumb01 from "@/public/images/post-thumb-01.jpg";
 import postThumb02 from "@/public/images/post-thumb-02.jpg";
 import postThumb04 from "@/public/images/post-thumb-04.jpg";
@@ -162,8 +163,18 @@ export const templates: TemplateDefinition[] = [
   tags: ["Routing", "Loyalty", "Mobile Services"],
   desc: "CRM for dog walkers, personal chefs, and mobile teams with route planning and loyalty tracking.",
   descEs: "CRM para paseadores, chefs personales y equipos moviles con planeacion de rutas y lealtad.",
-  thumb: postThumb15,
-  hero: postThumb15,
+  thumb: servicecrmThumb,
+  hero: servicecrmThumb,
+},
+{
+  slug: "invoice-pilot",
+  title: "InvoicePilot (Freelancers)",
+  titleEs: "InvoicePilot (Freelancers)",
+  tags: ["Invoicing", "Client Portal", "Payments"],
+  desc: "Freelancer invoicing CRM with proposal-to-invoice flow, recurring toggles, and client payment portal.",
+  descEs: "CRM de facturacion para freelancers con flujo propuesta-a-factura, recurrencia y portal de cliente.",
+  thumb: postThumb11,
+  hero: postThumb11,
 },
 {
   slug: "real-estate",

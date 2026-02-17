@@ -499,6 +499,41 @@ function getDemoContent(slug: string): DemoContent {
           "Completar servicio y actualizar puntos de lealtad con confirmacion.",
         ],
       };
+    case "invoice-pilot":
+      return {
+        summaryEn: "Freelancer invoicing workflow with proposal acceptance, invoice generation, and client portal payments.",
+        summaryEs: "Flujo de facturacion freelancer con aceptacion de propuesta, generacion de factura y pagos en portal cliente.",
+        modules: [
+          {
+            titleEn: "Invoice editor",
+            titleEs: "Editor de facturas",
+            descEn: "Build hourly or fixed invoices with taxes, recurring, and late-fee logic.",
+            descEs: "Crea facturas por hora o fijas con impuestos, recurrencia y recargos.",
+          },
+          {
+            titleEn: "Proposal to invoice",
+            titleEs: "Propuesta a factura",
+            descEn: "Accept proposal and convert instantly into a payable invoice.",
+            descEs: "Acepta propuesta y conviertela al instante en factura pagable.",
+          },
+          {
+            titleEn: "Client portal",
+            titleEs: "Portal cliente",
+            descEn: "Clients view invoices, pay, and download receipts from one panel.",
+            descEs: "Clientes ven facturas, pagan y descargan recibos desde un panel.",
+          },
+        ],
+        stepsEn: [
+          "Create client and send proposal for approval.",
+          "Generate invoice with template settings and payment link.",
+          "Mark as paid and let client download receipt in portal.",
+        ],
+        stepsEs: [
+          "Crear cliente y enviar propuesta para aprobacion.",
+          "Generar factura con configuracion de plantilla y link de pago.",
+          "Marcar pagada y permitir descarga de recibo en portal.",
+        ],
+      };
     default:
       return {
         summaryEn: "Service-first template flow for lead capture, operations, and client communication.",
@@ -628,7 +663,7 @@ export default async function TemplateDetailPage({ params }: TemplatePageProps) 
       </div>
 
       <div className="mt-8 grid gap-4 sm:grid-cols-3">
-        {["bookflow", "medtrack", "fitcoach", "restaurant", "spa", "clinic", "dental", "law", "real-estate", "habits", "priorityos", "flexspace", "service-crm"].includes(template.slug) && (
+        {["bookflow", "medtrack", "fitcoach", "restaurant", "spa", "clinic", "dental", "law", "real-estate", "habits", "priorityos", "flexspace", "service-crm", "invoice-pilot"].includes(template.slug) && (
           <Link
             href={`/live/${template.slug}`}
             className="btn-sm bg-gray-800 text-center text-white hover:bg-gray-700"
