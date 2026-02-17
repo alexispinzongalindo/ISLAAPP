@@ -102,6 +102,13 @@ export default function ServiceCrmLive() {
     rate: 45,
   });
   const [formError, setFormError] = useState("");
+  const [customerForm, setCustomerForm] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    area: "Mission",
+  });
+  const [customerError, setCustomerError] = useState("");
 
   const customerById = useMemo(() => Object.fromEntries(customers.map((c) => [c.id, c])), [customers]);
 
@@ -173,6 +180,57 @@ export default function ServiceCrmLive() {
       to: selected.phone,
       subject: "Service Reminder",
       body: `You're confirmed for ${form.start} on ${form.date}. Reply HELP for dispatch.`,
+    });
+  };
+
+  const addCustomer = () => {
+    const name = customerForm.name.trim();
+    const email = customerForm.email.trim().toLowerCase();
+    const phone = customerForm.phone.trim();
+    const area = customerForm.area.trim();
+    const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    if (!name || !emailOk || !phone || !area) {
+      setCustomerError("Name, valid email, phone, and area are required.");
+      return;
+    }
+    if (customers.some((c) => c.email.toLowerCase() === email)) {
+      setCustomerError("This email already exists.");
+      return;
+    }
+
+    const areaCoords: Record<string, { lat: number; lng: number }> = {
+      Mission: { lat: 37.7599, lng: -122.4148 },
+      SoMa: { lat: 37.7786, lng: -122.4057 },
+      Sunset: { lat: 37.7544, lng: -122.4944 },
+      Marina: { lat: 37.8037, lng: -122.4368 },
+      Downtown: { lat: 37.7898, lng: -122.401 },
+      Richmond: { lat: 37.7808, lng: -122.4702 },
+    };
+    const coord = areaCoords[area] || { lat: 37.7749, lng: -122.4194 };
+
+    const newCustomer: Customer = {
+      id: `c-${Math.random().toString(36).slice(2, 8)}`,
+      name,
+      email,
+      phone,
+      area,
+      lat: coord.lat,
+      lng: coord.lng,
+      points: 0,
+      visits: 0,
+      spend: 0,
+    };
+
+    setCustomers((prev) => [newCustomer, ...prev]);
+    setForm((prev) => ({ ...prev, customerId: newCustomer.id }));
+    setCustomerForm({ name: "", email: "", phone: "", area: "Mission" });
+    setCustomerError("");
+
+    pushOutbox({
+      channel: "email",
+      to: newCustomer.email,
+      subject: "Customer Profile Created",
+      body: `Welcome ${newCustomer.name}. Profile is active for ${newCustomer.area} bookings.`,
     });
   };
 
@@ -267,6 +325,46 @@ export default function ServiceCrmLive() {
 
         <section className="mt-6 grid gap-6 xl:grid-cols-12">
           <div className="xl:col-span-4 space-y-6">
+            <Panel title="New Customer">
+              <div className="grid gap-3">
+                <Input
+                  label="Full name"
+                  value={customerForm.name}
+                  onChange={(v) => setCustomerForm((f) => ({ ...f, name: v }))}
+                  placeholder="Jamie Walker"
+                />
+                <Input
+                  label="Email"
+                  type="email"
+                  value={customerForm.email}
+                  onChange={(v) => setCustomerForm((f) => ({ ...f, email: v }))}
+                  placeholder="jamie@example.com"
+                />
+                <Input
+                  label="Phone"
+                  value={customerForm.phone}
+                  onChange={(v) => setCustomerForm((f) => ({ ...f, phone: v }))}
+                  placeholder="(415) 555-0199"
+                />
+                <Select
+                  label="Service area"
+                  value={customerForm.area}
+                  onChange={(v) => setCustomerForm((f) => ({ ...f, area: v }))}
+                >
+                  <option value="Mission">Mission</option>
+                  <option value="SoMa">SoMa</option>
+                  <option value="Sunset">Sunset</option>
+                  <option value="Marina">Marina</option>
+                  <option value="Downtown">Downtown</option>
+                  <option value="Richmond">Richmond</option>
+                </Select>
+                {customerError && <p className="text-sm text-rose-300">{customerError}</p>}
+                <button onClick={addCustomer} className="rounded-lg bg-indigo-500 px-3 py-2 font-semibold text-white hover:bg-indigo-400">
+                  Save customer
+                </button>
+              </div>
+            </Panel>
+
             <Panel title="New Booking">
               <div className="grid gap-3">
                 <Select label="Customer" value={form.customerId} onChange={(v) => setForm((f) => ({ ...f, customerId: v }))}>
