@@ -68,7 +68,15 @@ export default function RealEstateLive() {
         <section className="overflow-hidden rounded-2xl border border-white/5 bg-gradient-to-br from-[#102742] via-[#0d1f35] to-[#0b1628] shadow-2xl">
           <div className="grid gap-6 md:grid-cols-2">
             <div className="relative">
-              <div className="aspect-[4/3] w-full bg-cover bg-center" style={{ backgroundImage: `url(${gallery[0]})` }} />
+              <div className="aspect-[4/3] w-full rounded-r-xl border-r border-white/10 bg-slate-900/40 p-5">
+                <div className="flex h-full items-center justify-center rounded-xl border-2 border-dashed border-teal-300/40 bg-[#0b1b30]/70 text-center">
+                  <div>
+                    <p className="text-sm font-semibold text-teal-100">House Photo Placeholder</p>
+                    <p className="mt-1 text-xs text-slate-300/80">Upload campaign-specific property hero image</p>
+                    <p className="mt-2 text-[11px] text-slate-400">Recommended: 1600x1200 JPG/PNG/WebP</p>
+                  </div>
+                </div>
+              </div>
               <div className="absolute left-4 top-4 space-y-2">
                 <p className="rounded-full bg-black/60 px-3 py-1 text-xs font-semibold text-white">Campaign cover</p>
                 <p className="rounded-full bg-teal-500/90 px-3 py-1 text-xs font-semibold text-slate-900">Lead form persists</p>
@@ -116,7 +124,15 @@ export default function RealEstateLive() {
           </div>
           <div className="mt-4 grid gap-4 md:grid-cols-3">
             <div className="md:col-span-2 rounded-xl border border-white/10 bg-gradient-to-br from-[#0f253e] to-[#0b1b30] p-6">
-              <div className="h-64 rounded-lg border border-white/10 bg-slate-900/60 flex items-center justify-center text-slate-400">Embed Mapbox/Google map</div>
+              <div className="h-64 rounded-lg border-2 border-dashed border-teal-300/35 bg-slate-900/60 p-4">
+                <div className="flex h-full items-center justify-center rounded-md border border-white/10 bg-[#0b1b30]/70 text-center">
+                  <div>
+                    <p className="text-sm font-semibold text-teal-100">Map Placeholder</p>
+                    <p className="mt-1 text-xs text-slate-300/80">Embed Google Maps or Mapbox with property pin + amenity layers</p>
+                    <p className="mt-2 text-[11px] text-slate-400">Schools, Transit, Shopping, Healthcare, Parks</p>
+                  </div>
+                </div>
+              </div>
             </div>
             <div className="space-y-3 text-sm text-slate-200">
               <div className="rounded-xl border border-white/10 bg-slate-900/40 p-4">
@@ -347,4 +363,3 @@ function Stat({ label, value }: { label: string; value: string }) {
     </div>
   );
 }
-
