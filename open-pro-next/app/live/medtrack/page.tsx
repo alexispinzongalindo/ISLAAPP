@@ -81,6 +81,7 @@ export default function MedTrackPage() {
   const [meds, setMeds] = useState<Medication[]>(seedMeds);
   const [formOpen, setFormOpen] = useState(false);
   const [form, setForm] = useState({ name: "", dosage: "", form: "pill", color: "#0ea5e9", times: "08:00", stock: 30, refillDate: "2026-02-28", pharmacy: "" });
+  const [addPreview, setAddPreview] = useState<string | null>(null);
   const now = useNow(5000);
 
   // hydrate localStorage
@@ -168,6 +169,11 @@ export default function MedTrackPage() {
     };
     setMeds((prev) => [...prev, newMed]);
     setFormOpen(false);
+    const ref = `RX-${Math.random().toString(36).slice(2, 7).toUpperCase()}`;
+    const doses = newMed.schedule.map((s) => s.time).join(", ");
+    setAddPreview(
+      `Saved ${newMed.name} (${newMed.dosage}) for ${persona.name}. Doses: ${doses}. Stock: ${newMed.stock}. Refill: ${newMed.refillDate}. Pharmacy: ${newMed.pharmacy || "Preferred"} · Ref ${ref}. Email/SMS/print would be sent in production.`
+    );
   };
 
   const removeMed = (id: string) => setMeds((prev) => prev.filter((m) => m.id !== id));
@@ -199,6 +205,13 @@ export default function MedTrackPage() {
             </button>
           </div>
         </header>
+        {addPreview && (
+          <div className="mt-4 rounded-3xl border border-emerald-400/40 bg-emerald-500/10 p-4 text-sm text-emerald-50">
+            <p className="font-semibold">Mock confirmation</p>
+            <p className="text-emerald-100/80">{addPreview}</p>
+            <p className="text-emerald-100/80 mt-1">Use this screen as the “receipt” — in production we’d send email/SMS/webhook.</p>
+          </div>
+        )}
 
         <div className="mt-8 grid gap-6 lg:grid-cols-3">
           <div className="lg:col-span-2 space-y-4">
