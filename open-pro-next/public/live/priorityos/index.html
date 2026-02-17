@@ -1121,13 +1121,9 @@ body {
   .charts-grid { grid-template-columns: 1fr; }
 }
 
-/* Desktop lock: keep PriorityOS as a desktop app at all viewport sizes */
-html, body { min-width: 1280px; }
-body { overflow: auto; }
-.app {
-  min-width: 1280px;
-  grid-template-columns: 220px 1fr !important;
-}
+/* Desktop lock: keep desktop shell visible without forcing page-wide overflow */
+body { overflow: auto; overflow-x: hidden; }
+.app { grid-template-columns: 220px 1fr !important; }
 .sidebar { display: flex !important; }
 </style>
 </head>

@@ -10,11 +10,11 @@ export default function PriorityOSLivePage() {
           Customize with AI
         </a>
       </div>
-      <div className="mx-auto max-w-[1600px] overflow-x-auto rounded-2xl border border-gray-800 bg-black/40">
+      <div className="mx-auto max-w-[1600px] overflow-hidden rounded-2xl border border-gray-800 bg-black/40">
         <iframe
           title="PriorityOS Live Demo"
           src="/live/priorityos/index.html"
-          className="h-[calc(100vh-180px)] min-h-[760px] w-[1400px] min-w-[1400px]"
+          className="h-[calc(100vh-180px)] min-h-[760px] w-full"
         />
       </div>
     </div>
