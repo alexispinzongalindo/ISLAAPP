@@ -20,6 +20,7 @@ import dentalThumb from "@/public/templates/dental-chair.jpg";
 import lawThumb from "@/public/templates/law-thumb.svg";
 import novahabitThumb from "@/public/templates/novahabit-thumb.png";
 import priorityosThumb from "@/public/templates/priorityos-thumb.png";
+import flexspaceThumb from "@/public/templates/flexspace-thumb.png";
 import postThumb01 from "@/public/images/post-thumb-01.jpg";
 import postThumb02 from "@/public/images/post-thumb-02.jpg";
 import postThumb04 from "@/public/images/post-thumb-04.jpg";
@@ -150,8 +151,8 @@ export const templates: TemplateDefinition[] = [
   tags: ["Studios", "Equipment", "Scheduling"],
   desc: "Industry rental operations for rooms, gear, bundles, and hour-based bookings with approval controls.",
   descEs: "Operaciones de renta por industria para espacios, equipos, paquetes y reservas por hora con controles.",
-  thumb: worldmapImage,
-  hero: worldmapImage,
+  thumb: flexspaceThumb,
+  hero: flexspaceThumb,
 },
 {
   slug: "real-estate",
