@@ -19,6 +19,7 @@ import clinicThumb from "@/public/templates/clinic-thumb.png";
 import dentalThumb from "@/public/templates/dental-chair.jpg";
 import lawThumb from "@/public/templates/law-thumb.svg";
 import novahabitThumb from "@/public/templates/novahabit-thumb.png";
+import priorityosThumb from "@/public/templates/priorityos-thumb.png";
 import postThumb01 from "@/public/images/post-thumb-01.jpg";
 import postThumb02 from "@/public/images/post-thumb-02.jpg";
 import postThumb04 from "@/public/images/post-thumb-04.jpg";
@@ -139,8 +140,8 @@ export const templates: TemplateDefinition[] = [
   tags: ["AI", "Behavior", "Gamification"],
   desc: "Behavioral insights OS with prediction panels, habit streaks, levels, and reward mechanics.",
   descEs: "Sistema de insights conductuales con paneles predictivos, rachas, niveles y recompensas.",
-  thumb: featuresImage,
-  hero: featuresImage,
+  thumb: priorityosThumb,
+  hero: priorityosThumb,
 },
 {
   slug: "flexspace",
