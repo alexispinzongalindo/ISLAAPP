@@ -1,9 +1,9 @@
 # ISLAAPP Project Status
 
-Last updated: 2026-02-15 (late night)
-Workspace: /Users/alexispinzon/CascadeProjects/WINSURFJR
+Last updated: 2026-02-16 (evening)
+Workspace: /Users/alexispinzon/CascadeProjects/islaapp-site/open-pro-next
 Primary deploy repo: https://github.com/alexispinzongalindo/ISLAAPP.git
-Primary app path: /Users/alexispinzon/CascadeProjects/WINSURFJR/open-pro-next
+Primary app path: /Users/alexispinzon/CascadeProjects/islaapp-site/open-pro-next/open-pro-next
 
 ## Current Product Direction
 - Base site migrated to template-first funnel.
@@ -44,12 +44,10 @@ Primary app path: /Users/alexispinzon/CascadeProjects/WINSURFJR/open-pro-next
    - Demos are differentiated by template slug (not one generic preview).
 
 ## Recent Important Commits (ISLAAPP/main)
-- `a644b33` Persist agent chat per template and add project status handoff file
-- `373ac47` Make AI agent default to phased product-planning workflow
-- `81dd472` Only send reasoning for GPT-5 models and hide unsupported control
-- `f6d8ffe` Fix agent API message format for Responses endpoint
-- `747a033` Fix /agent prerender by removing useSearchParams
-- `29f9428` Add global EN/ES toggle with bilingual core funnel screens
+- `b9e6fe2` Re-add EstateGo real-estate live demo with build-safe implementation
+- `728d96f` Revert previous EstateGo attempt after Render build failure
+- `0358953` Add Briefly law live demo and wire live buttons
+- `3b028ca` Show Live demo button for SmileSet (dental)
 
 ## Render Environment
 Required:
