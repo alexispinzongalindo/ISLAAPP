@@ -593,7 +593,7 @@ export default async function TemplateDetailPage({ params }: TemplatePageProps) 
       </div>
 
       <div className="mt-8 grid gap-4 sm:grid-cols-3">
-        {["bookflow", "medtrack", "fitcoach", "restaurant", "spa", "clinic", "dental", "law", "real-estate", "habits", "priorityos"].includes(template.slug) && (
+        {["bookflow", "medtrack", "fitcoach", "restaurant", "spa", "clinic", "dental", "law", "real-estate", "habits", "priorityos", "flexspace"].includes(template.slug) && (
           <Link
             href={`/live/${template.slug}`}
             className="btn-sm bg-gray-800 text-center text-white hover:bg-gray-700"

@@ -142,6 +142,16 @@ export const templates: TemplateDefinition[] = [
   hero: featuresImage,
 },
 {
+  slug: "flexspace",
+  title: "FlexSpace Rentals",
+  titleEs: "FlexSpace Rentals",
+  tags: ["Studios", "Equipment", "Scheduling"],
+  desc: "Industry rental operations for rooms, gear, bundles, and hour-based bookings with approval controls.",
+  descEs: "Operaciones de renta por industria para espacios, equipos, paquetes y reservas por hora con controles.",
+  thumb: worldmapImage,
+  hero: worldmapImage,
+},
+{
   slug: "real-estate",
   title: "EstateGo (Real Estate)",
   titleEs: "EstateGo (Real Estate)",
