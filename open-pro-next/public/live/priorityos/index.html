@@ -1120,6 +1120,15 @@ body {
   .nova-layout { grid-template-columns: 1fr; }
   .charts-grid { grid-template-columns: 1fr; }
 }
+
+/* Desktop lock: keep PriorityOS as a desktop app at all viewport sizes */
+html, body { min-width: 1280px; }
+body { overflow: auto; }
+.app {
+  min-width: 1280px;
+  grid-template-columns: 220px 1fr !important;
+}
+.sidebar { display: flex !important; }
 </style>
 </head>
 <body>
