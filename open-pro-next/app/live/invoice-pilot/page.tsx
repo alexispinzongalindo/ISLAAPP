@@ -248,7 +248,7 @@ export default function InvoicePilotLive() {
   const portalPayments = payments.filter((p) => p.clientId === portalClientId);
 
   return (
-    <div className="min-h-screen bg-[#0a1226] text-slate-100">
+    <div className="min-h-screen bg-[#141414] text-slate-100">
       <main className="mx-auto max-w-7xl px-4 py-8 md:px-6">
         <section className="rounded-2xl border border-emerald-400/25 bg-gradient-to-br from-[#102a2b] via-[#102225] to-[#0c171c] p-6">
           <p className="text-xs uppercase tracking-[0.2em] text-emerald-200/80">InvoicePilot · Freelancer Billing</p>
@@ -351,7 +351,7 @@ export default function InvoicePilotLive() {
                 placeholder="Notes..."
               />
               {invoiceError && <p className="mt-2 text-sm text-rose-300">{invoiceError}</p>}
-              <div className="mt-3 flex items-center justify-between rounded-lg border border-white/10 bg-[#0f1a35] px-3 py-2 text-sm">
+              <div className="mt-3 flex items-center justify-between rounded-lg border border-white/10 bg-[#1d1d1d] px-3 py-2 text-sm">
                 <span>Total</span>
                 <span className="font-semibold">{money(invoiceDraft.currency, totalDraft)}</span>
               </div>
@@ -369,7 +369,7 @@ export default function InvoicePilotLive() {
                       <span className={`rounded-full px-2 py-0.5 text-xs ${
                         inv.status === "paid" ? "bg-emerald-500/20 text-emerald-100" :
                         inv.status === "overdue" ? "bg-rose-500/20 text-rose-100" :
-                        inv.status === "sent" ? "bg-cyan-500/20 text-cyan-100" : "bg-slate-500/20 text-slate-100"
+                        inv.status === "sent" ? "bg-amber-500/20 text-amber-100" : "bg-slate-500/20 text-slate-100"
                       }`}>
                         {inv.status}
                       </span>
@@ -405,7 +405,7 @@ export default function InvoicePilotLive() {
                 ))}
                 {portalInvoices.length === 0 && <p className="text-sm text-slate-300/80">No portal invoices yet.</p>}
               </div>
-              <div className="mt-3 rounded-lg border border-white/10 bg-[#101b37] p-3">
+              <div className="mt-3 rounded-lg border border-white/10 bg-[#1f1f1f] p-3">
                 <p className="text-xs uppercase tracking-[0.18em] text-emerald-200/80">Payment history</p>
                 <div className="mt-2 space-y-1">
                   {portalPayments.map((p) => (
@@ -426,7 +426,7 @@ export default function InvoicePilotLive() {
             <Panel title="Email to Screen">
               <div className="max-h-72 space-y-2 overflow-auto pr-1">
                 {outbox.map((o) => (
-                  <div key={o.id} className="rounded-lg border border-white/10 bg-[#0f1a35] p-2.5 text-xs">
+                  <div key={o.id} className="rounded-lg border border-white/10 bg-[#1d1d1d] p-2.5 text-xs">
                     <p className="text-emerald-200/80">{o.at} · {o.to}</p>
                     <p className="font-semibold">{o.subject}</p>
                     <p className="text-slate-200/90">{o.body}</p>
@@ -444,7 +444,7 @@ export default function InvoicePilotLive() {
 
 function Panel({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <section className="rounded-2xl border border-white/10 bg-[#111a30] p-4">
+    <section className="rounded-2xl border border-white/10 bg-[#1b1b1b] p-4">
       <h2 className="text-sm font-semibold uppercase tracking-[0.18em] text-emerald-200/85">{title}</h2>
       <div className="mt-3">{children}</div>
     </section>
