@@ -21,6 +21,7 @@ import lawThumb from "@/public/templates/law-thumb.svg";
 import novahabitThumb from "@/public/templates/novahabit-thumb.png";
 import priorityosThumb from "@/public/templates/priorityos-thumb.png";
 import flexspaceThumb from "@/public/templates/flexspace-thumb.png";
+import estategoThumb from "@/public/templates/estatego-thumb.png";
 import postThumb01 from "@/public/images/post-thumb-01.jpg";
 import postThumb02 from "@/public/images/post-thumb-02.jpg";
 import postThumb04 from "@/public/images/post-thumb-04.jpg";
@@ -161,8 +162,8 @@ export const templates: TemplateDefinition[] = [
   tags: ["Listings", "Leads", "Tours"],
   desc: "Property highlights, map embeds, and tour booking. Swap cover photo per campaign; lead form stays wired.",
   descEs: "Property highlights, map embeds, and tour booking. Swap cover photo per campaign; lead form stays wired.",
-  thumb: worldmapImage,
-  hero: worldmapImage,
+  thumb: estategoThumb,
+  hero: estategoThumb,
 },
 {
   slug: "coaching",
