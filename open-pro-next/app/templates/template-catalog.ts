@@ -23,6 +23,7 @@ import priorityosThumb from "@/public/templates/priorityos-thumb.png";
 import flexspaceThumb from "@/public/templates/flexspace-thumb.png";
 import estategoThumb from "@/public/templates/estatego-thumb.png";
 import servicecrmThumb from "@/public/templates/servicecrm-thumb.png";
+import invoicepilotThumb from "@/public/templates/invoicepilot-thumb.png";
 import postThumb01 from "@/public/images/post-thumb-01.jpg";
 import postThumb02 from "@/public/images/post-thumb-02.jpg";
 import postThumb04 from "@/public/images/post-thumb-04.jpg";
@@ -173,8 +174,8 @@ export const templates: TemplateDefinition[] = [
   tags: ["Invoicing", "Client Portal", "Payments"],
   desc: "Freelancer invoicing CRM with proposal-to-invoice flow, recurring toggles, and client payment portal.",
   descEs: "CRM de facturacion para freelancers con flujo propuesta-a-factura, recurrencia y portal de cliente.",
-  thumb: postThumb11,
-  hero: postThumb11,
+  thumb: invoicepilotThumb,
+  hero: invoicepilotThumb,
 },
 {
   slug: "real-estate",
