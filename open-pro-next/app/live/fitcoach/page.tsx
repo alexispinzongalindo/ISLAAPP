@@ -77,9 +77,6 @@ export default function FitCoachPage() {
   const [form, setForm] = useState({ mood: 4, wins: "", challenges: "", weight: "" });
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
-  const [refId, setRefId] = useState<string | null>(null);
-  const [emailPreview, setEmailPreview] = useState<string | null>(null);
-  const [smsPreview, setSmsPreview] = useState<string | null>(null);
   const currentWeek = 8;
 
   // Theme customization disabled for functional demo; theme locked to default
@@ -107,16 +104,8 @@ export default function FitCoachPage() {
       setCheckins([newEntry, ...checkins]);
       setSubmitting(false);
       setSubmitted(true);
-      const ref = `FC-${Math.random().toString(36).slice(2, 7).toUpperCase()}`;
-      setRefId(ref);
-      setEmailPreview(
-        `Hi Jordan,\\n\\nThanks for completing Week ${currentWeek} check-in.\\nMood: ${form.mood}/5\\nWins: ${form.wins}\\nChallenges: ${form.challenges || "—"}\\nWeight change: ${form.weight || "—"}\\nRef: ${ref}\\n\\nIn production this would send via SendGrid/SMTP.`
-      );
-      setSmsPreview(
-        `FitCoach ${ref}: Week ${currentWeek} check-in received. Mood ${form.mood}/5. Wins logged.`
-      );
       setForm({ mood: 4, wins: "", challenges: "", weight: "" });
-      setTimeout(() => setSubmitted(false), 3500);
+      setTimeout(() => setSubmitted(false), 1500);
     }, 900);
   };
 
@@ -181,9 +170,6 @@ export default function FitCoachPage() {
               setForm={setForm}
               submitting={submitting}
               submitted={submitted}
-              refId={refId}
-              emailPreview={emailPreview}
-              smsPreview={smsPreview}
               onSubmit={handleSubmit}
             />
           </Card>
@@ -305,9 +291,6 @@ function CheckInForm({
   setForm,
   submitting,
   submitted,
-  refId,
-  emailPreview,
-  smsPreview,
   onSubmit,
 }: {
   palette: any;
@@ -315,9 +298,6 @@ function CheckInForm({
   setForm: (f: any) => void;
   submitting: boolean;
   submitted: boolean;
-  refId: string | null;
-  emailPreview: string | null;
-  smsPreview: string | null;
   onSubmit: () => void;
 }) {
   return (
@@ -387,23 +367,11 @@ function CheckInForm({
           <p className="font-semibold">Mock confirmation</p>
           <p className="text-xs opacity-80">What would be sent via email/SMS/webhook in production.</p>
           <div className="mt-2 text-xs space-y-1">
-            <p>Ref: {refId || "pending"}</p>
+            <p>Ref: FIT-{Math.random().toString(36).slice(2, 7).toUpperCase()}</p>
             <p>Mood/Energy: {form.mood || 0} / 5</p>
             <p>Wins: {form.wins || "—"}</p>
             <p>Challenges: {form.challenges || "—"}</p>
             <p>Weight change: {form.weight || "—"}</p>
-            {emailPreview && (
-              <div className="mt-2 rounded-lg border border-white/10 bg-white/10 p-2">
-                <p className="font-semibold text-xs">Email preview</p>
-                <pre className="whitespace-pre-wrap">{emailPreview}</pre>
-              </div>
-            )}
-            {smsPreview && (
-              <div className="mt-2 rounded-lg border border-white/10 bg-white/10 p-2">
-                <p className="font-semibold text-xs">SMS preview</p>
-                <p>{smsPreview}</p>
-              </div>
-            )}
           </div>
         </div>
       )}
