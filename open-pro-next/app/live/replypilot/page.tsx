@@ -177,52 +177,52 @@ export default function ReplyPilotLivePage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#fff8ef] via-[#fff2f4] to-[#f7f1ea] text-[#2f2726]">
+    <div className="min-h-screen bg-gradient-to-br from-[#eefcf4] via-[#fff4ec] to-[#f5efff] text-[#1f2a24]">
       <div className="mx-auto max-w-7xl px-4 py-10">
-        <section className="mb-6 rounded-3xl border border-[#ebd6c2] bg-gradient-to-r from-[#ffe8d3] via-[#ffe0db] to-[#f0e4db] p-6">
-          <p className="text-xs uppercase tracking-[0.25em] text-[#8d5b45]">ReplyPilot</p>
-          <h1 className="text-3xl font-semibold text-[#3f2d2a]">Meeting Automation & AI Note-Taking Suite</h1>
-          <p className="mt-2 text-[#6f5956]">
+        <section className="mb-6 rounded-3xl border border-[#ebd6c2] bg-gradient-to-r from-[#d7f7e8] via-[#ffe1cf] to-[#e7dcff] p-6">
+          <p className="text-xs uppercase tracking-[0.25em] text-[#2f6e52]">ReplyPilot</p>
+          <h1 className="text-3xl font-semibold text-[#1f2a24]">Meeting Automation & AI Note-Taking Suite</h1>
+          <p className="mt-2 text-[#4b6658]">
             Draft AI email responses, schedule sends, track opens, and automate follow-ups with sales/support/executive workflows.
           </p>
         </section>
 
         <div className="mb-6 grid gap-4 md:grid-cols-4">
-          <div className="rounded-2xl border border-[#ead8c8] bg-[#fffaf4] p-4">
-            <p className="text-xs uppercase text-[#9a7a5f]">Scheduled</p>
+          <div className="rounded-2xl border border-[#c8e4d5] bg-[#f8fff9] p-4">
+            <p className="text-xs uppercase text-[#4f7c68]">Scheduled</p>
             <p className="text-2xl font-semibold">{stats.scheduled}</p>
           </div>
-          <div className="rounded-2xl border border-[#ead8c8] bg-[#fffaf4] p-4">
-            <p className="text-xs uppercase text-[#9a7a5f]">Sent</p>
+          <div className="rounded-2xl border border-[#c8e4d5] bg-[#f8fff9] p-4">
+            <p className="text-xs uppercase text-[#4f7c68]">Sent</p>
             <p className="text-2xl font-semibold">{stats.sent}</p>
           </div>
-          <div className="rounded-2xl border border-[#ead8c8] bg-[#fffaf4] p-4">
-            <p className="text-xs uppercase text-[#9a7a5f]">Opened</p>
+          <div className="rounded-2xl border border-[#c8e4d5] bg-[#f8fff9] p-4">
+            <p className="text-xs uppercase text-[#4f7c68]">Opened</p>
             <p className="text-2xl font-semibold">{stats.opened}</p>
           </div>
-          <div className="rounded-2xl border border-[#ead8c8] bg-[#fffaf4] p-4">
-            <p className="text-xs uppercase text-[#9a7a5f]">Open rate</p>
+          <div className="rounded-2xl border border-[#c8e4d5] bg-[#f8fff9] p-4">
+            <p className="text-xs uppercase text-[#4f7c68]">Open rate</p>
             <p className="text-2xl font-semibold">{stats.openRate}%</p>
           </div>
         </div>
 
         <div className="grid gap-6 xl:grid-cols-[1.2fr_1fr]">
-          <section className="rounded-3xl border border-[#ebd8c9] bg-[#fffaf6] p-5">
+          <section className="rounded-3xl border border-[#c8e4d5] bg-[#fbfffc] p-5">
             <h2 className="text-xl font-semibold">AI Draft Composer</h2>
-            <p className="mb-4 text-sm text-[#7b6661]">Build response drafts with mode, tone, and vertical presets.</p>
+            <p className="mb-4 text-sm text-[#5d786a]">Build response drafts with mode, tone, and vertical presets.</p>
 
             <div className="mb-4 grid gap-3 md:grid-cols-3">
-              <select value={mode} onChange={(e) => setMode(e.target.value as Mode)} className="rounded-xl border border-[#e3cdb8] bg-[#fff0e0] px-3 py-2 text-sm">
+              <select value={mode} onChange={(e) => setMode(e.target.value as Mode)} className="rounded-xl border border-[#b8dcc8] bg-[#effaf3] px-3 py-2 text-sm">
                 <option value="sales">Sales-focused</option>
                 <option value="support">Support-focused</option>
                 <option value="executive">Executive assistant</option>
               </select>
-              <select value={tone} onChange={(e) => setTone(e.target.value as Tone)} className="rounded-xl border border-[#e3cdb8] bg-[#fff0e0] px-3 py-2 text-sm">
+              <select value={tone} onChange={(e) => setTone(e.target.value as Tone)} className="rounded-xl border border-[#b8dcc8] bg-[#effaf3] px-3 py-2 text-sm">
                 <option value="formal">Formal</option>
                 <option value="friendly">Friendly</option>
                 <option value="brief">Brief</option>
               </select>
-              <select value={vertical} onChange={(e) => setVertical(e.target.value as Vertical)} className="rounded-xl border border-[#e3cdb8] bg-[#fff0e0] px-3 py-2 text-sm">
+              <select value={vertical} onChange={(e) => setVertical(e.target.value as Vertical)} className="rounded-xl border border-[#b8dcc8] bg-[#effaf3] px-3 py-2 text-sm">
                 <option value="real-estate">Real estate nurturing</option>
                 <option value="recruiting">Recruiting outreach</option>
                 <option value="ecommerce">E-commerce win-back</option>
@@ -230,41 +230,41 @@ export default function ReplyPilotLivePage() {
             </div>
 
             <div className="mb-4 grid gap-3 md:grid-cols-2">
-              <input value={to} onChange={(e) => setTo(e.target.value)} placeholder="Recipient email" className="rounded-xl border border-[#e3cdb8] bg-[#fff0e0] px-3 py-2 text-sm" />
-              <input value={subject} onChange={(e) => setSubject(e.target.value)} placeholder="Subject" className="rounded-xl border border-[#e3cdb8] bg-[#fff0e0] px-3 py-2 text-sm" />
-              <textarea value={inputContext} onChange={(e) => setInputContext(e.target.value)} placeholder="Context from notes/call" className="min-h-[120px] rounded-xl border border-[#e3cdb8] bg-[#fff0e0] px-3 py-2 text-sm md:col-span-2" />
+              <input value={to} onChange={(e) => setTo(e.target.value)} placeholder="Recipient email" className="rounded-xl border border-[#b8dcc8] bg-[#effaf3] px-3 py-2 text-sm" />
+              <input value={subject} onChange={(e) => setSubject(e.target.value)} placeholder="Subject" className="rounded-xl border border-[#b8dcc8] bg-[#effaf3] px-3 py-2 text-sm" />
+              <textarea value={inputContext} onChange={(e) => setInputContext(e.target.value)} placeholder="Context from notes/call" className="min-h-[120px] rounded-xl border border-[#b8dcc8] bg-[#effaf3] px-3 py-2 text-sm md:col-span-2" />
             </div>
 
             <div className="mb-4 flex flex-wrap gap-2">
-              <button onClick={generateDraft} className="rounded-xl bg-[#f28868] px-4 py-2 text-sm font-semibold text-white">Generate AI draft</button>
-              <input type="datetime-local" value={scheduledAt} onChange={(e) => setScheduledAt(e.target.value)} className="rounded-xl border border-[#e3cdb8] bg-[#fff0e0] px-3 py-2 text-sm" />
-              <button onClick={saveAndSchedule} className="rounded-xl bg-[#8b6f64] px-4 py-2 text-sm font-semibold text-white">Schedule send</button>
+              <button onClick={generateDraft} className="rounded-xl bg-[#3cba7a] px-4 py-2 text-sm font-semibold text-white">Generate AI draft</button>
+              <input type="datetime-local" value={scheduledAt} onChange={(e) => setScheduledAt(e.target.value)} className="rounded-xl border border-[#b8dcc8] bg-[#effaf3] px-3 py-2 text-sm" />
+              <button onClick={saveAndSchedule} className="rounded-xl bg-[#ff7f50] px-4 py-2 text-sm font-semibold text-white">Schedule send</button>
             </div>
 
-            {error && <p className="mb-3 rounded-lg border border-[#f0b2a8] bg-[#ffe8e4] px-3 py-2 text-sm text-[#9b2f25]">{error}</p>}
+            {error && <p className="mb-3 rounded-lg border border-[#f2b7a1] bg-[#fff0ea] px-3 py-2 text-sm text-[#a34a2f]">{error}</p>}
 
-            <div className="rounded-xl border border-[#e2d0c0] bg-[#fff2e6] p-4">
+            <div className="rounded-xl border border-[#bddcca] bg-[#eff9f4] p-4">
               <p className="mb-2 text-xs uppercase tracking-[0.2em] text-[#9a775f]">AI preview</p>
-              <p className="whitespace-pre-line text-sm text-[#594844]">{preview || "Draft preview appears here after generation."}</p>
+              <p className="whitespace-pre-line text-sm text-[#385247]">{preview || "Draft preview appears here after generation."}</p>
             </div>
           </section>
 
           <section className="space-y-6">
-            <div className="rounded-3xl border border-[#ebd8c9] bg-[#fffaf6] p-5">
+            <div className="rounded-3xl border border-[#c8e4d5] bg-[#fbfffc] p-5">
               <h2 className="text-xl font-semibold">Send Queue + Tracking</h2>
               <div className="mt-3 max-h-[280px] space-y-2 overflow-auto">
-                {drafts.length === 0 && <p className="text-sm text-[#8b7570]">No drafts yet.</p>}
+                {drafts.length === 0 && <p className="text-sm text-[#6a8578]">No drafts yet.</p>}
                 {drafts.map((d) => (
-                  <div key={d.id} className="rounded-xl border border-[#e6d6cb] bg-[#fff3e9] p-3 text-sm">
+                  <div key={d.id} className="rounded-xl border border-[#e6d6cb] bg-[#f1fbf6] p-3 text-sm">
                     <p className="font-semibold">{d.subject}</p>
-                    <p className="text-[#7f6862]">{d.to} · {modeLabels[d.mode]} · {verticalLabels[d.vertical]}</p>
-                    <p className="text-[#7f6862]">Tone: {d.tone} · Status: {d.status} · Opens: {d.openCount}</p>
+                    <p className="text-[#5f7a6d]">{d.to} · {modeLabels[d.mode]} · {verticalLabels[d.vertical]}</p>
+                    <p className="text-[#5f7a6d]">Tone: {d.tone} · Status: {d.status} · Opens: {d.openCount}</p>
                     <div className="mt-2 flex gap-2">
                       {(d.status === "scheduled" || d.status === "draft") && (
-                        <button onClick={() => triggerSendNow(d.id)} className="rounded-lg bg-[#ef8a66] px-3 py-1.5 text-xs font-semibold text-white">Send now</button>
+                        <button onClick={() => triggerSendNow(d.id)} className="rounded-lg bg-[#32b26e] px-3 py-1.5 text-xs font-semibold text-white">Send now</button>
                       )}
                       {(d.status === "sent" || d.status === "opened") && (
-                        <button onClick={() => simulateOpen(d.id)} className="rounded-lg bg-[#8d7a6b] px-3 py-1.5 text-xs font-semibold text-white">Simulate open</button>
+                        <button onClick={() => simulateOpen(d.id)} className="rounded-lg bg-[#7c6bd8] px-3 py-1.5 text-xs font-semibold text-white">Simulate open</button>
                       )}
                     </div>
                   </div>
@@ -272,16 +272,16 @@ export default function ReplyPilotLivePage() {
               </div>
             </div>
 
-            <div className="rounded-3xl border border-[#ebd8c9] bg-[#fffaf6] p-5">
+            <div className="rounded-3xl border border-[#c8e4d5] bg-[#fbfffc] p-5">
               <h2 className="text-xl font-semibold">Auto Follow-ups</h2>
               <div className="mt-3 max-h-[180px] space-y-2 overflow-auto">
-                {followUps.length === 0 && <p className="text-sm text-[#8b7570]">No follow-ups yet.</p>}
+                {followUps.length === 0 && <p className="text-sm text-[#6a8578]">No follow-ups yet.</p>}
                 {followUps.map((f) => (
-                  <div key={f.id} className="rounded-xl border border-[#e6d6cb] bg-[#fff3e9] p-3 text-sm">
+                  <div key={f.id} className="rounded-xl border border-[#e6d6cb] bg-[#f1fbf6] p-3 text-sm">
                     <p className="font-semibold">{f.to}</p>
-                    <p className="text-[#7f6862]">Due: {f.dueAt} · {f.state}</p>
+                    <p className="text-[#5f7a6d]">Due: {f.dueAt} · {f.state}</p>
                     {f.state === "pending" && (
-                      <button onClick={() => sendFollowUp(f.id)} className="mt-2 rounded-lg bg-[#7f6a77] px-3 py-1.5 text-xs font-semibold text-white">Send follow-up</button>
+                      <button onClick={() => sendFollowUp(f.id)} className="mt-2 rounded-lg bg-[#f27d46] px-3 py-1.5 text-xs font-semibold text-white">Send follow-up</button>
                     )}
                   </div>
                 ))}
@@ -290,16 +290,16 @@ export default function ReplyPilotLivePage() {
           </section>
         </div>
 
-        <section className="mt-6 rounded-3xl border border-[#ebd8c9] bg-[#fffaf6] p-5">
+        <section className="mt-6 rounded-3xl border border-[#c8e4d5] bg-[#fbfffc] p-5">
           <h2 className="text-xl font-semibold">Automation Timeline</h2>
-          <p className="mb-3 text-sm text-[#7b6661]">Printed-to-screen events for AI generation, scheduled sends, opens, and follow-ups.</p>
+          <p className="mb-3 text-sm text-[#5d786a]">Printed-to-screen events for AI generation, scheduled sends, opens, and follow-ups.</p>
           <div className="max-h-[220px] space-y-2 overflow-auto">
-            {timeline.length === 0 && <p className="text-sm text-[#8b7570]">No events yet.</p>}
+            {timeline.length === 0 && <p className="text-sm text-[#6a8578]">No events yet.</p>}
             {timeline.map((e) => (
-              <div key={e.id} className="rounded-lg border border-[#e6d6cb] bg-[#fff3e9] px-3 py-2 text-sm">
+              <div key={e.id} className="rounded-lg border border-[#e6d6cb] bg-[#f1fbf6] px-3 py-2 text-sm">
                 <p className="font-semibold capitalize">{e.type}</p>
                 <p>{e.text}</p>
-                <p className="text-xs text-[#8b7268]">{e.stamp}</p>
+                <p className="text-xs text-[#6a8578]">{e.stamp}</p>
               </div>
             ))}
           </div>

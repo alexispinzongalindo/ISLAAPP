@@ -34,3 +34,29 @@
 - Lockfile for the Next app is `open-pro-next/open-pro-next/package-lock.json`; Render uses `rootDir: open-pro-next` so it should pick it up.
 - Local `npm run build` failed only because Google Fonts download was blocked; Render should succeed with network access.
 - No tests were run in this pass. Deploy to verify.
+
+---
+
+# Handoff (2026-02-18, latest)
+
+## Current focus
+- Repository: `open-pro-next/open-pro-next`
+- Branch: `main`
+- Pending local change at handoff update time: `app/live/replypilot/page.tsx` (palette refresh)
+
+## Recently completed and pushed
+- Added app info modal support across template cards and started rolling app-by-app detailed descriptions.
+- Added and wired new live demos into template catalog and route access:
+  - `ChairLock` (`/live/chairlock`)
+  - `MeetFlow` (`/live/meetflow`)
+  - `ReplyPilot` (`/live/replypilot`)
+- Added CRM-style reminder outputs (email/SMS/WhatsApp print-to-screen where requested).
+- Updated multiple template thumbnails from `DEMO SHOOT` folder and wired live/demo buttons.
+
+## Latest local change (not pushed at time of this note)
+- `ReplyPilot` color palette updated to a warmer non-blue direction.
+- File changed: `open-pro-next/open-pro-next/app/live/replypilot/page.tsx`
+- Local build status for this change: `npm run build` passes.
+
+## Next action
+- Commit and push the pending `ReplyPilot` palette file, then let Render auto-deploy.
