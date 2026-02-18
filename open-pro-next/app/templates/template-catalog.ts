@@ -199,6 +199,16 @@ export const templates: TemplateDefinition[] = [
   hero: estategoThumb,
 },
 {
+  slug: "chairlock",
+  title: "ChairLock (Barbershop)",
+  titleEs: "ChairLock (Barbershop)",
+  tags: ["Barbershop", "Deposits", "Reminders"],
+  desc: "Online barber booking with service durations, deposit/full prepay, reminder automation, and admin calendar controls.",
+  descEs: "Reservas para barberia con duraciones de servicio, prepago/deposito, recordatorios automatizados y control en calendario admin.",
+  thumb: postThumb13,
+  hero: postThumb13,
+},
+{
   slug: "coaching",
   title: "Clarity Coach",
   titleEs: "Clarity Coach",
