@@ -24,6 +24,7 @@ import flexspaceThumb from "@/public/templates/flexspace-thumb.png";
 import estategoThumb from "@/public/templates/estatego-thumb.png";
 import servicecrmThumb from "@/public/templates/servicecrm-thumb.png";
 import invoicepilotThumb from "@/public/templates/invoicepilot-thumb.png";
+import memberdockThumb from "@/public/templates/memberdock-thumb.png";
 import postThumb01 from "@/public/images/post-thumb-01.jpg";
 import postThumb02 from "@/public/images/post-thumb-02.jpg";
 import postThumb04 from "@/public/images/post-thumb-04.jpg";
@@ -184,8 +185,8 @@ export const templates: TemplateDefinition[] = [
   tags: ["Memberships", "Gated Content", "Subscriptions"],
   desc: "Creator membership hub with tiers, gated posts, drip scheduling, coupons, and member upgrades.",
   descEs: "Hub de membresias para creadores con niveles, posts restringidos, drip schedule, cupones y upgrades.",
-  thumb: postThumb10,
-  hero: postThumb10,
+  thumb: memberdockThumb,
+  hero: memberdockThumb,
 },
 {
   slug: "real-estate",

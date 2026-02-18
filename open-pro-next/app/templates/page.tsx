@@ -8,12 +8,15 @@ import { templates } from "@/app/templates/template-catalog";
 export default function TemplatesPage() {
   const [activeInfoSlug, setActiveInfoSlug] = useState<string | null>(null);
 
-  const appInfoBySlug: Record<string, string> = {
-    bookflow:
-      "BookFlow is a functional scheduling application built with Next.js and TypeScript that lets service businesses manage the complete booking cycle, including service selection, provider assignment, date/time booking, customer details, and confirmation actions; it is useful for salons, clinics, wellness studios, and consultants that need faster online intake and cleaner scheduling, and planned enhancements include real payment processing, calendar sync, reminder automation, no-show protection rules, and deeper admin reporting.",
+  const buildAppInfo = (slug: string) => {
+    const template = templates.find((tpl) => tpl.slug === slug);
+    if (!template) return null;
+
+    const tags = template.tags.join(", ");
+    return `${template.title} is a functional web application built with Next.js and TypeScript, designed to run real user flows instead of a static preview; core capabilities include ${template.desc.toLowerCase()} This template is a strong fit for teams working in ${tags}, and it can be extended with production upgrades such as real payment processors, calendar and notification integrations, audit logs, role-based access controls, and backend data persistence while preserving the same front-end workflow your customers already test in the live demo.`;
   };
 
-  const activeInfoText = activeInfoSlug ? appInfoBySlug[activeInfoSlug] : null;
+  const activeInfoText = activeInfoSlug ? buildAppInfo(activeInfoSlug) : null;
 
   return (
     <section className="mx-auto max-w-6xl px-4 sm:px-6 py-12 md:py-16">
@@ -75,15 +78,13 @@ export default function TemplatesPage() {
                   Live demo
                 </a>
               )}
-              {appInfoBySlug[t.slug] && (
-                <button
-                  type="button"
-                  onClick={() => setActiveInfoSlug(t.slug)}
-                  className="btn-sm border border-gray-700 bg-gray-800 text-gray-100 hover:bg-gray-700"
-                >
-                  App info
-                </button>
-              )}
+              <button
+                type="button"
+                onClick={() => setActiveInfoSlug(t.slug)}
+                className="btn-sm border border-gray-700 bg-gray-800 text-gray-100 hover:bg-gray-700"
+              >
+                App info
+              </button>
               <a
                 href={`/agent?template=${t.slug}&source=template_gallery`}
                 className="btn-sm bg-indigo-600 text-white hover:bg-indigo-500"
