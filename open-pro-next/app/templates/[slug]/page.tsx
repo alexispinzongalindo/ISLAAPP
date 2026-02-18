@@ -1,15 +1,11 @@
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getTemplateBySlug, templates } from "@/app/templates/template-catalog";
+import { getTemplateBySlug } from "@/app/templates/template-catalog";
 
 type TemplatePageProps = {
   params: Promise<{ slug: string }>;
 };
-
-export async function generateStaticParams() {
-  return templates.map((template) => ({ slug: template.slug }));
-}
 
 export async function generateMetadata({ params }: TemplatePageProps) {
   const { slug } = await params;
