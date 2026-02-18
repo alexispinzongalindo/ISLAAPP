@@ -25,6 +25,7 @@ import estategoThumb from "@/public/templates/estatego-thumb.png";
 import servicecrmThumb from "@/public/templates/servicecrm-thumb.png";
 import invoicepilotThumb from "@/public/templates/invoicepilot-thumb.png";
 import memberdockThumb from "@/public/templates/memberdock-thumb.png";
+import chairlockThumb from "@/public/templates/chairlock-thumb.png";
 import postThumb01 from "@/public/images/post-thumb-01.jpg";
 import postThumb02 from "@/public/images/post-thumb-02.jpg";
 import postThumb04 from "@/public/images/post-thumb-04.jpg";
@@ -205,8 +206,8 @@ export const templates: TemplateDefinition[] = [
   tags: ["Barbershop", "Deposits", "Reminders"],
   desc: "Online barber booking with service durations, deposit/full prepay, reminder automation, and admin calendar controls.",
   descEs: "Reservas para barberia con duraciones de servicio, prepago/deposito, recordatorios automatizados y control en calendario admin.",
-  thumb: postThumb13,
-  hero: postThumb13,
+  thumb: chairlockThumb,
+  hero: chairlockThumb,
 },
 {
   slug: "coaching",
