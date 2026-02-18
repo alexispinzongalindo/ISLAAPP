@@ -10,7 +10,7 @@ export default function TemplatesPage() {
 
   const appInfoBySlug: Record<string, string> = {
     bookflow:
-      "BookFlow is built for service businesses to run end-to-end appointment operations with a client-facing booking flow, provider and schedule selection, confirmation steps, and conversion-focused actions; it is useful for salons, clinics, wellness studios, consultants, and any team that needs fast online scheduling and cleaner intake, and the next enhancements we can add are live calendar sync, real payment capture, no-show protection rules, automated reminder sequences, and a lightweight admin reporting panel.",
+      "BookFlow is a functional scheduling application built with Next.js and TypeScript that lets service businesses manage the complete booking cycle, including service selection, provider assignment, date/time booking, customer details, and confirmation actions; it is useful for salons, clinics, wellness studios, and consultants that need faster online intake and cleaner scheduling, and planned enhancements include real payment processing, calendar sync, reminder automation, no-show protection rules, and deeper admin reporting.",
   };
 
   const activeInfoText = activeInfoSlug ? appInfoBySlug[activeInfoSlug] : null;
@@ -42,7 +42,7 @@ export default function TemplatesPage() {
               {t.tags.map((tag) => (
                 <span
                   key={tag}
-                  className="rounded-full bg-gray-800 px-2 py-1 text-xs text-indigo-200/80"
+                  className="inline-flex items-center justify-center whitespace-nowrap rounded-full bg-gray-800 px-2 py-1 text-center text-xs text-indigo-200/80"
                 >
                   {tag}
                 </span>
@@ -53,6 +53,17 @@ export default function TemplatesPage() {
             </div>
             <h3 className="text-lg font-semibold text-gray-100">{t.title}</h3>
             <p className="text-indigo-200/70 mb-4">{t.desc}</p>
+            <div className="mb-4 flex items-center gap-2 rounded-lg border border-gray-800 bg-gray-900/70 px-2.5 py-2 text-xs text-indigo-100/80">
+              <span className="text-indigo-100/65">Built with</span>
+              <span className="inline-flex items-center gap-1 rounded-full border border-gray-700 bg-gray-800 px-2 py-1">
+                <Image src="/templates/nextjs-mark.svg" alt="Next.js" width={14} height={14} />
+                <span>Next.js</span>
+              </span>
+              <span className="inline-flex items-center gap-1 rounded-full border border-gray-700 bg-gray-800 px-2 py-1">
+                <Image src="/templates/typescript-mark.svg" alt="TypeScript" width={14} height={14} />
+                <span>TypeScript</span>
+              </span>
+            </div>
             <div className="flex gap-3">
               {(t.slug === "bookflow" || t.slug === "medtrack" || t.slug === "fitcoach" || t.slug === "restaurant" || t.slug === "spa" || t.slug === "clinic" || t.slug === "dental" || t.slug === "law" || t.slug === "real-estate" || t.slug === "habits" || t.slug === "priorityos" || t.slug === "flexspace" || t.slug === "service-crm" || t.slug === "invoice-pilot" || t.slug === "memberdock") && (
                 <a
