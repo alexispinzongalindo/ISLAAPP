@@ -220,6 +220,16 @@ export const templates: TemplateDefinition[] = [
   hero: postThumb15,
 },
 {
+  slug: "replypilot",
+  title: "ReplyPilot (Email Automation)",
+  titleEs: "ReplyPilot (Automatizacion de Email)",
+  tags: ["Email AI", "Follow-ups", "Tracking"],
+  desc: "AI email drafting, scheduled sends, open tracking, and automated follow-ups with sales/support/executive modes.",
+  descEs: "Redaccion AI de emails, envios programados, tracking de aperturas y follow-ups automaticos con modos de ventas/soporte/ejecutivo.",
+  thumb: postThumb11,
+  hero: postThumb11,
+},
+{
   slug: "coaching",
   title: "Clarity Coach",
   titleEs: "Clarity Coach",
