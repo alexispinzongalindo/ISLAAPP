@@ -26,6 +26,7 @@ import servicecrmThumb from "@/public/templates/servicecrm-thumb.png";
 import invoicepilotThumb from "@/public/templates/invoicepilot-thumb.png";
 import memberdockThumb from "@/public/templates/memberdock-thumb.png";
 import chairlockThumb from "@/public/templates/chairlock-thumb.png";
+import meetflowThumb from "@/public/templates/meetflow-thumb.png";
 import postThumb01 from "@/public/images/post-thumb-01.jpg";
 import postThumb02 from "@/public/images/post-thumb-02.jpg";
 import postThumb04 from "@/public/images/post-thumb-04.jpg";
@@ -216,8 +217,8 @@ export const templates: TemplateDefinition[] = [
   tags: ["Meetings", "Transcripts", "Automation"],
   desc: "Meeting recording, transcript, AI summaries, action extraction, follow-up scheduling, and CRM auto-log with compliance modes.",
   descEs: "Grabacion de reuniones, transcripcion, resumen AI, extraccion de acciones, agenda de seguimiento y auto-log CRM con modos de cumplimiento.",
-  thumb: postThumb15,
-  hero: postThumb15,
+  thumb: meetflowThumb,
+  hero: meetflowThumb,
 },
 {
   slug: "replypilot",
