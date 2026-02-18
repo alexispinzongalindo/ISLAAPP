@@ -210,6 +210,16 @@ export const templates: TemplateDefinition[] = [
   hero: chairlockThumb,
 },
 {
+  slug: "meetflow",
+  title: "MeetFlow (AI Meeting Suite)",
+  titleEs: "MeetFlow (Suite de Reuniones AI)",
+  tags: ["Meetings", "Transcripts", "Automation"],
+  desc: "Meeting recording, transcript, AI summaries, action extraction, follow-up scheduling, and CRM auto-log with compliance modes.",
+  descEs: "Grabacion de reuniones, transcripcion, resumen AI, extraccion de acciones, agenda de seguimiento y auto-log CRM con modos de cumplimiento.",
+  thumb: postThumb15,
+  hero: postThumb15,
+},
+{
   slug: "coaching",
   title: "Clarity Coach",
   titleEs: "Clarity Coach",
