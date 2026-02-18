@@ -27,6 +27,7 @@ import invoicepilotThumb from "@/public/templates/invoicepilot-thumb.png";
 import memberdockThumb from "@/public/templates/memberdock-thumb.png";
 import chairlockThumb from "@/public/templates/chairlock-thumb.png";
 import meetflowThumb from "@/public/templates/meetflow-thumb.png";
+import replypilotThumb from "@/public/templates/replypilot-thumb.png";
 import postThumb01 from "@/public/images/post-thumb-01.jpg";
 import postThumb02 from "@/public/images/post-thumb-02.jpg";
 import postThumb04 from "@/public/images/post-thumb-04.jpg";
@@ -227,8 +228,8 @@ export const templates: TemplateDefinition[] = [
   tags: ["Email AI", "Follow-ups", "Tracking"],
   desc: "AI email drafting, scheduled sends, open tracking, and automated follow-ups with sales/support/executive modes.",
   descEs: "Redaccion AI de emails, envios programados, tracking de aperturas y follow-ups automaticos con modos de ventas/soporte/ejecutivo.",
-  thumb: postThumb11,
-  hero: postThumb11,
+  thumb: replypilotThumb,
+  hero: replypilotThumb,
 },
 {
   slug: "coaching",
