@@ -1,8 +1,20 @@
+"use client";
+
+import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { templates } from "@/app/templates/template-catalog";
 
 export default function TemplatesPage() {
+  const [activeInfoSlug, setActiveInfoSlug] = useState<string | null>(null);
+
+  const appInfoBySlug: Record<string, string> = {
+    bookflow:
+      "BookFlow is built for service businesses to run end-to-end appointment operations with a client-facing booking flow, provider and schedule selection, confirmation steps, and conversion-focused actions; it is useful for salons, clinics, wellness studios, consultants, and any team that needs fast online scheduling and cleaner intake, and the next enhancements we can add are live calendar sync, real payment capture, no-show protection rules, automated reminder sequences, and a lightweight admin reporting panel.",
+  };
+
+  const activeInfoText = activeInfoSlug ? appInfoBySlug[activeInfoSlug] : null;
+
   return (
     <section className="mx-auto max-w-6xl px-4 sm:px-6 py-12 md:py-16">
       <div className="pb-8 text-center">
@@ -52,6 +64,15 @@ export default function TemplatesPage() {
                   Live demo
                 </a>
               )}
+              {appInfoBySlug[t.slug] && (
+                <button
+                  type="button"
+                  onClick={() => setActiveInfoSlug(t.slug)}
+                  className="btn-sm border border-gray-700 bg-gray-800 text-gray-100 hover:bg-gray-700"
+                >
+                  App info
+                </button>
+              )}
               <a
                 href={`/agent?template=${t.slug}&source=template_gallery`}
                 className="btn-sm bg-indigo-600 text-white hover:bg-indigo-500"
@@ -64,6 +85,25 @@ export default function TemplatesPage() {
           </div>
         ))}
       </div>
+      {activeInfoSlug && activeInfoText && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 px-4">
+          <div className="w-full max-w-2xl rounded-2xl border border-gray-700 bg-gray-950 p-6 shadow-2xl">
+            <div className="flex items-center justify-between gap-4">
+              <h2 className="text-lg font-semibold text-gray-100">
+                {templates.find((tpl) => tpl.slug === activeInfoSlug)?.title ?? "App information"}
+              </h2>
+              <button
+                type="button"
+                onClick={() => setActiveInfoSlug(null)}
+                className="rounded-lg border border-gray-700 px-3 py-1.5 text-sm text-gray-100 hover:bg-gray-800"
+              >
+                Close
+              </button>
+            </div>
+            <p className="mt-4 text-sm leading-7 text-indigo-100/85">{activeInfoText}</p>
+          </div>
+        </div>
+      )}
     </section>
   );
 }
