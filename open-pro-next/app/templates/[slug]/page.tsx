@@ -566,6 +566,41 @@ function getDemoContent(slug: string): DemoContent {
           "Registrarse como miembro, subir de nivel y acceder contenido desbloqueado.",
         ],
       };
+    case "auto-dealer":
+      return {
+        summaryEn: "Auto dealer operations with inventory control, trade-in intake, financing decisions, and account-level payment tracking.",
+        summaryEs: "Operacion de dealer automotriz con control de inventario, intake de trade-ins, decisiones de financiamiento y seguimiento de pagos por cuenta.",
+        modules: [
+          {
+            titleEn: "Inventory + repair ledger",
+            titleEs: "Inventario + ledger de reparaciones",
+            descEn: "Track units for sale, repair costs, and uploaded receipt evidence per vehicle.",
+            descEs: "Monitorea unidades en venta, costos de reparacion y recibos cargados por vehiculo.",
+          },
+          {
+            titleEn: "Trade-in + financing workflow",
+            titleEs: "Flujo de trade-in + financiamiento",
+            descEn: "Capture trade-ins and route deals through in-house or bank financing qualification.",
+            descEs: "Captura trade-ins y enruta acuerdos por financiamiento propio o bancario.",
+          },
+          {
+            titleEn: "A/R ledger + reminders",
+            titleEs: "Ledger de CxC + recordatorios",
+            descEn: "Post payments, deposits, and statement-ready reminders by customer account.",
+            descEs: "Registra pagos, depositos y recordatorios listos para estado de cuenta por cliente.",
+          },
+        ],
+        stepsEn: [
+          "Register vehicle inventory and condition/repair costs.",
+          "Create deal with trade-in and select financing path.",
+          "Post customer payments and send statement reminders.",
+        ],
+        stepsEs: [
+          "Registrar inventario de vehiculos y costos de reparacion.",
+          "Crear negocio con trade-in y ruta de financiamiento.",
+          "Registrar pagos del cliente y enviar recordatorios de estado.",
+        ],
+      };
     default:
       return {
         summaryEn: "Service-first template flow for lead capture, operations, and client communication.",

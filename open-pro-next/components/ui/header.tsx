@@ -79,6 +79,16 @@ export default function Header() {
                   Support
                 </Link>
               </li>
+              <li>
+                <Link
+                  href="/admin/maintenance"
+                  className="flex items-center px-2 py-1 text-gray-200 transition hover:text-indigo-500 lg:px-3"
+                  data-i18n-en="Admin"
+                  data-i18n-es="Admin"
+                >
+                  Admin
+                </Link>
+              </li>
             </ul>
           </nav>
 

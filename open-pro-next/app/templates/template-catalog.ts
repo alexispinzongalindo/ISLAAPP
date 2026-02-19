@@ -202,6 +202,16 @@ export const templates: TemplateDefinition[] = [
   hero: estategoThumb,
 },
 {
+  slug: "auto-dealer",
+  title: "AutoDealer (Used Cars)",
+  titleEs: "AutoDealer (Autos Usados)",
+  tags: ["Inventory", "Financing", "A/R Ledger"],
+  desc: "Used-car dealer workflow with trade-ins, in-house and bank financing, payment ledger tracking, reminder statements, and repair receipt logs.",
+  descEs: "Flujo para dealer de autos usados con trade-ins, financiamiento propio y bancario, seguimiento de pagos en ledger, estados de cuenta y registro de reparaciones.",
+  thumb: estategoThumb,
+  hero: estategoThumb,
+},
+{
   slug: "chairlock",
   title: "ChairLock (Barbershop)",
   titleEs: "ChairLock (Barbershop)",

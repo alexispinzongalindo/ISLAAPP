@@ -18,6 +18,9 @@ export default function Footer() {
           <Link className="transition hover:text-indigo-400" href="/help/frequently-asked-questions">
             <span data-i18n-en="Support" data-i18n-es="Soporte">Support</span>
           </Link>
+          <Link className="transition hover:text-indigo-400" href="/admin/maintenance">
+            <span data-i18n-en="Admin" data-i18n-es="Admin">Admin</span>
+          </Link>
           <Link className="transition hover:text-indigo-400" href="/templates">
             <span data-i18n-en="Pick Template" data-i18n-es="Elegir Plantilla">Pick Template</span>
           </Link>
