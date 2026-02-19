@@ -68,7 +68,7 @@ export default function TemplatesPage() {
               </span>
             </div>
             <div className="flex gap-3">
-              {(t.slug === "bookflow" || t.slug === "medtrack" || t.slug === "fitcoach" || t.slug === "restaurant" || t.slug === "spa" || t.slug === "clinic" || t.slug === "dental" || t.slug === "law" || t.slug === "real-estate" || t.slug === "habits" || t.slug === "priorityos" || t.slug === "flexspace" || t.slug === "service-crm" || t.slug === "invoice-pilot" || t.slug === "memberdock" || t.slug === "chairlock" || t.slug === "meetflow" || t.slug === "replypilot") && (
+              {(t.slug === "bookflow" || t.slug === "medtrack" || t.slug === "fitcoach" || t.slug === "restaurant" || t.slug === "spa" || t.slug === "clinic" || t.slug === "dental" || t.slug === "law" || t.slug === "real-estate" || t.slug === "habits" || t.slug === "priorityos" || t.slug === "flexspace" || t.slug === "service-crm" || t.slug === "invoice-pilot" || t.slug === "memberdock" || t.slug === "chairlock" || t.slug === "meetflow" || t.slug === "replypilot" || t.slug === "learnflow") && (
                 <a
                   href={`/live/${t.slug}`}
                   className="btn-sm bg-gray-800 text-gray-100 hover:bg-gray-700"
