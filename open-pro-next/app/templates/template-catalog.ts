@@ -232,16 +232,6 @@ export const templates: TemplateDefinition[] = [
   hero: replypilotThumb,
 },
 {
-  slug: "learnflow",
-  title: "LearnFlow (Online Courses)",
-  titleEs: "LearnFlow (Cursos Online)",
-  tags: ["Video Courses", "Quizzes", "Certificates"],
-  desc: "Create courses, upload lessons with video links, run quizzes, track student progress, and issue certificates with event logs.",
-  descEs: "Crea cursos, publica lecciones con video, ejecuta quizzes, monitorea progreso y emite certificados con registro de eventos.",
-  thumb: postThumb15,
-  hero: postThumb15,
-},
-{
   slug: "coaching",
   title: "Clarity Coach",
   titleEs: "Clarity Coach",
