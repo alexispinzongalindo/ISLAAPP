@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getTemplateBySlug } from "@/app/templates/template-catalog";
+import { isLivePageSlug } from "@/app/live/live-slugs";
 
 type TemplatePageProps = {
   params: Promise<{ slug: string }>;
@@ -694,7 +695,7 @@ export default async function TemplateDetailPage({ params }: TemplatePageProps) 
       </div>
 
       <div className="mt-8 grid gap-4 sm:grid-cols-3">
-        {["bookflow", "medtrack", "fitcoach", "restaurant", "spa", "clinic", "dental", "law", "real-estate", "habits", "priorityos", "flexspace", "service-crm", "invoice-pilot", "memberdock"].includes(template.slug) && (
+        {isLivePageSlug(template.slug) && (
           <Link
             href={`/live/${template.slug}`}
             className="btn-sm bg-gray-800 text-center text-white hover:bg-gray-700"

@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { templates } from "@/app/templates/template-catalog";
+import { isLivePageSlug } from "@/app/live/live-slugs";
 
 export default function TemplatesPage() {
   const [activeInfoSlug, setActiveInfoSlug] = useState<string | null>(null);
@@ -68,7 +69,7 @@ export default function TemplatesPage() {
               </span>
             </div>
             <div className="flex gap-3">
-              {(t.slug === "bookflow" || t.slug === "medtrack" || t.slug === "fitcoach" || t.slug === "restaurant" || t.slug === "spa" || t.slug === "clinic" || t.slug === "dental" || t.slug === "law" || t.slug === "real-estate" || t.slug === "habits" || t.slug === "priorityos" || t.slug === "flexspace" || t.slug === "service-crm" || t.slug === "invoice-pilot" || t.slug === "memberdock" || t.slug === "chairlock" || t.slug === "meetflow" || t.slug === "replypilot" || t.slug === "learnflow") && (
+              {isLivePageSlug(t.slug) && (
                 <a
                   href={`/live/${t.slug}`}
                   className="btn-sm bg-gray-800 text-gray-100 hover:bg-gray-700"

@@ -1,6 +1,5 @@
 import { notFound, redirect } from "next/navigation";
-
-const livePages = ["bookflow", "medtrack", "fitcoach", "restaurant", "spa", "clinic", "dental", "law", "real-estate", "habits", "priorityos", "flexspace", "service-crm", "invoice-pilot", "memberdock", "chairlock", "meetflow", "replypilot", "learnflow"];
+import { isLivePageSlug } from "@/app/live/live-slugs";
 
 export default async function LiveDemoRedirect({
   params,
@@ -8,7 +7,7 @@ export default async function LiveDemoRedirect({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  if (!livePages.includes(slug)) {
+  if (!isLivePageSlug(slug)) {
     notFound();
   }
   redirect(`/live/${slug}`);
