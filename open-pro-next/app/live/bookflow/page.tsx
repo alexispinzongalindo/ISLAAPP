@@ -126,7 +126,15 @@ export default function BookFlowDemo() {
       const dateTxt = selectedDate ? format(selectedDate, "PPP") : "";
       const summary = `${service?.name} with ${provider?.name} on ${dateTxt} at ${selectedTime}`;
       setEmailPreview(
-        `Hi ${form.name || "Guest"},\\n\\nYour booking is confirmed.\\nRef: ${ref}\\n${summary}\\nTotal: $${service?.price}\\nNotes: ${form.notes || "—"}\\n\\nAdd to calendar and reply to reschedule.`
+        `Hi ${form.name || "Guest"},
+
+Your booking is confirmed.
+Ref: ${ref}
+${summary}
+Total: $${service?.price}
+Notes: ${form.notes || "—"}
+
+Add to calendar and reply to reschedule.`
       );
       setSmsPreview(
         `Booking ${ref}: ${service?.name} on ${dateTxt} at ${selectedTime}. Reply C to confirm or R to reschedule.`
