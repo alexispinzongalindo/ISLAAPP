@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { ChangeEvent, useMemo, useState } from "react";
 
 type Role = "instructor" | "student";
 
@@ -24,6 +24,7 @@ type Course = {
   title: string;
   category: string;
   description: string;
+  instructorId: string;
   lessons: Lesson[];
   certificateEnabled: boolean;
 };
@@ -32,6 +33,13 @@ type Student = {
   id: string;
   name: string;
   email: string;
+};
+
+type Instructor = {
+  id: string;
+  name: string;
+  email: string;
+  specialty: string;
 };
 
 type Enrollment = {
@@ -63,6 +71,7 @@ const starterCourse: Course = {
   title: "Sales Call Mastery",
   category: "Business",
   description: "Run better discovery calls, present solutions, and close with confidence.",
+  instructorId: "ins-1",
   certificateEnabled: true,
   lessons: [
     {
@@ -101,21 +110,36 @@ const starterStudents: Student[] = [
   { id: "stu-2", name: "Maya Chen", email: "maya@example.com" },
 ];
 
+const starterInstructors: Instructor[] = [
+  { id: "ins-1", name: "Ava Ortiz", email: "ava@learnflow.local", specialty: "Sales" },
+  { id: "ins-2", name: "Diego Park", email: "diego@learnflow.local", specialty: "Operations" },
+];
+
 export default function LearnFlowPage() {
   const [role, setRole] = useState<Role>("instructor");
   const [courses, setCourses] = useState<Course[]>([starterCourse]);
   const [students, setStudents] = useState<Student[]>(starterStudents);
+  const [instructors, setInstructors] = useState<Instructor[]>(starterInstructors);
   const [enrollments, setEnrollments] = useState<Enrollment[]>([]);
   const [mailLogs, setMailLogs] = useState<MailLog[]>([]);
 
   const [newCourseTitle, setNewCourseTitle] = useState("");
   const [newCourseCategory, setNewCourseCategory] = useState("Business");
   const [newCourseDesc, setNewCourseDesc] = useState("");
+  const [newCourseInstructorId, setNewCourseInstructorId] = useState(starterInstructors[0].id);
+
+  const [newStudentName, setNewStudentName] = useState("");
+  const [newStudentEmail, setNewStudentEmail] = useState("");
+
+  const [newInstructorName, setNewInstructorName] = useState("");
+  const [newInstructorEmail, setNewInstructorEmail] = useState("");
+  const [newInstructorSpecialty, setNewInstructorSpecialty] = useState("");
 
   const [courseForLesson, setCourseForLesson] = useState(starterCourse.id);
   const [lessonTitle, setLessonTitle] = useState("");
   const [lessonMinutes, setLessonMinutes] = useState(10);
   const [lessonVideoUrl, setLessonVideoUrl] = useState("");
+  const [lessonVideoFileName, setLessonVideoFileName] = useState("");
   const [quizPrompt, setQuizPrompt] = useState("");
   const [quizOptions, setQuizOptions] = useState("Option A|Option B|Option C|Option D");
   const [quizCorrect, setQuizCorrect] = useState(0);
@@ -139,10 +163,11 @@ export default function LearnFlowPage() {
     return {
       courses: courses.length,
       students: students.length,
+      instructors: instructors.length,
       enrollments: enrollments.length,
       completionPct,
     };
-  }, [courses, students, enrollments]);
+  }, [courses, students, instructors, enrollments]);
 
   const addMailLog = (to: string, subject: string, body: string) => {
     setMailLogs((prev) => [{ id: uid("mail"), to, subject, body, sentAt: now() }, ...prev]);
@@ -155,6 +180,7 @@ export default function LearnFlowPage() {
       title: newCourseTitle.trim(),
       category: newCourseCategory,
       description: newCourseDesc.trim() || "Course description pending.",
+      instructorId: newCourseInstructorId,
       certificateEnabled: true,
       lessons: [],
     };
@@ -163,6 +189,42 @@ export default function LearnFlowPage() {
     setNewCourseDesc("");
     setCourseForLesson(newCourse.id);
     addMailLog("admin@learnflow.local", "Course created", `Course "${newCourse.title}" was created and is ready for lessons.`);
+  };
+
+  const createStudent = () => {
+    if (!newStudentName.trim() || !newStudentEmail.trim()) return;
+    if (students.some((s) => s.email.toLowerCase() === newStudentEmail.trim().toLowerCase())) return;
+    const student: Student = { id: uid("stu"), name: newStudentName.trim(), email: newStudentEmail.trim() };
+    setStudents((prev) => [student, ...prev]);
+    setActiveStudentId(student.id);
+    setNewStudentName("");
+    setNewStudentEmail("");
+    addMailLog(student.email, "Student profile created", `Welcome ${student.name}. Your learner profile is ready.`);
+  };
+
+  const createInstructor = () => {
+    if (!newInstructorName.trim() || !newInstructorEmail.trim()) return;
+    if (instructors.some((i) => i.email.toLowerCase() === newInstructorEmail.trim().toLowerCase())) return;
+    const instructor: Instructor = {
+      id: uid("ins"),
+      name: newInstructorName.trim(),
+      email: newInstructorEmail.trim(),
+      specialty: newInstructorSpecialty.trim() || "General",
+    };
+    setInstructors((prev) => [instructor, ...prev]);
+    setNewCourseInstructorId(instructor.id);
+    setNewInstructorName("");
+    setNewInstructorEmail("");
+    setNewInstructorSpecialty("");
+    addMailLog("admin@learnflow.local", "Instructor profile created", `Instructor "${instructor.name}" added to LearnFlow.`);
+  };
+
+  const onVideoFileSelected = (event: ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+    const localBlobUrl = URL.createObjectURL(file);
+    setLessonVideoUrl(localBlobUrl);
+    setLessonVideoFileName(file.name);
   };
 
   const addLesson = () => {
@@ -174,7 +236,7 @@ export default function LearnFlowPage() {
       id: uid("les"),
       title: lessonTitle.trim(),
       minutes: lessonMinutes,
-      videoUrl: lessonVideoUrl.trim() || "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+      videoUrl: lessonVideoUrl.trim() || "https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4",
       quiz: [{ id: uid("q"), prompt: quizPrompt.trim(), options, correctIndex: safeCorrect }],
     };
 
@@ -185,6 +247,7 @@ export default function LearnFlowPage() {
     setLessonTitle("");
     setLessonMinutes(10);
     setLessonVideoUrl("");
+    setLessonVideoFileName("");
     setQuizPrompt("");
     setQuizOptions("Option A|Option B|Option C|Option D");
     setQuizCorrect(0);
@@ -264,9 +327,10 @@ export default function LearnFlowPage() {
           </p>
         </div>
 
-        <div className="mb-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="mb-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
           <StatCard label="Courses" value={dashboard.courses} />
           <StatCard label="Students" value={dashboard.students} />
+          <StatCard label="Instructors" value={dashboard.instructors} />
           <StatCard label="Enrollments" value={dashboard.enrollments} />
           <StatCard label="Avg completion" value={`${dashboard.completionPct}%`} />
         </div>
@@ -289,20 +353,28 @@ export default function LearnFlowPage() {
         </div>
 
         {role === "instructor" ? (
-          <div className="grid gap-6 lg:grid-cols-[1fr_1.2fr]">
-            <section className="rounded-2xl border border-slate-700 bg-slate-900 p-5">
+          <>
+            <div className="grid gap-6 lg:grid-cols-[1fr_1.2fr]">
+              <section className="rounded-2xl border border-slate-700 bg-slate-900 p-5">
               <h2 className="text-xl font-semibold">Create Course</h2>
               <div className="mt-4 space-y-3">
                 <input value={newCourseTitle} onChange={(e) => setNewCourseTitle(e.target.value)} placeholder="Course title" className="w-full rounded-lg border border-slate-600 bg-slate-950 px-3 py-2" />
                 <input value={newCourseCategory} onChange={(e) => setNewCourseCategory(e.target.value)} placeholder="Category" className="w-full rounded-lg border border-slate-600 bg-slate-950 px-3 py-2" />
+                <select value={newCourseInstructorId} onChange={(e) => setNewCourseInstructorId(e.target.value)} className="w-full rounded-lg border border-slate-600 bg-slate-950 px-3 py-2">
+                  {instructors.map((i) => (
+                    <option key={i.id} value={i.id}>
+                      {i.name} ({i.specialty})
+                    </option>
+                  ))}
+                </select>
                 <textarea value={newCourseDesc} onChange={(e) => setNewCourseDesc(e.target.value)} placeholder="Course description" className="h-24 w-full rounded-lg border border-slate-600 bg-slate-950 px-3 py-2" />
                 <button type="button" onClick={createCourse} className="w-full rounded-lg bg-blue-600 px-3 py-2 font-medium hover:bg-blue-500">
                   Save course
                 </button>
               </div>
-            </section>
+              </section>
 
-            <section className="rounded-2xl border border-slate-700 bg-slate-900 p-5">
+              <section className="rounded-2xl border border-slate-700 bg-slate-900 p-5">
               <h2 className="text-xl font-semibold">Lesson + Quiz Builder</h2>
               <div className="mt-4 grid gap-3 md:grid-cols-2">
                 <select value={courseForLesson} onChange={(e) => setCourseForLesson(e.target.value)} className="rounded-lg border border-slate-600 bg-slate-950 px-3 py-2">
@@ -315,6 +387,11 @@ export default function LearnFlowPage() {
                 <input type="number" min={1} value={lessonMinutes} onChange={(e) => setLessonMinutes(Number(e.target.value) || 1)} placeholder="Minutes" className="rounded-lg border border-slate-600 bg-slate-950 px-3 py-2" />
                 <input value={lessonTitle} onChange={(e) => setLessonTitle(e.target.value)} placeholder="Lesson title" className="rounded-lg border border-slate-600 bg-slate-950 px-3 py-2 md:col-span-2" />
                 <input value={lessonVideoUrl} onChange={(e) => setLessonVideoUrl(e.target.value)} placeholder="Video URL (YouTube/Vimeo)" className="rounded-lg border border-slate-600 bg-slate-950 px-3 py-2 md:col-span-2" />
+                <div className="md:col-span-2">
+                  <label className="mb-1 block text-xs uppercase tracking-[0.12em] text-slate-400">Upload lesson video</label>
+                  <input type="file" accept="video/*" onChange={onVideoFileSelected} className="w-full rounded-lg border border-slate-600 bg-slate-950 px-3 py-2" />
+                  {lessonVideoFileName && <p className="mt-1 text-xs text-slate-400">Selected file: {lessonVideoFileName}</p>}
+                </div>
                 <input value={quizPrompt} onChange={(e) => setQuizPrompt(e.target.value)} placeholder="Quiz question" className="rounded-lg border border-slate-600 bg-slate-950 px-3 py-2 md:col-span-2" />
                 <input value={quizOptions} onChange={(e) => setQuizOptions(e.target.value)} placeholder="Options split with |" className="rounded-lg border border-slate-600 bg-slate-950 px-3 py-2 md:col-span-2" />
                 <input type="number" min={0} value={quizCorrect} onChange={(e) => setQuizCorrect(Number(e.target.value) || 0)} placeholder="Correct option index" className="rounded-lg border border-slate-600 bg-slate-950 px-3 py-2" />
@@ -322,8 +399,34 @@ export default function LearnFlowPage() {
                   Add lesson
                 </button>
               </div>
-            </section>
-          </div>
+              </section>
+            </div>
+
+            <div className="mt-6 grid gap-6 lg:grid-cols-2">
+              <section className="rounded-2xl border border-slate-700 bg-slate-900 p-5">
+              <h2 className="text-xl font-semibold">Create Student</h2>
+              <div className="mt-4 space-y-3">
+                <input value={newStudentName} onChange={(e) => setNewStudentName(e.target.value)} placeholder="Student name" className="w-full rounded-lg border border-slate-600 bg-slate-950 px-3 py-2" />
+                <input value={newStudentEmail} onChange={(e) => setNewStudentEmail(e.target.value)} placeholder="Student email" className="w-full rounded-lg border border-slate-600 bg-slate-950 px-3 py-2" />
+                <button type="button" onClick={createStudent} className="w-full rounded-lg bg-emerald-600 px-3 py-2 font-medium hover:bg-emerald-500">
+                  Save student
+                </button>
+              </div>
+              </section>
+
+              <section className="rounded-2xl border border-slate-700 bg-slate-900 p-5">
+              <h2 className="text-xl font-semibold">Create Instructor</h2>
+              <div className="mt-4 space-y-3">
+                <input value={newInstructorName} onChange={(e) => setNewInstructorName(e.target.value)} placeholder="Instructor name" className="w-full rounded-lg border border-slate-600 bg-slate-950 px-3 py-2" />
+                <input value={newInstructorEmail} onChange={(e) => setNewInstructorEmail(e.target.value)} placeholder="Instructor email" className="w-full rounded-lg border border-slate-600 bg-slate-950 px-3 py-2" />
+                <input value={newInstructorSpecialty} onChange={(e) => setNewInstructorSpecialty(e.target.value)} placeholder="Specialty" className="w-full rounded-lg border border-slate-600 bg-slate-950 px-3 py-2" />
+                <button type="button" onClick={createInstructor} className="w-full rounded-lg bg-violet-600 px-3 py-2 font-medium hover:bg-violet-500">
+                  Save instructor
+                </button>
+              </div>
+              </section>
+            </div>
+          </>
         ) : (
           <div className="grid gap-6 lg:grid-cols-[1fr_1.3fr]">
             <section className="rounded-2xl border border-slate-700 bg-slate-900 p-5">
@@ -374,6 +477,9 @@ export default function LearnFlowPage() {
                       <div className="rounded-xl border border-slate-700 bg-slate-950 p-3">
                         <p className="font-medium">{activeLesson.title}</p>
                         <p className="text-sm text-slate-400">{activeLesson.videoUrl}</p>
+                        <video controls className="mt-3 w-full rounded-lg border border-slate-700 bg-black">
+                          <source src={activeLesson.videoUrl} />
+                        </video>
                       </div>
 
                       <button type="button" onClick={markLessonComplete} className="rounded-lg bg-emerald-600 px-3 py-2 font-medium hover:bg-emerald-500">
@@ -451,4 +557,3 @@ function StatCard({ label, value }: { label: string; value: string | number }) {
     </div>
   );
 }
-
