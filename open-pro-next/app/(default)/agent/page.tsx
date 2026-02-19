@@ -48,7 +48,6 @@ function buildProjectBrief(messages: ChatMessage[], template: string, lang: "en"
 }
 
 const MODEL_OPTIONS = [
-  { label: "GPT-5.3-Codex", value: "gpt-5.3-codex" },
   { label: "GPT-5-mini", value: "gpt-5-mini" },
   { label: "GPT-4.1-mini", value: "gpt-4.1-mini" },
 ];
@@ -77,7 +76,7 @@ export default function AgentPage() {
 
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [draft, setDraft] = useState("");
-  const [model, setModel] = useState("gpt-5.3-codex");
+  const [model, setModel] = useState("gpt-5-mini");
   const [effort, setEffort] = useState("medium");
   const [isSending, setIsSending] = useState(false);
   const [error, setError] = useState("");
