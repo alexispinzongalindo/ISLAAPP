@@ -1,13 +1,20 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { templates } from "@/app/templates/template-catalog";
 import { isLivePageSlug } from "@/app/live/live-slugs";
 
+const MAINTENANCE_AUTH_KEY = "isla_maintenance_auth_v1";
+
 export default function TemplatesPage() {
   const [activeInfoSlug, setActiveInfoSlug] = useState<string | null>(null);
+  const [isAdminSession, setIsAdminSession] = useState(false);
+
+  useEffect(() => {
+    setIsAdminSession(window.sessionStorage.getItem(MAINTENANCE_AUTH_KEY) === "1");
+  }, []);
 
   const buildAppInfo = (slug: string) => {
     const template = templates.find((tpl) => tpl.slug === slug);
@@ -26,6 +33,16 @@ export default function TemplatesPage() {
         <p className="text-indigo-200/65" data-i18n-en="Pick a starter, preview it, then launch directly in islaAPP Builder." data-i18n-es="Elige una base, previsualizala y luego lanzala directamente en el constructor de islaAPP.">
           Pick a starter, preview it, then launch directly in islaAPP Builder.
         </p>
+        {isAdminSession && (
+          <div className="mt-4">
+            <Link
+              href="/admin/maintenance"
+              className="inline-flex items-center justify-center rounded-lg border border-gray-700 bg-gray-800 px-4 py-2 text-sm font-medium text-gray-100 hover:bg-gray-700"
+            >
+              Back to Maintenance
+            </Link>
+          </div>
+        )}
       </div>
       <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
         {templates.map((t) => (

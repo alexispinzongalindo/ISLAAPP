@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import Link from "next/link";
 import Header from "@/components/ui/header";
 import { livePages } from "@/app/live/live-slugs";
 import { templates } from "@/app/templates/template-catalog";
@@ -337,7 +338,15 @@ export default function MaintenanceAdminPage() {
       <Header />
       <section className="mx-auto max-w-7xl px-4 py-10 sm:px-6">
         <div className="rounded-2xl border border-gray-800 bg-gray-900/60 p-6">
-          <h1 className="text-2xl font-semibold text-gray-100">Admin Update & Maintenance</h1>
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <h1 className="text-2xl font-semibold text-gray-100">Admin Update & Maintenance</h1>
+            <Link
+              href="/templates"
+              className="rounded-lg border border-gray-700 bg-gray-800 px-3 py-2 text-sm font-medium text-gray-100 hover:bg-gray-700"
+            >
+              Go to Demo Gallery
+            </Link>
+          </div>
           <p className="mt-2 text-sm text-indigo-100/70">
             Admin-only workspace for app info updates, fix tracking, continuous functional checks, and timestamped record logs.
           </p>
