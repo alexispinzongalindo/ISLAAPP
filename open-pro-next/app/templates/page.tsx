@@ -21,7 +21,16 @@ export default function TemplatesPage() {
     if (!template) return null;
 
     const tags = template.tags.join(", ");
-    return `${template.title} is a functional web application built with Next.js and TypeScript, designed to run real user flows instead of a static preview; core capabilities include ${template.desc.toLowerCase()} This template is a strong fit for teams working in ${tags}, and it can be extended with production upgrades such as real payment processors, calendar and notification integrations, audit logs, role-based access controls, and backend data persistence while preserving the same front-end workflow your customers already test in the live demo.`;
+    return [
+      `${template.title} is a full working app that lets customers try the real flow, not just a preview. It is a strong fit for teams in ${tags}.`,
+      "How customers use their tokens after they subscribe:",
+      "1. Pick a template and click Use template.",
+      "2. A numbered list of changes appears. Choose number 1 to start.",
+      "3. Each change costs tokens and updates the preview right away.",
+      "4. Save the draft at any time.",
+      "5. Publish when ready to go live.",
+      "6. Later changes use tokens and are tracked in history.",
+    ].join("\n");
   };
 
   const activeInfoText = activeInfoSlug ? buildAppInfo(activeInfoSlug) : null;
@@ -74,17 +83,6 @@ export default function TemplatesPage() {
             </div>
             <h3 className="text-lg font-semibold text-gray-100">{t.title}</h3>
             <p className="text-indigo-200/70 mb-4">{t.desc}</p>
-            <div className="mb-4 flex items-center gap-2 rounded-lg border border-gray-800 bg-gray-900/70 px-2.5 py-2 text-xs text-indigo-100/80">
-              <span className="text-indigo-100/65">Built with</span>
-              <span className="inline-flex items-center gap-1 rounded-full border border-gray-700 bg-gray-800 px-2 py-1">
-                <Image src="/templates/nextjs-mark.svg" alt="Next.js" width={14} height={14} />
-                <span>Next.js</span>
-              </span>
-              <span className="inline-flex items-center gap-1 rounded-full border border-gray-700 bg-gray-800 px-2 py-1">
-                <Image src="/templates/typescript-mark.svg" alt="TypeScript" width={14} height={14} />
-                <span>TypeScript</span>
-              </span>
-            </div>
             <div className="flex gap-3">
               {isLivePageSlug(t.slug) && (
                 <a
@@ -130,7 +128,9 @@ export default function TemplatesPage() {
                 Close
               </button>
             </div>
-            <p className="mt-4 text-sm leading-7 text-indigo-100/85">{activeInfoText}</p>
+            <div className="mt-4 text-sm leading-7 text-indigo-100/85 whitespace-pre-line">
+              {activeInfoText}
+            </div>
           </div>
         </div>
       )}
