@@ -180,7 +180,7 @@ export default function TemplatesPage() {
             </div>
             <h3 className="text-lg font-semibold text-gray-100">{t.title}</h3>
             <p className="text-indigo-200/70 mb-4">{t.desc}</p>
-            <div className="flex gap-3">
+            <div className="flex flex-wrap gap-3">
               {isLivePageSlug(t.slug) && (
                 <Link
                   href={`/live/${t.slug}`}
@@ -203,6 +203,12 @@ export default function TemplatesPage() {
               >
                 Use template
               </button>
+              <Link
+                href={`/builder/${t.slug}`}
+                className="btn-sm border border-indigo-600 text-indigo-200 hover:bg-indigo-900/40"
+              >
+                Edit in Builder
+              </Link>
             </div>
           </div>
         ))}
