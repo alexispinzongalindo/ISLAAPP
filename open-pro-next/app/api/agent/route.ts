@@ -27,34 +27,82 @@ function extractResponseText(payload: any): string {
   return parts.join("\n").trim();
 }
 
+function cleanInline(text: string): string {
+  return text.replace(/\s+/g, " ").replace(/\s*-\s*/g, " - ").trim();
+}
+
+function extractSection(raw: string, title: string): string {
+  const escaped = title.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const nextSection = "(?:\\n\\s*[1-5]\\.\\s+[A-Za-z][^\\n]*\\n|$)";
+  const regex = new RegExp(`\\n?\\s*${escaped}\\s*\\n([\\s\\S]*?)${nextSection}`, "i");
+  const match = raw.match(regex);
+  if (!match) return "";
+  return match[1].trim();
+}
+
+function normalizeBullets(text: string): string {
+  if (!text) return "";
+  const lines = text
+    .split("\n")
+    .map((line) => line.trim())
+    .filter(Boolean)
+    .map((line) => line.replace(/^[-*•]+\s*/, ""));
+  if (lines.length === 0) return "";
+  return lines.map((line) => `- ${cleanInline(line)}`).join("\n");
+}
+
 function normalizeReply(text: string): string {
   const trimmed = text.trim();
   if (!trimmed) return "";
-  // If the model already follows the outline format, keep it.
-  if (
+
+  const hasExpectedHeadings =
     trimmed.includes("1. Change list") &&
     trimmed.includes("2. Assumptions") &&
     trimmed.includes("3. Do now") &&
     trimmed.includes("4. Result") &&
-    trimmed.includes("5. Next number")
-  ) {
-    return trimmed;
+    trimmed.includes("5. Next number");
+
+  if (hasExpectedHeadings) {
+    const changeList = normalizeBullets(extractSection(trimmed, "1. Change list"));
+    const assumptions = cleanInline(extractSection(trimmed, "2. Assumptions"));
+    const doNow = cleanInline(extractSection(trimmed, "3. Do now"));
+    const result = normalizeBullets(extractSection(trimmed, "4. Result"));
+    const nextNumber = cleanInline(extractSection(trimmed, "5. Next number"));
+
+    return [
+      "1. Change list",
+      changeList || "- 1.1 Change colors\n- 1.2 Change text\n- 1.3 Change buttons",
+      "",
+      "2. Assumptions",
+      assumptions || "I will use simple words and short lines.",
+      "",
+      "3. Do now",
+      doNow || "Waiting for your next number.",
+      "",
+      "4. Result",
+      result || "- Done number #1\n- Remaining: #2, #3",
+      "",
+      "5. Next number",
+      nextNumber || "Pick one number only: #2 or #3.",
+    ].join("\n");
   }
+
+  const safeText = cleanInline(trimmed);
   return [
     "1. Change list",
-    "1.1 Update colors",
-    "1.2 Update text",
-    "1.3 Update buttons",
+    "- 1.1 Change colors",
+    "- 1.2 Change text",
+    "- 1.3 Change buttons",
     "",
     "2. Assumptions",
-    "I will use simple words and short paragraphs.",
+    "I will use simple words and short lines.",
     "",
     "3. Do now",
-    trimmed,
+    safeText,
     "",
     "4. Result",
-    "Done number #1.",
-    "Remaining: #2, #3.",
+    "- Done number #1",
+    "- Remaining: #2, #3",
     "",
     "5. Next number",
     "Pick one number only: #2 or #3.",

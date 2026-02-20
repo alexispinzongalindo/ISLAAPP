@@ -20,6 +20,15 @@ const EFFORT_OPTIONS = [
   { label: "High", value: "high" },
 ];
 
+const QUICK_CHANGE_OPTIONS = [
+  { value: "1.1", en: "Colors", es: "Colores" },
+  { value: "1.2", en: "Text", es: "Textos" },
+  { value: "1.3", en: "Buttons", es: "Botones" },
+  { value: "1.4", en: "Layout", es: "Diseno" },
+  { value: "1.5", en: "Images", es: "Imagenes" },
+  { value: "1.6", en: "Pricing", es: "Precios" },
+];
+
 export default function AgentPage() {
   const [selectedTemplate, setSelectedTemplate] = useState("");
   const [lang, setLang] = useState<"en" | "es">("en");
@@ -196,15 +205,12 @@ export default function AgentPage() {
     setError("");
   };
 
-  const onSubmit = async (event: FormEvent) => {
-    event.preventDefault();
-    if (!canSend) return;
+  const sendMessage = async (userText: string) => {
+    if (!userText.trim() || isSending) return;
 
     setError("");
-    const userText = draft.trim();
-    const nextMessages: ChatMessage[] = [...messages, { role: "user", content: userText }];
+    const nextMessages: ChatMessage[] = [...messages, { role: "user", content: userText.trim() }];
     setMessages(nextMessages);
-    setDraft("");
     setIsSending(true);
 
     try {
@@ -233,6 +239,58 @@ export default function AgentPage() {
     }
   };
 
+  const onSubmit = async (event: FormEvent) => {
+    event.preventDefault();
+    if (!canSend) return;
+    const userText = draft.trim();
+    setDraft("");
+    await sendMessage(userText);
+  };
+
+  const renderAssistantMessage = (content: string) => {
+    const lines = content.split("\n").map((line) => line.trim());
+    const sections: Array<{ title: string; items: string[] }> = [];
+    let current: { title: string; items: string[] } | null = null;
+
+    for (const line of lines) {
+      if (!line) continue;
+      if (/^[1-5]\.\s+/.test(line)) {
+        if (current) sections.push(current);
+        current = { title: line, items: [] };
+        continue;
+      }
+      if (current) {
+        current.items.push(line.replace(/^-\s*/, ""));
+      } else {
+        if (!sections[0]) sections[0] = { title: "Message", items: [] };
+        sections[0].items.push(line.replace(/^-\s*/, ""));
+      }
+    }
+
+    if (current) sections.push(current);
+
+    if (sections.length === 0) {
+      return <div className="whitespace-pre-wrap leading-relaxed">{content}</div>;
+    }
+
+    return (
+      <div className="space-y-3">
+        {sections.map((section, idx) => (
+          <div key={`${section.title}-${idx}`} className="rounded-xl border border-indigo-900/50 bg-indigo-950/20 p-3">
+            <p className="mb-2 text-sm font-semibold text-indigo-100">{section.title}</p>
+            <div className="space-y-1">
+              {section.items.map((item, itemIdx) => (
+                <p key={`${section.title}-${itemIdx}`} className="text-sm leading-relaxed text-gray-100">
+                  {item}
+                </p>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+    );
+  };
+
   return (
     <section className="mx-auto max-w-6xl px-4 py-10 sm:px-6 md:py-14">
       <div className="mx-auto max-w-5xl p-2 md:p-3">
@@ -252,6 +310,28 @@ export default function AgentPage() {
             ) : null}
           </div>
         ) : null}
+
+        <div className="mb-4 rounded-2xl border border-indigo-900/60 bg-indigo-950/25 p-3">
+          <p className="mb-2 text-xs text-indigo-200">
+            {lang === "es"
+              ? "Seleccion rapida (elige un numero):"
+              : "Quick pick (choose one number):"}
+          </p>
+          <div className="flex flex-wrap gap-2">
+            {QUICK_CHANGE_OPTIONS.map((option) => (
+              <button
+                key={option.value}
+                type="button"
+                onClick={() => void sendMessage(option.value)}
+                disabled={isSending}
+                className="rounded-lg border border-indigo-700/70 bg-indigo-900/40 px-3 py-1.5 text-sm text-indigo-100 transition hover:bg-indigo-800/60 disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                {option.value} - {lang === "es" ? option.es : option.en}
+              </button>
+            ))}
+          </div>
+        </div>
+
         <div className="mb-4 max-h-[48vh] min-h-[260px] overflow-y-auto px-2">
           {messages.map((msg, index) => (
             <div
@@ -260,7 +340,11 @@ export default function AgentPage() {
                 msg.role === "assistant" ? "text-gray-100" : "ml-auto text-indigo-200"
               }`}
             >
-              {msg.content}
+              {msg.role === "assistant" ? (
+                renderAssistantMessage(msg.content)
+              ) : (
+                <div className="whitespace-pre-wrap leading-relaxed">{msg.content}</div>
+              )}
             </div>
           ))}
           {isSending ? (
