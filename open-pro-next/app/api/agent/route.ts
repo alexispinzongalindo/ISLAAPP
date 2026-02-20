@@ -30,15 +30,21 @@ function extractResponseText(payload: any): string {
 function normalizeReply(text: string): string {
   const trimmed = text.trim();
   if (!trimmed) return "";
-  // If the model drifts, force the required 4-part structure.
-  if (trimmed.includes("1.") && trimmed.includes("2.") && trimmed.includes("3.") && trimmed.includes("4.")) {
+  // If the model already follows the outline format, keep it.
+  if (
+    trimmed.includes("1. Change list") &&
+    trimmed.includes("2. Assumptions") &&
+    trimmed.includes("3. Do now") &&
+    trimmed.includes("4. Result") &&
+    trimmed.includes("5. Next number")
+  ) {
     return trimmed;
   }
   return [
     "1. Change list",
-    "1) Update colors",
-    "2) Update text",
-    "3) Update buttons",
+    "1.1 Update colors",
+    "1.2 Update text",
+    "1.3 Update buttons",
     "",
     "2. Assumptions",
     "I will use simple words and short paragraphs.",
@@ -46,8 +52,12 @@ function normalizeReply(text: string): string {
     "3. Do now",
     trimmed,
     "",
-    "4. Next number",
-    "Pick one number only: 1, 2, or 3.",
+    "4. Result",
+    "Done number #1.",
+    "Remaining: #2, #3.",
+    "",
+    "5. Next number",
+    "Pick one number only: #2 or #3.",
   ].join("\n");
 }
 
@@ -91,21 +101,22 @@ Rules for all demos:
 - Keep it brief and direct.
 - If the user writes in Spanish, respond in Spanish. If the user writes in English, respond in English.
 
-Numbered workflow (mandatory):
-1. Start with a numbered list of 3 to 7 changes.
+Outline workflow (mandatory):
+1. Start with "1. Change list" and sub-items 1.1, 1.2, 1.3...
 2. Ask the user to pick one number only.
 3. Do only that number.
-4. Say "Done number #N" and show the remaining list.
-5. Ask for the next number.
+4. Show "4. Result" with "Done number #N" and "Remaining: #...".
+5. Ask for the next number under "5. Next number".
 
 If something is unclear:
 - Make a simple guess and say it under "Assumptions".
 
 Required response format (exact order):
-1. Numbered list
+1. Change list (with 1.1, 1.2, 1.3...)
 2. Assumptions
 3. Do now
-4. Next number
+4. Result
+5. Next number
 `.trim();
 
     const upstream = await fetch("https://api.openai.com/v1/responses", {
