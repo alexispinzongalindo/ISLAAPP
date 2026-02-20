@@ -28,12 +28,68 @@ export default function AgentPage() {
     const isSpanish = lang === "es";
     if (selectedTemplate) {
       return isSpanish
-        ? `Excelente eleccion. Seleccionaste la plantilla ${selectedTemplate}. Usaremos una lista numerada en orden. Escribe el cambio #1.`
-        : `Great choice. You selected the ${selectedTemplate} template. We will use a numbered list in order. Start with change #1.`;
+        ? [
+            `1. Lista de cambios`,
+            `1) Cambiar colores`,
+            `2) Cambiar textos`,
+            `3) Cambiar botones`,
+            ``,
+            `2. Suposiciones`,
+            `Usare palabras simples y pasos cortos.`,
+            ``,
+            `3. Hacer ahora`,
+            `Plantilla elegida: ${selectedTemplate}.`,
+            ``,
+            `4. Siguiente numero`,
+            `Escribe solo un numero: 1, 2 o 3.`,
+          ].join("\n")
+        : [
+            `1. Change list`,
+            `1) Change colors`,
+            `2) Change text`,
+            `3) Change buttons`,
+            ``,
+            `2. Assumptions`,
+            `I will use simple words and short steps.`,
+            ``,
+            `3. Do now`,
+            `Template selected: ${selectedTemplate}.`,
+            ``,
+            `4. Next number`,
+            `Type one number only: 1, 2, or 3.`,
+          ].join("\n");
     }
     return isSpanish
-      ? "Hola, soy tu agente IA de islaAPP. Usaremos una lista numerada de cambios en orden (1, 2, 3...)."
-      : "Hi, I am your islaAPP AI agent. We will use a numbered list in order (1, 2, 3...).";
+      ? [
+          `1. Lista de cambios`,
+          `1) Elegir plantilla`,
+          `2) Elegir cambio`,
+          `3) Aplicar cambio`,
+          ``,
+          `2. Suposiciones`,
+          `Trabajaremos en orden, un numero por mensaje.`,
+          ``,
+          `3. Hacer ahora`,
+          `Listo para comenzar.`,
+          ``,
+          `4. Siguiente numero`,
+          `Escribe solo un numero: 1, 2 o 3.`,
+        ].join("\n")
+      : [
+          `1. Change list`,
+          `1) Pick template`,
+          `2) Pick one change`,
+          `3) Apply the change`,
+          ``,
+          `2. Assumptions`,
+          `We work in order, one number per message.`,
+          ``,
+          `3. Do now`,
+          `Ready to start.`,
+          ``,
+          `4. Next number`,
+          `Type one number only: 1, 2, or 3.`,
+        ].join("\n");
   }, [selectedTemplate, lang]);
 
   const [messages, setMessages] = useState<ChatMessage[]>([]);
@@ -88,7 +144,14 @@ export default function AgentPage() {
 
       setMessages(
         normalized.length > 0
-          ? (normalized as ChatMessage[])
+          ? (() => {
+              const next = normalized as ChatMessage[];
+              const firstAssistantIndex = next.findIndex((item) => item.role === "assistant");
+              if (firstAssistantIndex >= 0 && !next[firstAssistantIndex].content.includes("1.")) {
+                next[firstAssistantIndex] = { role: "assistant", content: initialAssistantMessage };
+              }
+              return next;
+            })()
           : [{ role: "assistant", content: initialAssistantMessage }],
       );
       setError("");

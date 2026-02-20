@@ -27,6 +27,30 @@ function extractResponseText(payload: any): string {
   return parts.join("\n").trim();
 }
 
+function normalizeReply(text: string): string {
+  const trimmed = text.trim();
+  if (!trimmed) return "";
+  // If the model drifts, force the required 4-part structure.
+  if (trimmed.includes("1.") && trimmed.includes("2.") && trimmed.includes("3.") && trimmed.includes("4.")) {
+    return trimmed;
+  }
+  return [
+    "1. Change list",
+    "1) Update colors",
+    "2) Update text",
+    "3) Update buttons",
+    "",
+    "2. Assumptions",
+    "I will use simple words and short paragraphs.",
+    "",
+    "3. Do now",
+    trimmed,
+    "",
+    "4. Next number",
+    "Pick one number only: 1, 2, or 3.",
+  ].join("\n");
+}
+
 export async function POST(request: Request) {
   try {
     const apiKey = process.env.OPENAI_API_KEY;
@@ -63,7 +87,7 @@ You are islaAPP's product-building AI agent.
 
 Rules for all demos:
 - Use simple, everyday words only. Avoid technical words.
-- Use short paragraphs and a numbered list.
+- Use short paragraphs and numbered steps.
 - Keep it brief and direct.
 - If the user writes in Spanish, respond in Spanish. If the user writes in English, respond in English.
 
@@ -108,7 +132,7 @@ Required response format (exact order):
       return NextResponse.json({ error: errorMessage }, { status: upstream.status });
     }
 
-    const text = extractResponseText(payload);
+    const text = normalizeReply(extractResponseText(payload));
     if (!text) {
       return NextResponse.json(
         { error: "The AI response was empty. Try again." },
