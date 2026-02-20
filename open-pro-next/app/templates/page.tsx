@@ -196,20 +196,20 @@ export default function TemplatesPage() {
               >
                 App info
               </button>
-              <button
-                type="button"
-                onClick={() => handleUseTemplate(t.slug, t.title)}
-                className="btn-sm bg-indigo-600 text-white hover:bg-indigo-500"
-              >
-                Use template
-              </button>
-              <Link
-                href={`/builder/${t.slug}`}
-                className="btn-sm border border-indigo-600 text-indigo-200 hover:bg-indigo-900/40"
-              >
-                Edit in Builder
-              </Link>
-            </div>
+          <Link
+            href={`/builder/${t.slug}`}
+            className="btn-sm border border-indigo-600 text-indigo-200 hover:bg-indigo-900/40"
+          >
+            Builder + AI
+          </Link>
+          <button
+            type="button"
+            onClick={() => handleUseTemplate(t.slug, t.title)}
+            className="btn-sm bg-indigo-600 text-white hover:bg-indigo-500"
+          >
+            AI only
+          </button>
+        </div>
           </div>
         ))}
       </div>
