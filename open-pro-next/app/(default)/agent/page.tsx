@@ -195,15 +195,18 @@ export default function AgentPage() {
           ) : null}
         </div>
 
-        <form onSubmit={onSubmit} className="p-2">
+        <form
+          onSubmit={onSubmit}
+          className="rounded-3xl border border-blue-900/60 bg-blue-950/40 p-4 shadow-[0_0_0_1px_rgba(59,130,246,0.08)]"
+        >
           <textarea
             value={draft}
             onChange={(e) => setDraft(e.target.value)}
             placeholder={lang === "es" ? "Pide cambios o nuevas funciones" : "Ask for follow-up changes"}
-            className="mb-4 h-24 w-full resize-none border border-transparent bg-transparent px-1 py-1 text-xl text-gray-100 placeholder:text-gray-500 focus:outline-none"
+            className="mb-4 h-24 w-full resize-none border border-transparent bg-transparent px-1 py-1 text-xl text-gray-100 placeholder:text-blue-200/60 focus:outline-none"
           />
 
-          <div className="flex flex-wrap items-center justify-between gap-3 pt-1">
+          <div className="flex flex-wrap items-center justify-between gap-3 pt-2">
             <div className="flex flex-wrap items-center gap-3">
               <label className="flex items-center gap-2 text-sm text-gray-300">
                 <span>{lang === "es" ? "Modelo" : "Model"}</span>
