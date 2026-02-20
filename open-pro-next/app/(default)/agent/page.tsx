@@ -198,18 +198,20 @@ export default function AgentPage() {
     <section className="mx-auto max-w-6xl px-4 py-10 sm:px-6 md:py-14">
       <div className="mx-auto max-w-5xl">
         {selectedTemplate ? (
-          <div className="mb-4 flex items-center gap-3 text-sm text-gray-300">
+          <div className="mb-4 flex flex-wrap items-center gap-3 text-sm text-gray-300">
             <div>
               {lang === "es" ? "Plantilla" : "Template"}: {selectedTemplate}
             </div>
             {hasUserMessages ? (
-              <button
-                type="button"
-                onClick={onResetChat}
-                className="text-gray-200 transition hover:text-white"
-              >
-                {lang === "es" ? "Nuevo chat" : "New chat"}
-              </button>
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={onResetChat}
+                  className="rounded border border-slate-700 px-3 py-1 text-xs text-slate-100 transition hover:bg-slate-800"
+                >
+                  {lang === "es" ? "Borrar chat" : "Clear chat"}
+                </button>
+              </div>
             ) : null}
           </div>
         ) : null}
