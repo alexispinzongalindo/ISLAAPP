@@ -66,12 +66,12 @@ export default function AgentPage() {
     const isSpanish = lang === "es";
     if (selectedTemplate) {
       return isSpanish
-        ? `Excelente eleccion. Seleccionaste la plantilla ${selectedTemplate}. Trabajaremos con lista numerada en orden. Escribe el cambio #1 y luego seguimos con #2, #3.`
-        : `Great choice. You selected the ${selectedTemplate} template. We will work with a numbered queue in order. Start with change #1, then #2, #3.`;
+        ? `Excelente eleccion. Seleccionaste la plantilla ${selectedTemplate}. Usaremos una lista numerada en orden. Escribe el cambio #1.`
+        : `Great choice. You selected the ${selectedTemplate} template. We will use a numbered list in order. Start with change #1.`;
     }
     return isSpanish
       ? "Hola, soy tu agente IA de islaAPP. Usaremos una lista numerada de cambios en orden (1, 2, 3...)."
-      : "Hi, I am your islaAPP AI agent. We will use a numbered change list in order (1, 2, 3...).";
+      : "Hi, I am your islaAPP AI agent. We will use a numbered list in order (1, 2, 3...).";
   }, [selectedTemplate, lang]);
 
   const [messages, setMessages] = useState<ChatMessage[]>([]);
