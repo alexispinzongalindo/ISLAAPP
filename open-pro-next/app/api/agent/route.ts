@@ -27,88 +27,6 @@ function extractResponseText(payload: any): string {
   return parts.join("\n").trim();
 }
 
-function cleanInline(text: string): string {
-  return text.replace(/\s+/g, " ").replace(/\s*-\s*/g, " - ").trim();
-}
-
-function extractSection(raw: string, title: string): string {
-  const escaped = title.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-  const nextSection = "(?:\\n\\s*[1-5]\\.\\s+[A-Za-z][^\\n]*\\n|$)";
-  const regex = new RegExp(`\\n?\\s*${escaped}\\s*\\n([\\s\\S]*?)${nextSection}`, "i");
-  const match = raw.match(regex);
-  if (!match) return "";
-  return match[1].trim();
-}
-
-function normalizeBullets(text: string): string {
-  if (!text) return "";
-  const lines = text
-    .split("\n")
-    .map((line) => line.trim())
-    .filter(Boolean)
-    .map((line) => line.replace(/^[-*•]+\s*/, ""));
-  if (lines.length === 0) return "";
-  return lines.map((line) => `- ${cleanInline(line)}`).join("\n");
-}
-
-function normalizeReply(text: string): string {
-  const trimmed = text.trim();
-  if (!trimmed) return "";
-
-  const hasExpectedHeadings =
-    trimmed.includes("1. Change list") &&
-    trimmed.includes("2. Assumptions") &&
-    trimmed.includes("3. Do now") &&
-    trimmed.includes("4. Result") &&
-    trimmed.includes("5. Next number");
-
-  if (hasExpectedHeadings) {
-    const changeList = normalizeBullets(extractSection(trimmed, "1. Change list"));
-    const assumptions = cleanInline(extractSection(trimmed, "2. Assumptions"));
-    const doNow = cleanInline(extractSection(trimmed, "3. Do now"));
-    const result = normalizeBullets(extractSection(trimmed, "4. Result"));
-    const nextNumber = cleanInline(extractSection(trimmed, "5. Next number"));
-
-    return [
-      "1. Change list",
-      changeList || "- 1.1 Change colors\n- 1.2 Change text\n- 1.3 Change buttons",
-      "",
-      "2. Assumptions",
-      assumptions || "I will use simple words and short lines.",
-      "",
-      "3. Do now",
-      doNow || "Waiting for your next number.",
-      "",
-      "4. Result",
-      result || "- Done number #1\n- Remaining: #2, #3",
-      "",
-      "5. Next number",
-      nextNumber || "Pick one number only: #2 or #3.",
-    ].join("\n");
-  }
-
-  const safeText = cleanInline(trimmed);
-  return [
-    "1. Change list",
-    "- 1.1 Change colors",
-    "- 1.2 Change text",
-    "- 1.3 Change buttons",
-    "",
-    "2. Assumptions",
-    "I will use simple words and short lines.",
-    "",
-    "3. Do now",
-    safeText,
-    "",
-    "4. Result",
-    "- Done number #1",
-    "- Remaining: #2, #3",
-    "",
-    "5. Next number",
-    "Pick one number only: #2 or #3.",
-  ].join("\n");
-}
-
 export async function POST(request: Request) {
   try {
     const apiKey = process.env.OPENAI_API_KEY;
@@ -141,30 +59,14 @@ export async function POST(request: Request) {
     }
 
     const systemPrompt = `
-You are islaAPP's product-building AI agent.
+You are islaAPP's product AI assistant.
 
-Rules for all demos:
-- Use simple, everyday words only. Avoid technical words.
-- Use short paragraphs and numbered steps.
-- Keep it brief and direct.
-- If the user writes in Spanish, respond in Spanish. If the user writes in English, respond in English.
-
-Outline workflow (mandatory):
-1. Start with "1. Change list" and sub-items 1.1, 1.2, 1.3...
-2. Ask the user to pick one number only.
-3. Do only that number.
-4. Show "4. Result" with "Done number #N" and "Remaining: #...".
-5. Ask for the next number under "5. Next number".
-
-If something is unclear:
-- Make a simple guess and say it under "Assumptions".
-
-Required response format (exact order):
-1. Change list (with 1.1, 1.2, 1.3...)
-2. Assumptions
-3. Do now
-4. Result
-5. Next number
+Rules:
+- Use simple everyday language.
+- Keep answers short and clear.
+- Use short paragraphs.
+- If the user writes in Spanish, answer in Spanish. If in English, answer in English.
+- Focus on product changes and next steps only.
 `.trim();
 
     const upstream = await fetch("https://api.openai.com/v1/responses", {
@@ -191,7 +93,7 @@ Required response format (exact order):
       return NextResponse.json({ error: errorMessage }, { status: upstream.status });
     }
 
-    const text = normalizeReply(extractResponseText(payload));
+    const text = extractResponseText(payload);
     if (!text) {
       return NextResponse.json(
         { error: "The AI response was empty. Try again." },

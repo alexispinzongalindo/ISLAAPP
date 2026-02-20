@@ -20,15 +20,6 @@ const EFFORT_OPTIONS = [
   { label: "High", value: "high" },
 ];
 
-const QUICK_CHANGE_OPTIONS = [
-  { value: "1.1", en: "Colors", es: "Colores" },
-  { value: "1.2", en: "Text", es: "Textos" },
-  { value: "1.3", en: "Buttons", es: "Botones" },
-  { value: "1.4", en: "Layout", es: "Diseno" },
-  { value: "1.5", en: "Images", es: "Imagenes" },
-  { value: "1.6", en: "Pricing", es: "Precios" },
-];
-
 export default function AgentPage() {
   const [selectedTemplate, setSelectedTemplate] = useState("");
   const [lang, setLang] = useState<"en" | "es">("en");
@@ -38,78 +29,39 @@ export default function AgentPage() {
     if (selectedTemplate) {
       return isSpanish
         ? [
-          `1. Lista de cambios`,
-          `1.1 Cambiar colores`,
-          `1.2 Cambiar textos`,
-          `1.3 Cambiar botones`,
-          ``,
-          `2. Suposiciones`,
-          `Usare palabras simples y pasos cortos.`,
-          ``,
-          `3. Hacer ahora`,
-          `Plantilla elegida: ${selectedTemplate}.`,
-          ``,
-          `4. Resultado`,
-          `Listo para empezar.`,
-          ``,
-          `5. Siguiente numero`,
-          `Escribe solo un numero: 1.1, 1.2 o 1.3.`,
-        ].join("\n")
+            `Plantilla seleccionada: ${selectedTemplate}.`,
+            ``,
+            `1. Dime un cambio por mensaje.`,
+            `2. Yo lo aplico y te digo lo que cambie.`,
+            `3. Tu revisas y seguimos con el siguiente cambio.`,
+            ``,
+            `Escribe el primer cambio cuando quieras.`,
+          ].join("\n")
         : [
-          `1. Change list`,
-          `1.1 Change colors`,
-          `1.2 Change text`,
-          `1.3 Change buttons`,
-          ``,
-          `2. Assumptions`,
-          `I will use simple words and short steps.`,
-          ``,
-          `3. Do now`,
-          `Template selected: ${selectedTemplate}.`,
-          ``,
-          `4. Result`,
-          `Ready to start.`,
-          ``,
-          `5. Next number`,
-          `Type one number only: 1.1, 1.2, or 1.3.`,
-        ].join("\n");
+            `Template selected: ${selectedTemplate}.`,
+            ``,
+            `1. Tell me one change per message.`,
+            `2. I apply it and tell you exactly what changed.`,
+            `3. You review it and we continue with the next change.`,
+            ``,
+            `Send the first change when ready.`,
+          ].join("\n");
     }
+
     return isSpanish
       ? [
-          `1. Lista de cambios`,
-          `1.1 Elegir plantilla`,
-          `1.2 Elegir cambio`,
-          `1.3 Aplicar cambio`,
+          `Estoy listo para ayudarte con una plantilla.`,
           ``,
-          `2. Suposiciones`,
-          `Trabajaremos en orden, un numero por mensaje.`,
-          ``,
-          `3. Hacer ahora`,
-          `Listo para comenzar.`,
-          ``,
-          `4. Resultado`,
-          `Listo para iniciar.`,
-          ``,
-          `5. Siguiente numero`,
-          `Escribe solo un numero: 1.1, 1.2 o 1.3.`,
+          `1. Elige una plantilla en la galeria.`,
+          `2. Enviame un cambio claro y corto.`,
+          `3. Yo lo aplico y seguimos paso a paso.`,
         ].join("\n")
       : [
-          `1. Change list`,
-          `1.1 Pick template`,
-          `1.2 Pick one change`,
-          `1.3 Apply the change`,
+          `I am ready to help you customize a template.`,
           ``,
-          `2. Assumptions`,
-          `We work in order, one number per message.`,
-          ``,
-          `3. Do now`,
-          `Ready to start.`,
-          ``,
-          `4. Result`,
-          `Ready to begin.`,
-          ``,
-          `5. Next number`,
-          `Type one number only: 1.1, 1.2, or 1.3.`,
+          `1. Pick a template from the gallery.`,
+          `2. Send one clear short change.`,
+          `3. I apply it and we continue step by step.`,
         ].join("\n");
   }, [selectedTemplate, lang]);
 
@@ -134,6 +86,7 @@ export default function AgentPage() {
       const next = String(detail?.lang || "en").toLowerCase();
       setLang(next === "es" ? "es" : "en");
     };
+
     window.addEventListener("isla-lang-change", onLang as EventListener);
     return () => window.removeEventListener("isla-lang-change", onLang as EventListener);
   }, []);
@@ -165,14 +118,7 @@ export default function AgentPage() {
 
       setMessages(
         normalized.length > 0
-          ? (() => {
-              const next = normalized as ChatMessage[];
-              const firstAssistantIndex = next.findIndex((item) => item.role === "assistant");
-              if (firstAssistantIndex >= 0 && !next[firstAssistantIndex].content.includes("1.")) {
-                next[firstAssistantIndex] = { role: "assistant", content: initialAssistantMessage };
-              }
-              return next;
-            })()
+          ? (normalized as ChatMessage[])
           : [{ role: "assistant", content: initialAssistantMessage }],
       );
       setError("");
@@ -189,10 +135,7 @@ export default function AgentPage() {
     window.localStorage.setItem(conversationKey, JSON.stringify(messages));
   }, [hasHydratedChat, messages, conversationKey]);
 
-  const canSend = useMemo(
-    () => !isSending && draft.trim().length > 0,
-    [isSending, draft],
-  );
+  const canSend = useMemo(() => !isSending && draft.trim().length > 0, [isSending, draft]);
   const supportsReasoning = useMemo(() => model.startsWith("gpt-5"), [model]);
   const hasUserMessages = useMemo(
     () => messages.some((message) => message.role === "user"),
@@ -223,14 +166,17 @@ export default function AgentPage() {
           messages: nextMessages,
         }),
       });
+
       const payload = await response.json();
       if (!response.ok) {
         throw new Error(String(payload?.error || "Agent request failed."));
       }
+
       const reply = String(payload?.reply || "").trim();
       if (!reply) {
         throw new Error("Agent returned an empty response.");
       }
+
       setMessages((prev) => [...prev, { role: "assistant", content: reply }]);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Unexpected error.");
@@ -242,68 +188,25 @@ export default function AgentPage() {
   const onSubmit = async (event: FormEvent) => {
     event.preventDefault();
     if (!canSend) return;
+
     const userText = draft.trim();
     setDraft("");
     await sendMessage(userText);
   };
 
-  const renderAssistantMessage = (content: string) => {
-    const lines = content.split("\n").map((line) => line.trim());
-    const sections: Array<{ title: string; items: string[] }> = [];
-    let current: { title: string; items: string[] } | null = null;
-
-    for (const line of lines) {
-      if (!line) continue;
-      if (/^[1-5]\.\s+/.test(line)) {
-        if (current) sections.push(current);
-        current = { title: line, items: [] };
-        continue;
-      }
-      if (current) {
-        current.items.push(line.replace(/^-\s*/, ""));
-      } else {
-        if (!sections[0]) sections[0] = { title: "Message", items: [] };
-        sections[0].items.push(line.replace(/^-\s*/, ""));
-      }
-    }
-
-    if (current) sections.push(current);
-
-    if (sections.length === 0) {
-      return <div className="whitespace-pre-wrap leading-relaxed">{content}</div>;
-    }
-
-    return (
-      <div className="space-y-3">
-        {sections.map((section, idx) => (
-          <div key={`${section.title}-${idx}`} className="rounded-xl border border-indigo-900/50 bg-indigo-950/20 p-3">
-            <p className="mb-2 text-sm font-semibold text-indigo-100">{section.title}</p>
-            <div className="space-y-1">
-              {section.items.map((item, itemIdx) => (
-                <p key={`${section.title}-${itemIdx}`} className="text-sm leading-relaxed text-gray-100">
-                  {item}
-                </p>
-              ))}
-            </div>
-          </div>
-        ))}
-      </div>
-    );
-  };
-
   return (
     <section className="mx-auto max-w-6xl px-4 py-10 sm:px-6 md:py-14">
-      <div className="mx-auto max-w-5xl p-2 md:p-3">
+      <div className="mx-auto max-w-5xl">
         {selectedTemplate ? (
-          <div className="mb-3 flex items-center gap-2">
-            <div className="inline-flex items-center text-xs text-indigo-200">
+          <div className="mb-4 flex items-center gap-3 text-sm text-gray-300">
+            <div>
               {lang === "es" ? "Plantilla" : "Template"}: {selectedTemplate}
             </div>
             {hasUserMessages ? (
               <button
                 type="button"
                 onClick={onResetChat}
-                className="inline-flex items-center text-xs text-gray-200 transition hover:text-white"
+                className="text-gray-200 transition hover:text-white"
               >
                 {lang === "es" ? "Nuevo chat" : "New chat"}
               </button>
@@ -311,57 +214,28 @@ export default function AgentPage() {
           </div>
         ) : null}
 
-        <div className="mb-4 rounded-2xl border border-indigo-900/60 bg-indigo-950/25 p-3">
-          <p className="mb-2 text-xs text-indigo-200">
-            {lang === "es"
-              ? "Seleccion rapida (elige un numero):"
-              : "Quick pick (choose one number):"}
-          </p>
-          <div className="flex flex-wrap gap-2">
-            {QUICK_CHANGE_OPTIONS.map((option) => (
-              <button
-                key={option.value}
-                type="button"
-                onClick={() => void sendMessage(option.value)}
-                disabled={isSending}
-                className="rounded-lg border border-indigo-700/70 bg-indigo-900/40 px-3 py-1.5 text-sm text-indigo-100 transition hover:bg-indigo-800/60 disabled:cursor-not-allowed disabled:opacity-50"
-              >
-                {option.value} - {lang === "es" ? option.es : option.en}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        <div className="mb-4 max-h-[48vh] min-h-[260px] overflow-y-auto px-2">
+        <div className="mb-6 max-h-[52vh] min-h-[280px] overflow-y-auto rounded-2xl border border-slate-800 bg-slate-950/30 p-4">
           {messages.map((msg, index) => (
             <div
               key={`${msg.role}-${index}`}
-              className={`mb-3 max-w-[90%] text-sm md:text-base ${
+              className={`mb-4 max-w-[92%] whitespace-pre-wrap leading-relaxed ${
                 msg.role === "assistant" ? "text-gray-100" : "ml-auto text-indigo-200"
               }`}
             >
-              {msg.role === "assistant" ? (
-                renderAssistantMessage(msg.content)
-              ) : (
-                <div className="whitespace-pre-wrap leading-relaxed">{msg.content}</div>
-              )}
+              {msg.content}
             </div>
           ))}
+
           {isSending ? (
-            <div className="max-w-[90%] text-sm text-gray-300">
-              {lang === "es" ? "Pensando..." : "Thinking..."}
-            </div>
+            <div className="text-sm text-gray-300">{lang === "es" ? "Pensando..." : "Thinking..."}</div>
           ) : null}
         </div>
 
-        <form
-          onSubmit={onSubmit}
-          className="rounded-3xl border border-blue-900/60 bg-blue-950/40 p-4 shadow-[0_0_0_1px_rgba(59,130,246,0.08)]"
-        >
+        <form onSubmit={onSubmit} className="rounded-3xl border border-blue-900/60 bg-blue-950/40 p-4">
           <textarea
             value={draft}
             onChange={(e) => setDraft(e.target.value)}
-            placeholder={lang === "es" ? "Pide cambios o nuevas funciones" : "Ask for follow-up changes"}
+            placeholder={lang === "es" ? "Pide cambios uno por uno" : "Ask for one change at a time"}
             className="mb-4 h-24 w-full resize-none border border-transparent bg-transparent px-1 py-1 text-xl text-gray-100 placeholder:text-blue-200/60 focus:outline-none"
           />
 
@@ -409,6 +283,7 @@ export default function AgentPage() {
               ↑
             </button>
           </div>
+
           {error ? <p className="mt-3 text-sm text-red-400">{error}</p> : null}
         </form>
       </div>
