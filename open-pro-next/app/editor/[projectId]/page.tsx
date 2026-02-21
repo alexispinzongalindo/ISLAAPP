@@ -264,17 +264,24 @@ export default function EditorPage({
         throw new Error(String(payload?.error || "Apply failed."));
       }
 
-      setVersion(Number(payload?.version || 0));
       setCanUndo(Boolean(payload?.canUndo));
       setCanRedo(Boolean(payload?.canRedo));
 
       // Forward applied changes to preview iframe for live DOM patching.
+      // IMPORTANT: Do NOT call setVersion() here — that reloads the iframe
+      // and destroys the preview page before the postMessage arrives.
       const appliedChanges = payload?.appliedChanges;
       if (Array.isArray(appliedChanges) && appliedChanges.length > 0) {
-        iframeRef.current?.contentWindow?.postMessage(
-          { type: "ISLA_APPLY_PATCH", changes: appliedChanges },
-          "*",
-        );
+        // Small delay so the current React render cycle finishes first
+        setTimeout(() => {
+          iframeRef.current?.contentWindow?.postMessage(
+            { type: "ISLA_APPLY_PATCH", changes: appliedChanges },
+            "*",
+          );
+        }, 100);
+      } else {
+        // No DOM patches — fall back to iframe reload
+        setVersion(Number(payload?.version || 0));
       }
 
       // Clear the plan so the user can't re-apply the same patch (the old

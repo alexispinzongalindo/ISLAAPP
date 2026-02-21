@@ -128,17 +128,25 @@ function applyDomPatches(
   frame: HTMLIFrameElement | null,
   changes: Array<{ patchType: string; match: string; content: string }>,
 ) {
-  if (!frame) return;
+  if (!frame) { console.warn("[ISLA] applyDomPatches: frame is null"); return; }
   const doc = frame.contentDocument;
-  if (!doc) return;
+  if (!doc) { console.warn("[ISLA] applyDomPatches: contentDocument is null (cross-origin?)"); return; }
+
+  console.log("[ISLA] applyDomPatches: processing", changes.length, "changes");
 
   for (const change of changes) {
-    if (change.patchType !== "replace-snippet") continue;
+    if (change.patchType !== "replace-snippet") {
+      console.log("[ISLA] skipping non-replace-snippet patchType:", change.patchType);
+      continue;
+    }
 
     const oldTokens = cleanTokens(change.match);
     const newTokens = cleanTokens(change.content);
 
-    if (oldTokens.length === 0 || newTokens.length === 0) continue;
+    console.log("[ISLA] oldTokens:", oldTokens.slice(0, 5).join(" "), "...(", oldTokens.length, ")");
+    console.log("[ISLA] newTokens:", newTokens.slice(0, 5).join(" "), "...(", newTokens.length, ")");
+
+    if (oldTokens.length === 0 || newTokens.length === 0) { console.warn("[ISLA] empty tokens, skipping"); continue; }
 
     // Build sets for diffing
     const oldSet = new Set(oldTokens);
@@ -146,7 +154,9 @@ function applyDomPatches(
     const removed = oldTokens.filter((t) => !newSet.has(t));
     const added = newTokens.filter((t) => !oldSet.has(t));
 
-    if (removed.length === 0 && added.length === 0) continue;
+    console.log("[ISLA] removed:", removed, "added:", added);
+
+    if (removed.length === 0 && added.length === 0) { console.warn("[ISLA] no diff, skipping"); continue; }
 
     // Find candidate elements: must have ALL old tokens in their className
     const allElements = Array.from(doc.querySelectorAll("*")) as HTMLElement[];
@@ -156,6 +166,8 @@ function applyDomPatches(
       return oldTokens.every((t) => cls.includes(t));
     });
 
+    console.log("[ISLA] exact match found:", matched.length, "elements out of", allElements.length);
+
     // Fallback: if no exact match, try matching just the removed tokens
     if (matched.length === 0 && removed.length > 0) {
       matched = allElements.filter((el) => {
@@ -163,6 +175,7 @@ function applyDomPatches(
         const cls = el.className;
         return removed.every((t) => cls.includes(t));
       });
+      console.log("[ISLA] fallback (removed-only) match:", matched.length, "elements");
     }
 
     for (const el of matched) {
@@ -173,6 +186,15 @@ function applyDomPatches(
         el.classList.add(t);
         applyInlineOverrides(el, t);
       }
+      console.log("[ISLA] patched element:", el.tagName, "new className:", el.className.slice(0, 80));
+    }
+
+    if (matched.length === 0) {
+      console.warn("[ISLA] NO elements matched. First few elements' classes:");
+      allElements.slice(0, 5).forEach((el) => {
+        if (typeof el.className === "string" && el.className.length > 0)
+          console.log("  ", el.tagName, el.className.slice(0, 100));
+      });
     }
   }
 }
@@ -241,6 +263,7 @@ export default function PreviewPage({
       }
 
       if (data.type === "ISLA_APPLY_PATCH" && Array.isArray(data.changes)) {
+        console.log("[ISLA] ISLA_APPLY_PATCH received, changes:", data.changes.length);
         applyDomPatches(innerFrameRef.current, data.changes);
       }
     };
