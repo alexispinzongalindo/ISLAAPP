@@ -221,23 +221,94 @@ function buildTargetedExcerpts(
   return { excerpts, hasMatches: excerpts.length > 0, queries };
 }
 
-function buildSelectionHintBlock(selectionHint: PlanRequestBody["selectionHint"]) {
+function findSourceForHint(
+  fileContent: string | undefined,
+  selectionHint: PlanRequestBody["selectionHint"],
+): string {
+  if (!fileContent || !selectionHint) return "";
+  const lines = fileContent.split("\n");
+  const results: { line: number; label: string }[] = [];
+
+  // --- 1. Find the source line that best matches the className ---
+  const className = String(selectionHint.className || "").trim();
+  const classTokens = className.split(/\s+/).filter(Boolean);
+  const anchors = classTokens
+    .filter((t) => t.length >= 6 || t.includes("-"))
+    .slice(0, 5);
+
+  if (anchors.length > 0) {
+    let bestScore = 0;
+    const candidates: number[] = [];
+    for (let i = 0; i < lines.length; i++) {
+      let score = 0;
+      for (const a of anchors) { if (lines[i].includes(a)) score++; }
+      if (score > bestScore) { bestScore = score; candidates.length = 0; candidates.push(i); }
+      else if (score === bestScore && score > 0) { candidates.push(i); }
+    }
+    // Prefer the line inside a component definition (has {label}, {children}, {title}, props)
+    const compLine = candidates.find((i) => {
+      const line = lines[i];
+      return line.includes("{label}") || line.includes("{children}") || line.includes("{title}") || line.includes("props.");
+    });
+    const bestLine = compLine ?? candidates[0] ?? -1;
+    if (bestLine >= 0) results.push({ line: bestLine, label: "className match (source definition)" });
+  }
+
+  // --- 2. Find where the text content appears as a string literal ---
+  const text = String(selectionHint.text || "").trim().slice(0, 60);
+  if (text && text.length >= 2) {
+    for (let i = 0; i < lines.length; i++) {
+      if (
+        lines[i].includes(`"${text}"`) ||
+        lines[i].includes(`'${text}'`) ||
+        lines[i].includes(`label="${text}"`) ||
+        lines[i].includes(`title="${text}"`)
+      ) {
+        // Avoid duplicate if same window as className match
+        const isDup = results.some((r) => Math.abs(r.line - i) < 8);
+        if (!isDup) results.push({ line: i, label: `text "${text}" usage` });
+        break;
+      }
+    }
+  }
+
+  if (results.length === 0) return "";
+
+  const blocks: string[] = [];
+  for (const r of results.slice(0, 2)) {
+    const start = Math.max(0, r.line - 4);
+    const end = Math.min(lines.length, r.line + 5);
+    const snippet = lines.slice(start, end).map((l, idx) => `${start + idx + 1}: ${l}`).join("\n");
+    blocks.push(`[${r.label}]\n${snippet}`);
+  }
+
+  return [
+    "--- ACTUAL SOURCE for the selected element (use ONLY this for match, NOT the rendered HTML) ---",
+    ...blocks,
+    "--- END SOURCE ---",
+  ].join("\n");
+}
+
+function buildSelectionHintBlock(
+  selectionHint: PlanRequestBody["selectionHint"],
+  sourceSnippet: string,
+) {
   if (!selectionHint) return "";
   const tag = selectionHint.tag ? String(selectionHint.tag) : "";
   const id = selectionHint.id ? String(selectionHint.id) : "";
   const className = selectionHint.className ? String(selectionHint.className) : "";
   const text = selectionHint.text ? String(selectionHint.text) : "";
-  const outerHTML = selectionHint.outerHTML ? String(selectionHint.outerHTML) : "";
 
   return [
-    "Selected element hint (from Visual Edit):",
-    tag ? `tag: ${tag}` : "",
-    id ? `id: ${id}` : "",
-    className ? `className: ${className}` : "",
-    text ? `text: ${text}` : "",
-    outerHTML ? `outerHTML (truncated): ${outerHTML}` : "",
+    "Selected element (from Visual Edit, this is RENDERED HTML, not source code):",
+    tag ? `  tag: ${tag}` : "",
+    id ? `  id: ${id}` : "",
+    className ? `  className: ${className}` : "",
+    text ? `  text: ${text}` : "",
+    "",
+    sourceSnippet,
   ]
-    .filter(Boolean)
+    .filter((l) => l !== undefined)
     .join("\n");
 }
 
@@ -295,6 +366,11 @@ export async function POST(request: Request) {
       .filter(Boolean)
       .join(" ");
 
+    const sourceSnippet = findSourceForHint(
+      templateContext?.content,
+      body.selectionHint,
+    );
+
     const contextBlock = (() => {
       if (!templateContext) return "";
       const targeted = buildTargetedExcerpts(
@@ -343,11 +419,12 @@ Rules:
 - Make minimal, targeted changes.
 - Prefer patchType "replace-snippet" whenever possible.
 - For "replace-snippet":
-  - "match" must be an exact substring copied from the file.
+  - "match" must be an EXACT substring copied verbatim from the source file.
   - "content" should be the replacement for that exact substring.
   - Keep match blocks small and specific.
-- The "match" MUST be copied from the Context file content/excerpts above.
-- Do NOT use selectionHint.outerHTML as the match source.
+- CRITICAL: The "match" MUST come from the ACTUAL SOURCE code shown in the excerpts or ACTUAL SOURCE block.
+- NEVER use the rendered HTML/DOM from the selection hint as the match. The rendered DOM differs from the source (e.g., source has {label} but DOM shows "Email").
+- If the source uses a custom component like <Input label="X">, match THAT, not the rendered <span>X</span>.
 - Every change MUST include a non-empty "description".
 - Avoid full-file "replace" unless absolutely necessary.
 - Prefer Tailwind utility updates over large rewrites.
@@ -356,7 +433,7 @@ Rules:
 
 ${contextBlock}
 
-${buildSelectionHintBlock(body.selectionHint)}
+${buildSelectionHintBlock(body.selectionHint, sourceSnippet)}
 `.trim();
 
     const upstream = await fetch("https://api.openai.com/v1/responses", {
