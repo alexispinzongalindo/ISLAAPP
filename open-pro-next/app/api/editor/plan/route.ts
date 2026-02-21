@@ -102,9 +102,20 @@ function extractKeywords(text: string) {
 
 function buildTargetedExcerpts(fileContent: string, queryText: string) {
   const content = String(fileContent || "");
-  const queries = Array.from(
-    new Set([...extractQuotedPhrases(queryText), ...extractKeywords(queryText)]),
-  ).filter(Boolean);
+  const baseline = [...extractQuotedPhrases(queryText), ...extractKeywords(queryText)];
+
+  // Heuristics: if the user talks about background/colors, include Tailwind anchors.
+  const lowerQuery = String(queryText || "").toLowerCase();
+  const extra: string[] = [];
+  if (lowerQuery.includes("background") || lowerQuery.includes("bg ") || lowerQuery.includes("bg-")) {
+    extra.push("bg-");
+    extra.push("className=");
+  }
+  if (lowerQuery.includes("color") || lowerQuery.includes("theme")) {
+    extra.push("className=");
+  }
+
+  const queries = Array.from(new Set([...baseline, ...extra])).filter(Boolean);
 
   const windows: { start: number; end: number; why: string }[] = [];
   const radius = 700;
