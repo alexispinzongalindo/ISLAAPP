@@ -9,7 +9,7 @@ export default function Header() {
   return (
     <header className="sticky top-0 z-[100] w-full py-2 md:py-3">
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
-        <div className="flex h-14 items-center justify-between gap-3 rounded-2xl border border-gray-800 bg-gray-900/95 px-4 shadow-sm">
+        <div className="flex h-14 items-center justify-between gap-3 rounded-2xl border border-gray-800/80 bg-gray-900/80 px-4 shadow-lg shadow-black/20 backdrop-blur supports-[backdrop-filter]:bg-gray-900/70">
           {/* Site branding */}
           <div className="flex flex-1 items-center">
             <Logo />
