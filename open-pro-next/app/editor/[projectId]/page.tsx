@@ -20,6 +20,19 @@ type VisualHint = {
   outerHTML?: string;
 };
 
+function safeId() {
+  try {
+    const c = (globalThis as any)?.crypto;
+    if (c && typeof c.randomUUID === "function") {
+      return String(c.randomUUID());
+    }
+  } catch {
+    // ignore
+  }
+
+  return `id_${Math.random().toString(36).slice(2)}_${Date.now().toString(36)}`;
+}
+
 function deviceWidth(mode: DeviceMode) {
   switch (mode) {
     case "mobile":
@@ -107,7 +120,7 @@ export default function EditorPage({
               item?.role === "assistant" ? "assistant" : "user";
 
             const next: ChatMessage = {
-              id: String(item?.id || crypto.randomUUID()),
+              id: String(item?.id || safeId()),
               role,
               content: String(item?.content || ""),
             };
@@ -165,7 +178,7 @@ export default function EditorPage({
     setIsSending(true);
 
     const userMessage: ChatMessage = {
-      id: crypto.randomUUID(),
+      id: safeId(),
       role: "user",
       content: text,
     };
@@ -220,15 +233,15 @@ export default function EditorPage({
 
       setMessages((prev: ChatMessage[]) => [
         ...prev,
-        { id: crypto.randomUUID(), role: "assistant", content: raw },
-        { id: crypto.randomUUID(), role: "assistant", content: validationMessage },
+        { id: safeId(), role: "assistant", content: raw },
+        { id: safeId(), role: "assistant", content: validationMessage },
       ]);
     } catch (err) {
       const message = err instanceof Error ? err.message : "Unexpected error.";
       setSendError(message);
       setMessages((prev: ChatMessage[]) => [
         ...prev,
-        { id: crypto.randomUUID(), role: "assistant", content: `Error: ${message}` },
+        { id: safeId(), role: "assistant", content: `Error: ${message}` },
       ]);
     } finally {
       setIsSending(false);
@@ -257,7 +270,7 @@ export default function EditorPage({
       setMessages((prev: ChatMessage[]) => [
         ...prev,
         {
-          id: crypto.randomUUID(),
+          id: safeId(),
           role: "assistant",
           content: "Applied changes. Preview refreshed.",
         },
@@ -266,7 +279,7 @@ export default function EditorPage({
       const message = err instanceof Error ? err.message : "Unexpected error.";
       setMessages((prev: ChatMessage[]) => [
         ...prev,
-        { id: crypto.randomUUID(), role: "assistant", content: `Apply error: ${message}` },
+        { id: safeId(), role: "assistant", content: `Apply error: ${message}` },
       ]);
     }
   };
@@ -291,7 +304,7 @@ export default function EditorPage({
       const message = err instanceof Error ? err.message : "Unexpected error.";
       setMessages((prev: ChatMessage[]) => [
         ...prev,
-        { id: crypto.randomUUID(), role: "assistant", content: `Undo error: ${message}` },
+        { id: safeId(), role: "assistant", content: `Undo error: ${message}` },
       ]);
     }
   };
@@ -316,7 +329,7 @@ export default function EditorPage({
       const message = err instanceof Error ? err.message : "Unexpected error.";
       setMessages((prev: ChatMessage[]) => [
         ...prev,
-        { id: crypto.randomUUID(), role: "assistant", content: `Redo error: ${message}` },
+        { id: safeId(), role: "assistant", content: `Redo error: ${message}` },
       ]);
     }
   };
