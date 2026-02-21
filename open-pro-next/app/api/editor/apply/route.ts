@@ -155,7 +155,12 @@ export async function POST(request: Request) {
         continue;
       }
 
-      // Save modified content to project (Supabase + memory)
+      // Write to filesystem (for live preview)
+      const fullPath = resolveSafePath(change.filePath);
+      await fs.mkdir(path.dirname(fullPath), { recursive: true });
+      await fs.writeFile(fullPath, after, "utf8");
+
+      // Save to Supabase (for persistence across restarts)
       lastState = recordChange(projectId, {
         filePath: change.filePath,
         before,

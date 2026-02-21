@@ -1,4 +1,6 @@
 import { NextResponse } from "next/server";
+import path from "path";
+import fs from "fs/promises";
 
 import { redoChange } from "@/lib/editor/history-store";
 import { updateProjectContent } from "@/lib/project-registry";
@@ -6,6 +8,14 @@ import { updateProjectContent } from "@/lib/project-registry";
 type RedoRequestBody = {
   projectId?: string;
 };
+
+function resolveSafePath(relativePath: string) {
+  const cwd = process.cwd();
+  const normalized = relativePath.replace(/\\/g, "/");
+  const fullPath = path.resolve(cwd, normalized);
+  if (!fullPath.startsWith(cwd)) throw new Error("Unsafe file path.");
+  return fullPath;
+}
 
 export async function POST(request: Request) {
   try {
@@ -21,6 +31,9 @@ export async function POST(request: Request) {
       return NextResponse.json({ ok: true, version, canUndo, canRedo });
     }
 
+    const fullPath = resolveSafePath(entry.filePath);
+    await fs.mkdir(path.dirname(fullPath), { recursive: true });
+    await fs.writeFile(fullPath, entry.after, "utf8");
     await updateProjectContent(projectId, entry.after, version);
 
     return NextResponse.json({ ok: true, version, canUndo, canRedo });
