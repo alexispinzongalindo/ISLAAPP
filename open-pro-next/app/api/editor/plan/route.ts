@@ -8,6 +8,7 @@ import { getProjectContent } from "@/lib/project-registry";
 type ChatMessage = {
   role: "user" | "assistant";
   content: string;
+  images?: string[];
 };
 
 type PlanRequestBody = {
@@ -356,13 +357,16 @@ export async function POST(request: Request) {
       .map((msg) => ({
         role: msg.role === "assistant" ? "assistant" : "user",
         content: String(msg.content || "").trim(),
+        images: Array.isArray(msg.images) ? msg.images : undefined,
       }))
-      .filter((msg) => msg.content.length > 0)
+      .filter((msg) => msg.content.length > 0 || (msg.images && msg.images.length > 0))
       .slice(-12);
 
     if (cleanedMessages.length === 0) {
       return NextResponse.json({ error: "No user message was provided." }, { status: 400 });
     }
+
+    const hasImages = cleanedMessages.some((m) => m.images && m.images.length > 0);
 
     const projectId = String(body.projectId || "").trim();
     const templateSlug = resolveTemplateSlug(projectId, body.templateSlug);
@@ -471,9 +475,21 @@ ${buildSelectionHintBlock(body.selectionHint, sourceSnippet)}
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model,
+        model: hasImages ? "gpt-4.1" : model,
         instructions: systemPrompt,
-        input: cleanedMessages.map((m) => ({ role: m.role, content: m.content })),
+        input: cleanedMessages.map((m) => {
+          if (m.images && m.images.length > 0) {
+            const contentParts: any[] = [];
+            if (m.content) {
+              contentParts.push({ type: "input_text", text: m.content });
+            }
+            for (const img of m.images) {
+              contentParts.push({ type: "input_image", image_url: img });
+            }
+            return { role: m.role, content: contentParts };
+          }
+          return { role: m.role, content: m.content };
+        }),
       }),
     });
 

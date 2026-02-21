@@ -10,6 +10,7 @@ type ChatMessage = {
   id: string;
   role: "user" | "assistant";
   content: string;
+  images?: string[];
 };
 
 type VisualHint = {
@@ -168,20 +169,60 @@ export default function EditorPage({
     return () => window.removeEventListener("message", onMessage);
   }, []);
 
+  const [attachedImages, setAttachedImages] = useState<string[]>([]);
+
+  const handleImageFile = (file: File) => {
+    if (!file.type.startsWith("image/")) return;
+    if (file.size > 4 * 1024 * 1024) {
+      setSendError("Image too large (max 4MB)");
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = () => {
+      const base64 = reader.result as string;
+      setAttachedImages((prev) => [...prev, base64]);
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handlePaste = (e: React.ClipboardEvent) => {
+    const items = e.clipboardData?.items;
+    if (!items) return;
+    for (const item of Array.from(items)) {
+      if (item.type.startsWith("image/")) {
+        e.preventDefault();
+        const file = item.getAsFile();
+        if (file) handleImageFile(file);
+      }
+    }
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    const files = e.dataTransfer?.files;
+    if (!files) return;
+    for (const file of Array.from(files)) {
+      handleImageFile(file);
+    }
+  };
+
   const submitChat = async (event: FormEvent) => {
     event.preventDefault();
     const text = draft.trim();
-    if (!text) return;
+    if (!text && attachedImages.length === 0) return;
 
     if (isSending) return;
     setSendError("");
     setDraft("");
+    const currentImages = [...attachedImages];
+    setAttachedImages([]);
     setIsSending(true);
 
     const userMessage: ChatMessage = {
       id: safeId(),
       role: "user",
-      content: text,
+      content: text || "(see attached image)",
+      images: currentImages.length > 0 ? currentImages : undefined,
     };
 
     setMessages((prev: ChatMessage[]) => [
@@ -193,6 +234,7 @@ export default function EditorPage({
       const requestMessages = [...messages, userMessage].map((m) => ({
         role: m.role,
         content: m.content,
+        images: m.images,
       }));
 
       const response = await fetch("/api/editor/plan", {
@@ -556,17 +598,46 @@ export default function EditorPage({
                           : "border-gray-800 bg-gray-950/30 text-gray-100"
                       }`}
                     >
+                      {m.images && m.images.length > 0 && (
+                        <div className="mb-2 flex flex-wrap gap-1">
+                          {m.images.map((img, i) => (
+                            <img key={i} src={img} alt="" className="h-20 w-20 rounded-lg border border-gray-700 object-cover" />
+                          ))}
+                        </div>
+                      )}
                       {m.content}
                     </div>
                   ))}
                 </div>
               </div>
 
-              <form onSubmit={submitChat} className="border-t border-gray-800 p-4">
+              <form
+                onSubmit={submitChat}
+                onDrop={handleDrop}
+                onDragOver={(e) => e.preventDefault()}
+                className="border-t border-gray-800 p-4"
+              >
+                {attachedImages.length > 0 && (
+                  <div className="mb-2 flex flex-wrap gap-2">
+                    {attachedImages.map((img, i) => (
+                      <div key={i} className="relative">
+                        <img src={img} alt="" className="h-16 w-16 rounded-lg border border-gray-700 object-cover" />
+                        <button
+                          type="button"
+                          onClick={() => setAttachedImages((prev) => prev.filter((_, j) => j !== i))}
+                          className="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-red-600 text-[10px] text-white"
+                        >
+                          x
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
                 <textarea
                   value={draft}
                   onChange={(e: ChangeEvent<HTMLTextAreaElement>) => setDraft(e.target.value)}
-                  placeholder={visualEdit ? "Describe a change for the selected element…" : "Ask the AI to change something…"}
+                  onPaste={handlePaste}
+                  placeholder={visualEdit ? "Describe a change for the selected element…" : "Ask the AI to change something… (paste or drop images too!)"}
                   className="mb-3 h-20 w-full resize-none rounded-xl border border-gray-800 bg-gray-950/40 px-3 py-2 text-sm text-gray-100 placeholder:text-indigo-200/40 focus:outline-none"
                 />
                 {sendError ? (
@@ -575,8 +646,22 @@ export default function EditorPage({
                   </div>
                 ) : null}
                 <div className="flex items-center justify-between gap-2">
-                  <div className="text-xs text-indigo-200/60">
-                    Output: structured JSON patches (next)
+                  <div className="flex items-center gap-2">
+                    <label className="cursor-pointer rounded-lg border border-gray-700 bg-gray-900/60 px-2 py-1 text-xs text-indigo-200/80 hover:bg-gray-800">
+                      + Image
+                      <input
+                        type="file"
+                        accept="image/*"
+                        multiple
+                        className="hidden"
+                        onChange={(e) => {
+                          const files = e.target.files;
+                          if (files) Array.from(files).forEach(handleImageFile);
+                          e.target.value = "";
+                        }}
+                      />
+                    </label>
+                    <div className="text-xs text-indigo-200/40">or paste / drop</div>
                   </div>
                   <button
                     type="submit"
