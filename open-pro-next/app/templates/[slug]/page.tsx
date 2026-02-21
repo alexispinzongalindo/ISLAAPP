@@ -647,7 +647,7 @@ export default async function TemplateDetailPage({ params }: TemplatePageProps) 
     notFound();
   }
 
-  const agentHref = `/agent?template=${template.slug}&source=template_detail`;
+  const startHref = `https://app.islaapp.tech/?plan=trial&lang=en&template=${template.slug}`;
   const demo = getDemoContent(template.slug);
 
   return (
@@ -741,20 +741,12 @@ export default async function TemplateDetailPage({ params }: TemplatePageProps) 
           </Link>
         )}
         <a
-          href={agentHref}
+          href={startHref}
           className="btn-sm bg-indigo-600 text-center text-white hover:bg-indigo-500"
           data-i18n-en="Start With This Template"
           data-i18n-es="Comenzar con esta plantilla"
         >
           Start With This Template
-        </a>
-        <a
-          href={agentHref}
-          className="btn-sm border border-gray-700 bg-gray-800 text-center text-white hover:bg-gray-700"
-          data-i18n-en="Open AI Agent"
-          data-i18n-es="Abrir agente IA"
-        >
-          Open AI Agent
         </a>
       </div>
 

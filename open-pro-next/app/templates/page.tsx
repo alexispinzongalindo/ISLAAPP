@@ -3,7 +3,6 @@
 import { useEffect, useMemo, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { templates, type TemplateDefinition } from "@/app/templates/template-catalog";
 import { isLivePageSlug } from "@/app/live/live-slugs";
 
@@ -116,7 +115,6 @@ export default function TemplatesPage() {
   const [isAdminSession, setIsAdminSession] = useState(false);
   const [isCloning, setIsCloning] = useState(false);
   const [cloningTitle, setCloningTitle] = useState("");
-  const router = useRouter();
 
   useEffect(() => {
     setIsAdminSession(window.sessionStorage.getItem(MAINTENANCE_AUTH_KEY) === "1");
@@ -126,10 +124,10 @@ export default function TemplatesPage() {
     setActiveTemplate(null);
     setCloningTitle(title);
     setIsCloning(true);
-    // Simulate clone then route to the agent for customization.
+    // Simulate clone then route to the hosted app.
     setTimeout(() => {
       setIsCloning(false);
-      router.push(`/agent?template=${slug}&source=template_gallery`);
+      window.location.href = `https://app.islaapp.tech/?plan=trial&lang=en&template=${slug}`;
     }, 1200);
   };
 
@@ -138,7 +136,7 @@ export default function TemplatesPage() {
       <div className="pb-8 text-center">
         <h1 className="text-3xl font-semibold text-gray-100">Template Gallery</h1>
         <p className="text-indigo-200/65">
-          Pick a starter, preview it, then launch directly in islaAPP Builder.
+          Pick a starter, preview it, then launch directly in islaAPP.
         </p>
         {isAdminSession && (
           <div className="mt-4">
@@ -174,9 +172,6 @@ export default function TemplatesPage() {
                   {tag}
                 </span>
               ))}
-              <span className="ml-auto rounded-full bg-indigo-600/90 px-2.5 py-1 text-[11px] font-semibold text-white">
-                Customized with AI
-              </span>
             </div>
             <h3 className="text-lg font-semibold text-gray-100">{t.title}</h3>
             <p className="text-indigo-200/70 mb-4">{t.desc}</p>
@@ -196,18 +191,12 @@ export default function TemplatesPage() {
               >
                 App info
               </button>
-              <Link
-                href={`/builder/${t.slug}`}
-                className="btn-sm border border-indigo-600 text-indigo-200 hover:bg-indigo-900/40"
-              >
-                Builder + AI
-              </Link>
               <button
                 type="button"
                 onClick={() => handleUseTemplate(t.slug, t.title)}
                 className="btn-sm bg-indigo-600 text-white hover:bg-indigo-500"
               >
-                AI only
+                Use template
               </button>
             </div>
           </div>
