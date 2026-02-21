@@ -462,6 +462,8 @@ Rules:
 - Prefer Tailwind utility updates over large rewrites.
 - Avoid touching unrelated files.
 - Do not include explanations; JSON only.
+- If the user asks you to add images, photos, icons, or external resources, use web search to find free, publicly available URLs (e.g. from Unsplash, Pexels, Google Fonts, Lucide, Heroicons).
+- When adding images, use direct image URLs in <img> tags or CSS background-image. Prefer Unsplash URLs like https://images.unsplash.com/photo-xxx?w=800.
 
 ${contextBlock}
 
@@ -477,6 +479,7 @@ ${buildSelectionHintBlock(body.selectionHint, sourceSnippet)}
       body: JSON.stringify({
         model: hasImages ? "gpt-4.1" : model,
         instructions: systemPrompt,
+        tools: [{ type: "web_search_preview" }],
         input: cleanedMessages.map((m) => {
           if (m.images && m.images.length > 0) {
             const contentParts: any[] = [];
