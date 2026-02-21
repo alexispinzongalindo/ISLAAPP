@@ -52,6 +52,7 @@ export default function PreviewPage({
   const [visualEditEnabled, setVisualEditEnabled] = useState(false);
   const innerFrameRef = useRef<HTMLIFrameElement | null>(null);
   const lastOutlinedRef = useRef<HTMLElement | null>(null);
+  const lockedSelectionRef = useRef<HTMLElement | null>(null);
 
   const liveHref = useMemo(() => {
     if (!isLivePageSlug(templateSlug)) return "";
@@ -109,6 +110,12 @@ export default function PreviewPage({
         lastOutlinedRef.current.style.outlineOffset = "";
         lastOutlinedRef.current = null;
       }
+
+      if (lockedSelectionRef.current) {
+        lockedSelectionRef.current.style.outline = "";
+        lockedSelectionRef.current.style.outlineOffset = "";
+        lockedSelectionRef.current = null;
+      }
     };
 
     if (!visualEditEnabled) {
@@ -126,6 +133,7 @@ export default function PreviewPage({
       if (!win || !doc) return;
 
       const onMove = (e: MouseEvent) => {
+        if (lockedSelectionRef.current) return;
         const el = doc.elementFromPoint(e.clientX, e.clientY) as HTMLElement | null;
         if (!el) return;
 
@@ -158,6 +166,22 @@ export default function PreviewPage({
         e.preventDefault();
         e.stopPropagation();
 
+        // Lock selection on click so it doesn't follow the cursor.
+        if (lastOutlinedRef.current && lastOutlinedRef.current !== el) {
+          lastOutlinedRef.current.style.outline = "";
+          lastOutlinedRef.current.style.outlineOffset = "";
+        }
+
+        if (lockedSelectionRef.current && lockedSelectionRef.current !== el) {
+          lockedSelectionRef.current.style.outline = "";
+          lockedSelectionRef.current.style.outlineOffset = "";
+        }
+
+        lockedSelectionRef.current = el;
+        lastOutlinedRef.current = null;
+        el.style.outline = "2px solid rgba(16, 185, 129, 0.95)";
+        el.style.outlineOffset = "2px";
+
         const outerHTML = el.outerHTML ? el.outerHTML.slice(0, 1200) : undefined;
         const hint: ElementHintMessage = {
           type: "ISLA_ELEMENT_SELECTED",
@@ -173,12 +197,27 @@ export default function PreviewPage({
         window.parent?.postMessage(hint, "*");
       };
 
+      const clearLocked = () => {
+        const locked = lockedSelectionRef.current;
+        if (!locked) return;
+        locked.style.outline = "";
+        locked.style.outlineOffset = "";
+        lockedSelectionRef.current = null;
+      };
+
+      const onKeyDown = (e: KeyboardEvent) => {
+        if (e.key !== "Escape") return;
+        clearLocked();
+      };
+
       doc.addEventListener("mousemove", onMove, { passive: true });
       doc.addEventListener("click", onClick, true);
+      doc.addEventListener("keydown", onKeyDown);
 
       detach = () => {
         doc.removeEventListener("mousemove", onMove as EventListener);
         doc.removeEventListener("click", onClick as EventListener, true);
+        doc.removeEventListener("keydown", onKeyDown as EventListener);
       };
     };
 
