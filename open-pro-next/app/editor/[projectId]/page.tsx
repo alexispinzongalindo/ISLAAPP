@@ -36,7 +36,30 @@ export default function EditorPage({
 }: {
   params: any;
 }) {
-  const projectId = String((params as any)?.projectId || "");
+  const [projectId, setProjectId] = useState(() => {
+    const raw = (params as any)?.projectId;
+    return raw ? String(raw) : "";
+  });
+
+  useEffect(() => {
+    const maybeThen = (params as any)?.then;
+    if (typeof maybeThen !== "function") return;
+
+    let cancelled = false;
+    Promise.resolve(params)
+      .then((p: any) => {
+        if (cancelled) return;
+        const raw = p?.projectId;
+        if (raw) setProjectId(String(raw));
+      })
+      .catch(() => {
+        // ignore
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [params]);
 
   const [device, setDevice] = useState<DeviceMode>("desktop");
   const [visualEdit, setVisualEdit] = useState(false);
@@ -59,6 +82,16 @@ export default function EditorPage({
   const [canRedo, setCanRedo] = useState(false);
 
   const iframeRef = useRef<HTMLIFrameElement | null>(null);
+
+  if (!projectId) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-gray-950 px-4 text-gray-100">
+        <div className="w-full max-w-lg rounded-2xl border border-gray-800 bg-gray-900/60 p-6 text-center">
+          <p className="text-sm text-indigo-200/70">Loading editor…</p>
+        </div>
+      </div>
+    );
+  }
 
   useEffect(() => {
     try {

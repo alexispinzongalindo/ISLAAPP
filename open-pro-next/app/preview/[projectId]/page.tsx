@@ -43,7 +43,10 @@ export default function PreviewPage({
 }: {
   params: any;
 }) {
-  const projectId = String((params as any)?.projectId || "");
+  const [projectId, setProjectId] = useState(() => {
+    const raw = (params as any)?.projectId;
+    return raw ? String(raw) : "";
+  });
   const templateSlug = useMemo(() => resolveTemplateSlug(projectId), [projectId]);
 
   const [visualEditEnabled, setVisualEditEnabled] = useState(false);
@@ -54,6 +57,26 @@ export default function PreviewPage({
     if (!isLivePageSlug(templateSlug)) return "";
     return `/live/${templateSlug}?embed=1`;
   }, [templateSlug]);
+
+  useEffect(() => {
+    const maybeThen = (params as any)?.then;
+    if (typeof maybeThen !== "function") return;
+
+    let cancelled = false;
+    Promise.resolve(params)
+      .then((p: any) => {
+        if (cancelled) return;
+        const raw = p?.projectId;
+        if (raw) setProjectId(String(raw));
+      })
+      .catch(() => {
+        // ignore
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [params]);
 
   useEffect(() => {
     const ready: PreviewMessage = { type: "ISLA_PREVIEW_READY" };
@@ -170,6 +193,16 @@ export default function PreviewPage({
       cleanup();
     };
   }, [visualEditEnabled]);
+
+  if (!projectId) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-gray-950 px-4 text-gray-100">
+        <div className="w-full max-w-lg rounded-2xl border border-gray-800 bg-gray-900/60 p-6 text-center">
+          <p className="text-sm text-indigo-200/70">Loading preview…</p>
+        </div>
+      </div>
+    );
+  }
 
   if (!liveHref) {
     return (
