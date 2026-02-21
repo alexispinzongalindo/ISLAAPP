@@ -182,7 +182,19 @@ export default function PreviewPage({
         el.style.outline = "2px solid rgba(16, 185, 129, 0.95)";
         el.style.outlineOffset = "2px";
 
-        const outerHTML = el.outerHTML ? el.outerHTML.slice(0, 1200) : undefined;
+        let outerHTML: string | undefined;
+        try {
+          const clone = el.cloneNode(true) as HTMLElement;
+          clone.style.outline = "";
+          clone.style.outlineOffset = "";
+          // If style becomes empty, remove attribute to better match source markup.
+          if (!clone.getAttribute("style")?.trim()) {
+            clone.removeAttribute("style");
+          }
+          outerHTML = clone.outerHTML ? clone.outerHTML.slice(0, 1200) : undefined;
+        } catch {
+          outerHTML = el.outerHTML ? el.outerHTML.slice(0, 1200) : undefined;
+        }
         const hint: ElementHintMessage = {
           type: "ISLA_ELEMENT_SELECTED",
           hint: {

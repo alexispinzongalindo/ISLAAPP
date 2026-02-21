@@ -281,6 +281,9 @@ Rules:
   - "match" must be an exact substring copied from the file.
   - "content" should be the replacement for that exact substring.
   - Keep match blocks small and specific.
+- The "match" MUST be copied from the Context file content/excerpts above.
+- Do NOT use selectionHint.outerHTML as the match source.
+- Every change MUST include a non-empty "description".
 - Avoid full-file "replace" unless absolutely necessary.
 - Prefer Tailwind utility updates over large rewrites.
 - Avoid touching unrelated files.
