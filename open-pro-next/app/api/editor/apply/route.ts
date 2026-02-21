@@ -107,7 +107,15 @@ export async function POST(request: Request) {
       });
     }
 
-    return NextResponse.json({ ok: true, ...(lastState ?? { version: 0, canUndo: false, canRedo: false }) });
+    return NextResponse.json({
+      ok: true,
+      ...(lastState ?? { version: 0, canUndo: false, canRedo: false }),
+      appliedChanges: parsed.plan.changes.map((c) => ({
+        patchType: c.patchType,
+        match: (c as any).match || "",
+        content: c.content || "",
+      })),
+    });
   } catch (error) {
     return NextResponse.json(
       { error: error instanceof Error ? error.message : "Unexpected error." },

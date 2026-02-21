@@ -32,6 +32,92 @@ type ElementHintMessage =
       };
     };
 
+// ---------------------------------------------------------------------------
+// Live DOM patching — apply class-level changes directly in the inner iframe
+// so the user sees the result immediately even in production builds.
+// ---------------------------------------------------------------------------
+
+function extractArbitraryColor(token: string): string | null {
+  const m = token.match(/\[([^\]]+)\]/);
+  return m ? m[1] : null;
+}
+
+function applyInlineOverrides(el: HTMLElement, token: string) {
+  const color = extractArbitraryColor(token);
+  if (!color) return;
+
+  const parts = token.split(":");
+  const base = parts[parts.length - 1] || token;
+
+  if (base.startsWith("from-")) {
+    el.style.setProperty("--tw-gradient-from", color);
+  } else if (base.startsWith("via-")) {
+    el.style.setProperty("--tw-gradient-via", color);
+    el.style.setProperty(
+      "--tw-gradient-stops",
+      "var(--tw-gradient-from), var(--tw-gradient-via), var(--tw-gradient-to)",
+    );
+  } else if (base.startsWith("to-")) {
+    el.style.setProperty("--tw-gradient-to", color);
+  } else if (base.startsWith("bg-")) {
+    el.style.backgroundColor = color;
+  } else if (base.startsWith("text-")) {
+    el.style.color = color;
+  } else if (base.startsWith("border-")) {
+    el.style.borderColor = color;
+  } else if (base.startsWith("ring-")) {
+    el.style.setProperty("--tw-ring-color", color);
+  } else if (base.startsWith("shadow-")) {
+    el.style.setProperty("--tw-shadow-color", color);
+  }
+}
+
+function applyDomPatches(
+  frame: HTMLIFrameElement | null,
+  changes: Array<{ patchType: string; match: string; content: string }>,
+) {
+  if (!frame) return;
+  const doc = frame.contentDocument;
+  if (!doc) return;
+
+  for (const change of changes) {
+    if (change.patchType !== "replace-snippet") continue;
+
+    const oldTokens = (change.match || "").split(/\s+/).filter(Boolean);
+    const newTokens = (change.content || "").split(/\s+/).filter(Boolean);
+
+    if (oldTokens.length === 0 || newTokens.length === 0) continue;
+
+    // Build sets for diffing
+    const oldSet = new Set(oldTokens);
+    const newSet = new Set(newTokens);
+    const removed = oldTokens.filter((t) => !newSet.has(t));
+    const added = newTokens.filter((t) => !oldSet.has(t));
+
+    if (removed.length === 0 && added.length === 0) continue;
+
+    // Find candidate elements: must have ALL old tokens in their className
+    const allElements = Array.from(doc.querySelectorAll("*")) as HTMLElement[];
+    const matches = allElements.filter((el) => {
+      if (typeof el.className !== "string") return false;
+      const cls = el.className;
+      return oldTokens.every((t) => cls.includes(t));
+    });
+
+    for (const el of matches) {
+      // Remove old tokens, add new tokens
+      for (const t of removed) {
+        el.classList.remove(t);
+      }
+      for (const t of added) {
+        el.classList.add(t);
+        // For arbitrary-value classes, also inject inline style overrides
+        applyInlineOverrides(el, t);
+      }
+    }
+  }
+}
+
 function resolveTemplateSlug(projectId: string) {
   const raw = String(projectId || "").trim();
   const slug = raw.includes("--") ? raw.split("--")[0] : raw;
@@ -86,13 +172,17 @@ export default function PreviewPage({
 
   useEffect(() => {
     const onMessage = (event: MessageEvent) => {
-      const data = event.data as PreviewMessage | undefined;
+      const data = event.data as any;
       if (!data || typeof data !== "object") return;
 
       if (data.type === "ISLA_VISUAL_EDIT") {
         setVisualEditEnabled(Boolean(data.enabled));
         const msg: InnerPreviewMessage = { type: "ISLA_VISUAL_EDIT", enabled: Boolean(data.enabled) };
         innerFrameRef.current?.contentWindow?.postMessage(msg, "*");
+      }
+
+      if (data.type === "ISLA_APPLY_PATCH" && Array.isArray(data.changes)) {
+        applyDomPatches(innerFrameRef.current, data.changes);
       }
     };
 

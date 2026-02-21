@@ -268,6 +268,15 @@ export default function EditorPage({
       setCanUndo(Boolean(payload?.canUndo));
       setCanRedo(Boolean(payload?.canRedo));
 
+      // Forward applied changes to preview iframe for live DOM patching.
+      const appliedChanges = payload?.appliedChanges;
+      if (Array.isArray(appliedChanges) && appliedChanges.length > 0) {
+        iframeRef.current?.contentWindow?.postMessage(
+          { type: "ISLA_APPLY_PATCH", changes: appliedChanges },
+          "*",
+        );
+      }
+
       setMessages((prev: ChatMessage[]) => [
         ...prev,
         {
