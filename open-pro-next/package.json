@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@builder.io/sdk-react": "^5.1.1",
     "@headlessui/react": "^2.2.0",
     "@headlessui/tailwindcss": "^0.2.1",
     "@mdx-js/loader": "^3.1.0",

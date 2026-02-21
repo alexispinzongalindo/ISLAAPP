@@ -448,6 +448,15 @@ export default function EditorPage({
                 {dark ? "Dark" : "Light"}
               </button>
 
+              <a
+                href="https://builder.io/app"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn-sm border border-indigo-500/60 bg-indigo-500/10 text-indigo-200 hover:bg-indigo-500/20"
+              >
+                Builder.io Editor
+              </a>
+
               <button
                 type="button"
                 disabled={!lastValidPlan.trim()}
