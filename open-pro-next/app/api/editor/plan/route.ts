@@ -122,10 +122,35 @@ function extractTailwindClassTokens(className: string | undefined) {
 
   const picked: string[] = [];
   for (const t of tokens) {
-    if (prefixes.some((p) => t.startsWith(p))) {
+    const parts = t.split(":");
+    const base = parts[parts.length - 1] || t;
+
+    // Keep full token (including variants) if its base looks like a color/visual Tailwind utility.
+    if (prefixes.some((p) => base.startsWith(p))) {
       picked.push(t);
     }
     if (picked.length >= 10) break;
+  }
+
+  return Array.from(new Set(picked));
+}
+
+function extractGenericClassTokens(className: string | undefined) {
+  const raw = String(className || "").trim();
+  if (!raw) return [];
+
+  const tokens = raw
+    .split(/\s+/)
+    .map((t) => t.trim())
+    .filter(Boolean);
+
+  // Grab a few longer tokens as additional anchors (often component-level classes).
+  const picked: string[] = [];
+  for (const t of tokens) {
+    if (t.length < 6) continue;
+    if (t.includes("[")) continue; // avoid arbitrary-value classes exploding context targeting
+    picked.push(t);
+    if (picked.length >= 6) break;
   }
 
   return Array.from(new Set(picked));
@@ -139,6 +164,7 @@ function buildTargetedExcerpts(
   const content = String(fileContent || "");
   const baseline = [...extractQuotedPhrases(queryText), ...extractKeywords(queryText)];
   const classTokens = extractTailwindClassTokens(selectionClassName);
+  const genericClassTokens = extractGenericClassTokens(selectionClassName);
 
   // Heuristics: if the user talks about background/colors, include Tailwind anchors.
   const lowerQuery = String(queryText || "").toLowerCase();
@@ -151,7 +177,9 @@ function buildTargetedExcerpts(
     extra.push("className=");
   }
 
-  const queries = Array.from(new Set([...baseline, ...extra, ...classTokens])).filter(Boolean);
+  const queries = Array.from(
+    new Set([...baseline, ...extra, ...classTokens, ...genericClassTokens]),
+  ).filter(Boolean);
 
   const windows: { start: number; end: number; why: string }[] = [];
   const radius = 700;
