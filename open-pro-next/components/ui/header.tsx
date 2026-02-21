@@ -1,11 +1,22 @@
 "use client";
 
+import { usePathname } from "next/navigation";
 import Link from "next/link";
 import Logo from "./logo";
 import MobileMenu from "./mobile-menu";
 import LanguageToggle from "./language-toggle";
 
 export default function Header() {
+  const pathname = usePathname() || "";
+
+  if (
+    pathname.startsWith("/editor") ||
+    pathname.startsWith("/preview") ||
+    pathname.startsWith("/live")
+  ) {
+    return null;
+  }
+
   return (
     <header className="sticky top-0 z-[100] w-full py-2 md:py-3">
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
