@@ -373,22 +373,35 @@ export async function POST(request: Request) {
 
     const contextBlock = (() => {
       if (!templateContext) return "";
-      const targeted = buildTargetedExcerpts(
-        templateContext.content,
-        [String(latestUserMessage || ""), selectionText].filter(Boolean).join("\n"),
-        body.selectionHint?.className ? String(body.selectionHint.className) : undefined,
-      );
 
       const header = [
         `Context file: ${templateContext.filePath}`,
         `Truncated: ${templateContext.truncated ? "yes" : "no"}`,
       ];
 
+      // When no selection hint, always send the full file so the AI can find
+      // the right code to modify based on the user's description alone.
+      if (!body.selectionHint) {
+        return [
+          ...header,
+          `--- FULL FILE (read carefully, find the relevant code for the user's request) ---`,
+          templateContext.content,
+          `--- END FILE ---`,
+        ].join("\n");
+      }
+
+      // With a selection hint, use targeted excerpts for precision.
+      const targeted = buildTargetedExcerpts(
+        templateContext.content,
+        [String(latestUserMessage || ""), selectionText].filter(Boolean).join("\n"),
+        body.selectionHint?.className ? String(body.selectionHint.className) : undefined,
+      );
+
       if (targeted.hasMatches) {
         return [...header, ...targeted.excerpts].join("\n");
       }
 
-      // Fallback: include head of file if we couldn't find relevant matches.
+      // Fallback: include full file if we couldn't find relevant matches.
       return [
         ...header,
         `--- FILE START ---`,
@@ -422,9 +435,9 @@ Rules:
   - "match" must be an EXACT substring copied verbatim from the source file.
   - "content" should be the replacement for that exact substring.
   - Keep match blocks small and specific.
-- CRITICAL: The "match" MUST come from the ACTUAL SOURCE code shown in the excerpts or ACTUAL SOURCE block.
-- NEVER use the rendered HTML/DOM from the selection hint as the match. The rendered DOM differs from the source (e.g., source has {label} but DOM shows "Email").
-- If the source uses a custom component like <Input label="X">, match THAT, not the rendered <span>X</span>.
+- CRITICAL: The "match" MUST come from the ACTUAL SOURCE code shown in the file content above.
+- If a selection hint is provided, it shows RENDERED HTML (not source). Never copy from it — find the corresponding source code in the file.
+- If NO selection hint is provided, read the full file and find the relevant code that matches the user's request.
 - Every change MUST include a non-empty "description".
 - Avoid full-file "replace" unless absolutely necessary.
 - Prefer Tailwind utility updates over large rewrites.

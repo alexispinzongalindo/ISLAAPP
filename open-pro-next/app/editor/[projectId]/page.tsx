@@ -501,7 +501,7 @@ export default function EditorPage({
             <div className="border-b border-gray-800 bg-gray-950/30 px-4 py-3">
               <div className="text-sm font-semibold text-gray-100">AI Chat</div>
               <div className="mt-1 text-xs text-indigo-200/60">
-                Describe changes in natural language. (Dummy mode)
+                Just describe what you want changed — no need to select anything.
               </div>
             </div>
 
@@ -536,11 +536,12 @@ export default function EditorPage({
               <div className="flex-1 overflow-y-auto px-4 py-4">
                 {messages.length === 0 ? (
                   <div className="rounded-xl border border-gray-800 bg-gray-950/40 p-4 text-sm text-indigo-200/70">
-                    Try:
+                    Just type what you want:
                     <div className="mt-2 space-y-1 text-indigo-200/60">
-                      <div>"Make the hero background violet"</div>
-                      <div>"Add a pricing table with 3 tiers"</div>
-                      <div>"Make sidebar collapsible on mobile"</div>
+                      <div>"Make the header background blue"</div>
+                      <div>"Change all buttons to rounded"</div>
+                      <div>"Add a timestamp to each sale"</div>
+                      <div>"Make the title text bigger and bold"</div>
                     </div>
                   </div>
                 ) : null}
