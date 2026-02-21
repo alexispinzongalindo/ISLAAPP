@@ -277,6 +277,10 @@ export default function EditorPage({
         );
       }
 
+      // Clear the plan so the user can't re-apply the same patch (the old
+      // match no longer exists in the source file after a successful apply).
+      setLastValidPlan("");
+
       setMessages((prev: ChatMessage[]) => [
         ...prev,
         {
