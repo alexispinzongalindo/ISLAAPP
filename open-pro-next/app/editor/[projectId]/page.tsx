@@ -294,55 +294,113 @@ export default function EditorPage({
   const applyLastPlan = async () => {
     if (!lastValidPlan.trim()) return;
 
-    try {
-      const response = await fetch("/api/editor/apply", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ projectId, rawPlan: lastValidPlan }),
-      });
+    const MAX_RETRIES = 2;
+    let currentPlan = lastValidPlan;
+    let totalApplied: any[] = [];
+    let lastSkipped: any[] = [];
 
-      const payload = await response.json();
-      if (!response.ok) {
-        throw new Error(String(payload?.error || "Apply failed."));
+    for (let attempt = 0; attempt <= MAX_RETRIES; attempt++) {
+      try {
+        const response = await fetch("/api/editor/apply", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ projectId, rawPlan: currentPlan }),
+        });
+
+        const payload = await response.json();
+        if (!response.ok) {
+          throw new Error(String(payload?.error || "Apply failed."));
+        }
+
+        setCanUndo(Boolean(payload?.canUndo));
+        setCanRedo(Boolean(payload?.canRedo));
+
+        const appliedChanges = payload?.appliedChanges;
+        if (Array.isArray(appliedChanges)) {
+          totalApplied = [...totalApplied, ...appliedChanges];
+        }
+
+        const skipped = Array.isArray(payload?.skipped) ? payload.skipped : [];
+        lastSkipped = skipped;
+
+        // Forward applied changes to preview iframe
+        if (Array.isArray(appliedChanges) && appliedChanges.length > 0) {
+          setTimeout(() => {
+            iframeRef.current?.contentWindow?.postMessage(
+              { type: "ISLA_APPLY_PATCH", changes: appliedChanges },
+              "*",
+            );
+          }, 100);
+        }
+
+        // If nothing was skipped, we're done
+        if (skipped.length === 0) break;
+
+        // If this isn't the last attempt, auto-retry by asking AI to fix the failed matches
+        if (attempt < MAX_RETRIES) {
+          setMessages((prev: ChatMessage[]) => [
+            ...prev,
+            { id: safeId(), role: "assistant", content: `Auto-fixing ${skipped.length} failed match(es)… (attempt ${attempt + 2})` },
+          ]);
+
+          // Ask the AI to fix the failed patches
+          const retryMessages = [
+            { role: "user", content: `Some patches failed to apply. Fix the match strings. The following patches had "Match not found" errors:\n${JSON.stringify(skipped)}\n\nPlease regenerate ONLY the failed patches with corrected match strings from the actual source file.` },
+          ];
+
+          const retryResponse = await fetch("/api/editor/plan", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              projectId,
+              selectionHint: null,
+              messages: retryMessages,
+            }),
+          });
+
+          const retryPayload = await retryResponse.json();
+          if (!retryResponse.ok) break;
+
+          const retryPlan = String(retryPayload?.raw || "").trim();
+          if (!retryPlan) break;
+
+          const parsed = parseAiPatchPlan(retryPlan);
+          if (!parsed.ok) break;
+
+          currentPlan = retryPlan;
+          continue;
+        }
+      } catch (err) {
+        const message = err instanceof Error ? err.message : "Unexpected error.";
+        setMessages((prev: ChatMessage[]) => [
+          ...prev,
+          { id: safeId(), role: "assistant", content: `Apply error: ${message}` },
+        ]);
+        return;
       }
+    }
 
-      setCanUndo(Boolean(payload?.canUndo));
-      setCanRedo(Boolean(payload?.canRedo));
+    // Clear the plan
+    setLastValidPlan("");
 
-      // Forward applied changes to preview iframe for live DOM patching.
-      // IMPORTANT: Do NOT call setVersion() here — that reloads the iframe
-      // and destroys the preview page before the postMessage arrives.
-      const appliedChanges = payload?.appliedChanges;
-      if (Array.isArray(appliedChanges) && appliedChanges.length > 0) {
-        // Small delay so the current React render cycle finishes first
-        setTimeout(() => {
-          iframeRef.current?.contentWindow?.postMessage(
-            { type: "ISLA_APPLY_PATCH", changes: appliedChanges },
-            "*",
-          );
-        }, 100);
-      } else {
-        // No DOM patches — fall back to iframe reload
-        setVersion(Number(payload?.version || 0));
-      }
-
-      // Clear the plan so the user can't re-apply the same patch (the old
-      // match no longer exists in the source file after a successful apply).
-      setLastValidPlan("");
-
+    if (totalApplied.length === 0 && lastSkipped.length > 0) {
+      // Nothing applied even after retries — reload iframe
+      setVersion((v) => v + 1);
       setMessages((prev: ChatMessage[]) => [
         ...prev,
-        {
-          id: safeId(),
-          role: "assistant",
-          content: "Applied changes. Preview refreshed.",
-        },
+        { id: safeId(), role: "assistant", content: `Could not apply ${lastSkipped.length} change(s) after retries. Try rephrasing your request.` },
       ]);
-    } catch (err) {
-      const message = err instanceof Error ? err.message : "Unexpected error.";
+    } else if (totalApplied.length > 0 && lastSkipped.length > 0) {
       setMessages((prev: ChatMessage[]) => [
         ...prev,
-        { id: safeId(), role: "assistant", content: `Apply error: ${message}` },
+        { id: safeId(), role: "assistant", content: `Applied ${totalApplied.length} change(s). ${lastSkipped.length} could not be matched — try rephrasing those.` },
+      ]);
+    } else {
+      // Reload iframe to show filesystem changes
+      setVersion((v) => v + 1);
+      setMessages((prev: ChatMessage[]) => [
+        ...prev,
+        { id: safeId(), role: "assistant", content: `Applied ${totalApplied.length} change(s). Preview refreshed.` },
       ]);
     }
   };
