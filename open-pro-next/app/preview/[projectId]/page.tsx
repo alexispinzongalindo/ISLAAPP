@@ -216,10 +216,13 @@ export default function PreviewPage({
   const lastOutlinedRef = useRef<HTMLElement | null>(null);
   const lockedSelectionRef = useRef<HTMLElement | null>(null);
 
+  const [previewVersion, setPreviewVersion] = useState(0);
+
   const liveHref = useMemo(() => {
     if (!isLivePageSlug(templateSlug)) return "";
-    return `/live/${templateSlug}?embed=1`;
-  }, [templateSlug]);
+    // Use dynamic renderer that reads from Supabase (works in production)
+    return `/api/editor/preview-html?projectId=${encodeURIComponent(projectId)}&v=${previewVersion}`;
+  }, [templateSlug, projectId, previewVersion]);
 
   useEffect(() => {
     const maybeThen = (params as any)?.then;
@@ -258,8 +261,9 @@ export default function PreviewPage({
       }
 
       if (data.type === "ISLA_APPLY_PATCH" && Array.isArray(data.changes)) {
-        console.log("[ISLA] ISLA_APPLY_PATCH received, changes:", data.changes.length, "lockedEl:", !!lockedSelectionRef.current);
-        applyDomPatches(lockedSelectionRef.current, innerFrameRef.current, data.changes);
+        console.log("[ISLA] ISLA_APPLY_PATCH received, changes:", data.changes.length);
+        // Reload the dynamic preview to show updated content from Supabase
+        setPreviewVersion((v) => v + 1);
       }
     };
 
