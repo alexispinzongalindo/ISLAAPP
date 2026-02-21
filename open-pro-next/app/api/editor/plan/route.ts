@@ -100,9 +100,45 @@ function extractKeywords(text: string) {
   return Array.from(new Set(tokens));
 }
 
-function buildTargetedExcerpts(fileContent: string, queryText: string) {
+function extractTailwindClassTokens(className: string | undefined) {
+  const raw = String(className || "").trim();
+  if (!raw) return [];
+
+  const tokens = raw
+    .split(/\s+/)
+    .map((t) => t.trim())
+    .filter(Boolean);
+
+  const prefixes = [
+    "bg-",
+    "from-",
+    "to-",
+    "via-",
+    "text-",
+    "border-",
+    "ring-",
+    "shadow-",
+  ];
+
+  const picked: string[] = [];
+  for (const t of tokens) {
+    if (prefixes.some((p) => t.startsWith(p))) {
+      picked.push(t);
+    }
+    if (picked.length >= 10) break;
+  }
+
+  return Array.from(new Set(picked));
+}
+
+function buildTargetedExcerpts(
+  fileContent: string,
+  queryText: string,
+  selectionClassName?: string,
+) {
   const content = String(fileContent || "");
   const baseline = [...extractQuotedPhrases(queryText), ...extractKeywords(queryText)];
+  const classTokens = extractTailwindClassTokens(selectionClassName);
 
   // Heuristics: if the user talks about background/colors, include Tailwind anchors.
   const lowerQuery = String(queryText || "").toLowerCase();
@@ -115,7 +151,7 @@ function buildTargetedExcerpts(fileContent: string, queryText: string) {
     extra.push("className=");
   }
 
-  const queries = Array.from(new Set([...baseline, ...extra])).filter(Boolean);
+  const queries = Array.from(new Set([...baseline, ...extra, ...classTokens])).filter(Boolean);
 
   const windows: { start: number; end: number; why: string }[] = [];
   const radius = 700;
@@ -236,6 +272,7 @@ export async function POST(request: Request) {
       const targeted = buildTargetedExcerpts(
         templateContext.content,
         [String(latestUserMessage || ""), selectionText].filter(Boolean).join("\n"),
+        body.selectionHint?.className ? String(body.selectionHint.className) : undefined,
       );
 
       const header = [
