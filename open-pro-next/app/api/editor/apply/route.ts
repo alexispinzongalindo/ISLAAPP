@@ -52,6 +52,8 @@ export async function POST(request: Request) {
     }
 
     let lastState: { version: number; canUndo: boolean; canRedo: boolean } | null = null;
+    const applied: typeof parsed.plan.changes = [];
+    const skipped: { filePath: string; reason: string }[] = [];
 
     for (const change of parsed.plan.changes) {
       if (change.patchType === "style-update") {
@@ -69,26 +71,73 @@ export async function POST(request: Request) {
         const replacement = String(change.content || "");
 
         if (!match.trim()) {
-          return NextResponse.json(
-            { error: `replace-snippet requires match for ${change.filePath}.` },
-            { status: 400 },
-          );
+          skipped.push({ filePath: change.filePath, reason: "Empty match string." });
+          continue;
         }
 
-        const firstIndex = before.indexOf(match);
+        // Try exact match first
+        let firstIndex = before.indexOf(match);
+
+        // Fallback: normalize whitespace (collapse runs of whitespace to single space)
         if (firstIndex === -1) {
-          return NextResponse.json(
-            { error: `Match not found in ${change.filePath}.` },
-            { status: 400 },
-          );
+          const normalize = (s: string) => s.replace(/\s+/g, " ").trim();
+          const normalizedBefore = normalize(before);
+          const normalizedMatch = normalize(match);
+          const normIndex = normalizedBefore.indexOf(normalizedMatch);
+
+          if (normIndex !== -1) {
+            // Find the real start/end in original source by mapping through normalized positions
+            let realStart = -1;
+            let srcPos = 0;
+            let normPos = 0;
+            const src = before;
+            // Walk through source to find where normalized position starts
+            while (srcPos < src.length && normPos < normIndex) {
+              if (/\s/.test(src[srcPos])) {
+                // skip extra whitespace in source
+                while (srcPos < src.length - 1 && /\s/.test(src[srcPos + 1])) srcPos++;
+              }
+              srcPos++;
+              normPos++;
+            }
+            // Skip leading whitespace at match start
+            while (srcPos < src.length && /\s/.test(src[srcPos]) && realStart === -1) srcPos++;
+            realStart = srcPos;
+
+            // Find real end
+            let matchNormLen = normalizedMatch.length;
+            let consumed = 0;
+            let realEnd = realStart;
+            while (realEnd < src.length && consumed < matchNormLen) {
+              if (/\s/.test(src[realEnd])) {
+                while (realEnd < src.length - 1 && /\s/.test(src[realEnd + 1])) realEnd++;
+                consumed++; // counts as one space in normalized
+              } else {
+                consumed++;
+              }
+              realEnd++;
+            }
+
+            if (consumed === matchNormLen) {
+              after = `${src.slice(0, realStart)}${replacement}${src.slice(realEnd)}`;
+              // Skip the rest of replace-snippet logic
+              if (after === before) continue;
+              lastState = recordChange(projectId, { filePath: change.filePath, before, after });
+              await updateProjectContent(projectId, after, lastState.version);
+              applied.push(change);
+              continue;
+            }
+          }
+
+          // Still not found — skip this change instead of failing the whole batch
+          skipped.push({ filePath: change.filePath, reason: "Match not found." });
+          continue;
         }
 
         const secondIndex = before.indexOf(match, firstIndex + match.length);
         if (secondIndex !== -1) {
-          return NextResponse.json(
-            { error: `Match is ambiguous (multiple occurrences) in ${change.filePath}.` },
-            { status: 400 },
-          );
+          skipped.push({ filePath: change.filePath, reason: "Ambiguous match (multiple occurrences)." });
+          continue;
         }
 
         after = `${before.slice(0, firstIndex)}${replacement}${before.slice(firstIndex + match.length)}`;
@@ -114,16 +163,18 @@ export async function POST(request: Request) {
       });
 
       await updateProjectContent(projectId, after, lastState.version);
+      applied.push(change);
     }
 
     return NextResponse.json({
       ok: true,
       ...(lastState ?? { version: 0, canUndo: false, canRedo: false }),
-      appliedChanges: parsed.plan.changes.map((c) => ({
+      appliedChanges: applied.map((c) => ({
         patchType: c.patchType,
         match: (c as any).match || "",
         content: c.content || "",
       })),
+      skipped,
     });
   } catch (error) {
     return NextResponse.json(
