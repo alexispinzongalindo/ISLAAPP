@@ -41,9 +41,9 @@ function resolveTemplateSlug(projectId: string) {
 export default function PreviewPage({
   params,
 }: {
-  params: { projectId: string };
+  params: any;
 }) {
-  const projectId = String(params.projectId || "");
+  const projectId = String((params as any)?.projectId || "");
   const templateSlug = useMemo(() => resolveTemplateSlug(projectId), [projectId]);
 
   const [visualEditEnabled, setVisualEditEnabled] = useState(false);
