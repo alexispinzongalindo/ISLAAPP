@@ -103,18 +103,10 @@ export default function EditorPage({
     setHydrated(true);
   }, []);
 
-  if (!projectId) {
-    return (
-      <div className="flex min-h-screen items-center justify-center bg-gray-950 px-4 text-gray-100">
-        <div className="w-full max-w-lg rounded-2xl border border-gray-800 bg-gray-900/60 p-6 text-center">
-          <p className="text-sm text-indigo-200/70">Loading editor…</p>
-        </div>
-      </div>
-    );
-  }
+  const ready = hydrated && Boolean(projectId);
 
   useEffect(() => {
-    if (!hydrated) return;
+    if (!hydrated || !projectId) return;
     try {
       const raw = window.localStorage.getItem(storageKey);
       if (!raw) return;
@@ -143,7 +135,7 @@ export default function EditorPage({
   }, [storageKey, hydrated]);
 
   useEffect(() => {
-    if (!hydrated) return;
+    if (!hydrated || !projectId) return;
     try {
       window.localStorage.setItem(storageKey, JSON.stringify(messages));
     } catch {
@@ -347,7 +339,14 @@ export default function EditorPage({
 
   return (
     <div className={dark ? "bg-gray-950 text-gray-100" : "bg-gray-50 text-gray-900"}>
-      <div className="mx-auto max-w-[1600px] px-4 py-4 sm:px-6">
+      {!ready ? (
+        <div className="flex min-h-screen items-center justify-center bg-gray-950 px-4 text-gray-100">
+          <div className="w-full max-w-lg rounded-2xl border border-gray-800 bg-gray-900/60 p-6 text-center">
+            <p className="text-sm text-indigo-200/70">Loading editor…</p>
+          </div>
+        </div>
+      ) : (
+        <div className="mx-auto max-w-[1600px] px-4 py-4 sm:px-6">
         <div className="sticky top-[72px] z-40 mb-4 rounded-2xl border border-gray-800/80 bg-gray-900/70 px-4 py-3 shadow-lg shadow-black/20 backdrop-blur supports-[backdrop-filter]:bg-gray-900/60">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div className="flex items-center gap-2">
@@ -562,6 +561,7 @@ export default function EditorPage({
           </aside>
         </div>
       </div>
+      )}
     </div>
   );
 }
