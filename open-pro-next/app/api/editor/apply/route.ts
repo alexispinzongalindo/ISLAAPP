@@ -4,6 +4,7 @@ import fs from "fs/promises";
 
 import { parseAiPatchPlan } from "@/lib/ai/patch-schema";
 import { recordChange } from "@/lib/editor/history-store";
+import { ensureProject, getProjectContent, updateProjectContent } from "@/lib/project-registry";
 
 type ApplyRequestBody = {
   projectId?: string;
@@ -20,6 +21,19 @@ function resolveSafePath(relativePath: string) {
   return fullPath;
 }
 
+// Read file content: first check project's saved content in DB, then fall back to filesystem
+async function readContent(projectId: string, filePath: string): Promise<string> {
+  const saved = await getProjectContent(projectId);
+  if (saved) return saved;
+
+  const fullPath = resolveSafePath(filePath);
+  try {
+    return await fs.readFile(fullPath, "utf8");
+  } catch {
+    return "";
+  }
+}
+
 export async function POST(request: Request) {
   try {
     const body = (await request.json()) as ApplyRequestBody;
@@ -29,6 +43,8 @@ export async function POST(request: Request) {
     if (!projectId) {
       return NextResponse.json({ error: "Missing projectId." }, { status: 400 });
     }
+
+    await ensureProject(projectId);
 
     const parsed = parseAiPatchPlan(rawPlan);
     if (!parsed.ok) {
@@ -45,14 +61,7 @@ export async function POST(request: Request) {
         );
       }
 
-      const fullPath = resolveSafePath(change.filePath);
-
-      let before = "";
-      try {
-        before = await fs.readFile(fullPath, "utf8");
-      } catch {
-        before = "";
-      }
+      const before = await readContent(projectId, change.filePath);
 
       let after = before;
       if (change.patchType === "replace-snippet") {
@@ -97,14 +106,14 @@ export async function POST(request: Request) {
         continue;
       }
 
-      await fs.mkdir(path.dirname(fullPath), { recursive: true });
-      await fs.writeFile(fullPath, after, "utf8");
-
+      // Save modified content to project (Supabase + memory)
       lastState = recordChange(projectId, {
         filePath: change.filePath,
         before,
         after,
       });
+
+      await updateProjectContent(projectId, after, lastState.version);
     }
 
     return NextResponse.json({

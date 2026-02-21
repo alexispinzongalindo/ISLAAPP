@@ -97,7 +97,7 @@ export default function HabitsLive() {
           </div>
           <div className="flex gap-2 text-sm">
             <span className="rounded-full bg-indigo-100 px-3 py-1 font-semibold text-indigo-700">Level {level}: Habit Enthusiast</span>
-            <button onClick={levelUp} className="rounded-full bg-emerald-500 px-3 py-1 font-semibold text-white hover:bg-emerald-400">Simulate level-up</button>
+            <button onClick={levelUp} className="rounded-full bg-blue-600 px-3 py-1 font-semibold text-white hover:bg-blue-500">Simulate level-up</button>
           </div>
         </div>
       </header>

@@ -3,6 +3,7 @@ import path from "path";
 import fs from "fs/promises";
 
 import { isLivePageSlug } from "@/app/live/live-slugs";
+import { getProjectContent } from "@/lib/project-registry";
 
 type ChatMessage = {
   role: "user" | "assistant";
@@ -31,11 +32,25 @@ function resolveTemplateSlug(projectId: string, templateSlug?: string) {
   return raw.includes("--") ? raw.split("--")[0] : raw;
 }
 
-async function loadTemplateContext(slug: string) {
+async function loadTemplateContext(slug: string, projectId?: string) {
   if (!slug || !isLivePageSlug(slug)) return null;
 
-  const cwd = process.cwd();
   const relativePath = `app/live/${slug}/page.tsx`;
+
+  // First: check if this project has saved (modified) content
+  if (projectId) {
+    const saved = await getProjectContent(projectId);
+    if (saved) {
+      return {
+        filePath: relativePath,
+        content: saved,
+        truncated: false,
+      };
+    }
+  }
+
+  // Fallback: read the original template from filesystem
+  const cwd = process.cwd();
   const fullPath = path.resolve(cwd, relativePath);
   const raw = await fs.readFile(fullPath, "utf8");
 
@@ -351,7 +366,7 @@ export async function POST(request: Request) {
 
     const projectId = String(body.projectId || "").trim();
     const templateSlug = resolveTemplateSlug(projectId, body.templateSlug);
-    const templateContext = await loadTemplateContext(templateSlug).catch(() => null);
+    const templateContext = await loadTemplateContext(templateSlug, projectId).catch(() => null);
 
     const latestUserMessage = [...cleanedMessages]
       .reverse()
