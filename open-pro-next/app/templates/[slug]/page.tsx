@@ -647,7 +647,7 @@ export default async function TemplateDetailPage({ params }: TemplatePageProps) 
     notFound();
   }
 
-  const startHref = `https://app.islaapp.tech/?plan=trial&lang=en&template=${template.slug}`;
+  const startHref = `/editor/new?template=${encodeURIComponent(template.slug)}`;
   const demo = getDemoContent(template.slug);
 
   return (

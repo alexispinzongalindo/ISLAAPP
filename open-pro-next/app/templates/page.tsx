@@ -124,10 +124,10 @@ export default function TemplatesPage() {
     setActiveTemplate(null);
     setCloningTitle(title);
     setIsCloning(true);
-    // Simulate clone then route to the hosted app.
+    // Simulate clone then route to the editor.
     setTimeout(() => {
       setIsCloning(false);
-      window.location.href = `https://app.islaapp.tech/?plan=trial&lang=en&template=${slug}`;
+      window.location.href = `/editor/new?template=${encodeURIComponent(slug)}`;
     }, 1200);
   };
 
