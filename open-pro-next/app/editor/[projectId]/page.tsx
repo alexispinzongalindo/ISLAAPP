@@ -94,7 +94,14 @@ export default function EditorPage({
   const [canUndo, setCanUndo] = useState(false);
   const [canRedo, setCanRedo] = useState(false);
 
+  const [hydrated, setHydrated] = useState(false);
+
   const iframeRef = useRef<HTMLIFrameElement | null>(null);
+
+  // Prevent hydration mismatch: only read/write localStorage after hydration
+  useEffect(() => {
+    setHydrated(true);
+  }, []);
 
   if (!projectId) {
     return (
@@ -107,6 +114,7 @@ export default function EditorPage({
   }
 
   useEffect(() => {
+    if (!hydrated) return;
     try {
       const raw = window.localStorage.getItem(storageKey);
       if (!raw) return;
@@ -132,15 +140,16 @@ export default function EditorPage({
     } catch {
       // ignore
     }
-  }, [storageKey]);
+  }, [storageKey, hydrated]);
 
   useEffect(() => {
+    if (!hydrated) return;
     try {
       window.localStorage.setItem(storageKey, JSON.stringify(messages));
     } catch {
       // ignore
     }
-  }, [messages, storageKey]);
+  }, [messages, storageKey, hydrated]);
 
   useEffect(() => {
     const onMessage = (event: MessageEvent) => {
