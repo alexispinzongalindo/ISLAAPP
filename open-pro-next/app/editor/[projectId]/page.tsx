@@ -34,9 +34,9 @@ function deviceWidth(mode: DeviceMode) {
 export default function EditorPage({
   params,
 }: {
-  params: { projectId: string };
+  params: any;
 }) {
-  const projectId = String(params.projectId || "");
+  const projectId = String((params as any)?.projectId || "");
 
   const [device, setDevice] = useState<DeviceMode>("desktop");
   const [visualEdit, setVisualEdit] = useState(false);
