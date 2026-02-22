@@ -38,6 +38,12 @@ async function Content({ params }: { params: Promise<{ slug: string }> }) {
           >
             Use this template
           </a>
+          <a
+            href="https://lovable.dev/"
+            className="btn-sm bg-gray-800 text-gray-100 hover:bg-gray-700"
+          >
+            Customize in Lovable
+          </a>
         </div>
       </div>
       <div className="overflow-hidden rounded-2xl border border-gray-800 bg-gray-900/70">

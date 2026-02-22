@@ -54,6 +54,12 @@ export default function TemplatesPage() {
               >
                 Use this template
               </a>
+              <a
+                href="https://lovable.dev/"
+                className="btn-sm bg-gray-800 text-gray-100 hover:bg-gray-700"
+              >
+                Customize in Lovable
+              </a>
             </div>
           </div>
         ))}
